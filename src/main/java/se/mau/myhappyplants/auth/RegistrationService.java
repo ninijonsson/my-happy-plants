@@ -1,4 +1,4 @@
-package se.mau.myhappyplants.auth.dto;
+package se.mau.myhappyplants.auth;
 
 /**
  * Handles user registration business logic.

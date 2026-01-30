@@ -1,4 +1,4 @@
-package se.mau.myhappyplants.auth.dto;
+package se.mau.myhappyplants.auth;
 
 /**
  * MVC controller for authentication-related pages (login/register).
