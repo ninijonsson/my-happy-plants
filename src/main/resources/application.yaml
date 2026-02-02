@@ -1,18 +1,23 @@
 server:
   port: 8080
 
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/myhappyplants
+#    username: postgres
+#    password: ditt_losenord
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    properties:
+#      hibernate:
+#        format_sql: true
+
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/myhappyplants
-    username: postgres
-    password: ditt_losenord
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
+  autoconfigure:
+    exclude:
+
 
 perenual:
-  base-url: https://perenual.com/api
-  api-key: ${PERENUAL_API_KEY:}
+  base-url: https://perenual.com/api/v2
+  api-key: ${PERENUAL_API_KEY}

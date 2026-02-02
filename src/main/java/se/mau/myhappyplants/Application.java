@@ -1,12 +1,20 @@
 package se.mau.myhappyplants;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+
 /**
  * Entry point for the Spring Boot application.
  * Starts the web server and enables component scanning for all packages under se.mau.myhappyplants.
  */
 
+@SpringBootApplication
+@ConfigurationPropertiesScan
 public class Application {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        SpringApplication.run(Application.class, args);
     }
 }
