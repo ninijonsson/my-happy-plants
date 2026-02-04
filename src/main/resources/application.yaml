@@ -1,18 +1,25 @@
 server:
   port: 8080
 
+# spring:
+#   datasource:
+#     url: jdbc:postgresql://localhost:5432/myhappyplants
+#     username: postgres
+#     password: ditt_losenord
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+# För att ta bort att man måste ha en databas, lägg tillbaka dependecy senare i pom.xml igen
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/myhappyplants
-    username: postgres
-    password: ditt_losenord
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
 
+
+#ska kolon bort?? efter key
 perenual:
   base-url: https://perenual.com/api
   api-key: ${PERENUAL_API_KEY:}
+
+

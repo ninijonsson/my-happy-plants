@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Alla Plantor</title>
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+</head>
+<body>
+<section class="plants-wrapper">
+<header>
+    <h2 class="plants-title">Plantor</h2>
+    <input type="text" id="plantSearch" class="search-input" placeholder="Sök efter plantor...">
+
+    <div class="filter-bar">
+        <select id="familyFilter" class="filter-select">
+            <option value="">Familj (alla)</option>
+            <option value="Araceae">Araceae</option>
+            <option value="Cactaceae">Cactaceae</option>
+            <option value="Orchidaceae">Orchidaceae</option>
+        </select>
+
+        <select id="waterFilter" class="filter-select">
+            <option value="">Vattenbehov (alla)</option>
+            <option value="low">Lågt</option>
+            <option value="medium">Medel</option>
+            <option value="high">Högt</option>
+        </select>
+
+        <select id="sunFilter" class="filter-select">
+            <option value="">Ljusbehov (alla)</option>
+            <option value="shade">Skugga</option>
+            <option value="partial">Halvskugga</option>
+            <option value="sun">Sol</option>
+        </select>
+
+    </div>
+</header>
+
+
+    <div class="fade-top"></div>
+
+    <main class="plants-grid">
+        <!-- MOCK-DATA -->
+        <div class="plant-card"
+             data-family="araceae"
+             data-water="medium"
+             data-sun="partial">
+
+            <img src="/images/plant.jpg" alt="Plant">
+            <h3>Monstera</h3>
+            <p>En populär grönväxt med stora blad.</p>
+        </div>
+        <div class="plant-card"
+             data-family="araceae"
+             data-water="medium"
+             data-sun="partial">
+
+            <img src="/images/plant.jpg" alt="Plant">
+            <h3>Planta 4</h3>
+            <p>En populär grönväxt med stora blad.</p>
+        </div>
+        <div class="plant-card"
+             data-family="araceae"
+             data-water="medium"
+             data-sun="partial">
+
+            <img src="/images/plant.jpg" alt="Plant">
+            <h3>Planta 3</h3>
+            <p>En populär grönväxt med stora blad.</p>
+        </div>
+        <div class="plant-card"
+             data-family="araceae"
+             data-water="medium"
+             data-sun="partial">
+
+            <img src="/images/plant.jpg" alt="Plant">
+            <h3>Planta 2</h3>
+            <p>En populär grönväxt med stora blad.</p>
+        </div>
+        <div class="plant-card"
+             data-family="araceae"
+             data-water="medium"
+             data-sun="partial">
+
+            <img src="/images/plant.jpg" alt="Plant">
+            <h3>Monstera</h3>
+            <p>En populär grönväxt med stora blad.</p>
+        </div>
+        <div class="plant-card"
+             data-family="araceae"
+             data-water="medium"
+             data-sun="partial">
+
+            <img src="/images/plant.jpg" alt="Plant">
+            <h3>Planta 1</h3>
+            <p>En populär grönväxt med stora blad.</p>
+        </div>
+    </main>
+
+    <div class="fade-bottom">
+    </div>
+</section>
+<script th:src="@{/js/plant-filters.js}"></script>
+
+</body>
+</html>
