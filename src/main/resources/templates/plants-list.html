@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="sv" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Plantor (test)</title>
+    <style>
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .card { border: 1px solid #ddd; border-radius: 12px; padding: 12px; }
+        img { width: 100%; max-height: 160px; object-fit: cover; border-radius: 10px; }
+        .muted { color: #666; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+<h1>Top 5 plantor (test)</h1>
+
+<form method="get" th:action="@{/plants/test}">
+    <input type="text" name="q" placeholder="Sök (t.ex. monstera)" th:value="${query}">
+    <button type="submit">Sök</button>
+</form>
+
+<p class="muted" th:if="${#lists.isEmpty(plants)}">
+    Inga plantor hittades.
+</p>
+
+<div class="grid" th:if="${!#lists.isEmpty(plants)}">
+    <div class="card" th:each="p : ${plants}">
+        <div th:if="${p.imageUrl != null}">
+            <img th:src="${p.imageUrl}" alt="Plant image">
+        </div>
+
+        <h3 th:text="${p.name}">Plant name</h3>
+
+        <p class="muted" th:if="${p.scientificName != null}"
+           th:text="${p.scientificName}">
+            Scientific name
+        </p>
+
+        <p class="muted">ID: <span th:text="${p.id}">0</span></p>
+    </div>
+</div>
+</body>
+</html>
