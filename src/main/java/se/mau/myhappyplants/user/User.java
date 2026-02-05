@@ -32,8 +32,6 @@ public class User {
         //TODO: gör UserPlant till entity
         // private Set<UserPlant> plants = new HashSet<>();
 
-        protected void User() { }
-
         public User() {
 
         }
@@ -51,5 +49,4 @@ public class User {
 
         public void setUsername(String username) { this.username = username; }
         public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
-    }
 }
