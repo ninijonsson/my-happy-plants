@@ -1,21 +1,22 @@
 server:
   port: 8080
 
-#spring:
-#  datasource:
-#    url: jdbc:postgresql://localhost:5432/myhappyplants
-#    username: postgres
-#    password: ditt_losenord
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
-#    properties:
-#      hibernate:
-#        format_sql: true
-
 spring:
-  autoconfigure:
-    exclude:
+  datasource:
+    url: jdbc:postgresql://postgres.mau.se:55432/ao7206
+    username: ao7206
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_schema: ao7206
+        format_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+
+
 
 
 perenual:
