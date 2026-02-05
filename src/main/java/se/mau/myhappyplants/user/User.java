@@ -28,7 +28,7 @@ public class User {
         @Column(name = "password_hash", nullable = false, columnDefinition = "text")
         private String passwordHash;
 
-        @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+        //@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
         //TODO: gör UserPlant till entity
         // private Set<UserPlant> plants = new HashSet<>();
 
