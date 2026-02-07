@@ -26,7 +26,6 @@ jobs:
           cache: 'maven'
 
       - name: Build and Run Tests
-        # Notera: Jag tog bort -DskipTests eftersom du ville att testerna ska köras!
         run: mvn -B test
 
       - name: Publish Test Report
