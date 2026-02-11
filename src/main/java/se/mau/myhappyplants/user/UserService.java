@@ -2,6 +2,7 @@ package se.mau.myhappyplants.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import se.mau.myhappyplants.util.PasswordValidator;
 
 /**
  * Business logic for user-related operations (get profile, update settings, change password, etc.).
@@ -14,6 +15,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private PasswordValidator passwordValidator;
+
     /**
      * Skapa ny användare (registrering)
      */
@@ -22,30 +26,14 @@ public class UserService {
         if (userRepository.existsByUsername(username)) {
             throw new RuntimeException("Username already exists: " + username);
         }
+        //validera lösenordsstyrka
+        passwordValidator.validate(password);
 
-        validatePassword(password);
-
+        //kryptera lösenord med BCrypt
         String hashedPassword = passwordEncoder.encode(password);
+
         User user = new User(username, hashedPassword);
         return userRepository.save(user);
-    }
-    /**
-     * Validera lösenordsstyrka
-     * Krav: minst 8 tecken, en stor bokstav, en siffra, ett specialtecken
-     */
-    private void validatePassword(String password) {
-        if (password.length() < 12) {
-            throw new RuntimeException("Password must be at least 12 characters long");
-        }
-        if (!password.matches(".*[A-Z].*")) {
-            throw new RuntimeException("Password must contain at least one uppercase letter");
-        }
-        if (!password.matches(".*[0-9].*")) {
-            throw new RuntimeException("Password must contain at least one number");
-        }
-        if (!password.matches(".*[!@#$%^&*()].*")) {
-            throw new RuntimeException("Password must contain at least one special character");
-        }
     }
 
     /**
@@ -91,9 +79,12 @@ public class UserService {
             throw new RuntimeException("Wrong password");
         }
 
-        validatePassword(newPassword);
+        //validera nya lösenordets styrka
+        passwordValidator.validate(newPassword);
 
+        //kryptera nya lösenordet
         String hashedNewPassword = passwordEncoder.encode(newPassword);
+
         user.setPasswordHash(hashedNewPassword);
         userRepository.save(user);
     }
