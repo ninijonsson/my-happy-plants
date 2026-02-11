@@ -43,4 +43,14 @@ public interface UserPlantRepository extends JpaRepository<UserPlant, Long> {
      * Hitta växter baserat på Perenual API ID
      */
     List<UserPlant> findByPerenualId(String perenualId);
+
+    /**
+     * Hämta växter sorterade alfabetiskt (A-Z)
+     */
+    List<UserPlant> findByUserIdOrderByPlantNameAsc(Long userId);
+
+    /**
+     * Hämta växter sorterade omvänt alfabetiskt (Z-A)
+     */
+    List<UserPlant> findByUserIdOrderByPlantNameDesc(Long userId);
 }

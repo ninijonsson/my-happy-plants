@@ -23,12 +23,29 @@ public class UserService {
             throw new RuntimeException("Username already exists: " + username);
         }
 
-        String hashedPassword = passwordEncoder.encode(password);
+        validatePassword(password);
 
-        // Skapa och spara user
-        // OBS: Lösenord ska krypteras här (BCrypt) i framtiden!
-        User user = new User(username, password);
+        String hashedPassword = passwordEncoder.encode(password);
+        User user = new User(username, hashedPassword);
         return userRepository.save(user);
+    }
+    /**
+     * Validera lösenordsstyrka
+     * Krav: minst 8 tecken, en stor bokstav, en siffra, ett specialtecken
+     */
+    private void validatePassword(String password) {
+        if (password.length() < 12) {
+            throw new RuntimeException("Password must be at least 12 characters long");
+        }
+        if (!password.matches(".*[A-Z].*")) {
+            throw new RuntimeException("Password must contain at least one uppercase letter");
+        }
+        if (!password.matches(".*[0-9].*")) {
+            throw new RuntimeException("Password must contain at least one number");
+        }
+        if (!password.matches(".*[!@#$%^&*()].*")) {
+            throw new RuntimeException("Password must contain at least one special character");
+        }
     }
 
     /**
@@ -61,6 +78,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
+
+
     /**
      * Byta lösenord
      */
@@ -71,6 +90,8 @@ public class UserService {
         if (!passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
             throw new RuntimeException("Wrong password");
         }
+
+        validatePassword(newPassword);
 
         String hashedNewPassword = passwordEncoder.encode(newPassword);
         user.setPasswordHash(hashedNewPassword);

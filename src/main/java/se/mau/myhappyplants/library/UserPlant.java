@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * Entity connecting User + UserPlant + tag(?)
  * JPA entity representing a plant owned by a user ("My Plants").
- * 
+ *
  */
 @Entity
 @Table(name = "user_plants")

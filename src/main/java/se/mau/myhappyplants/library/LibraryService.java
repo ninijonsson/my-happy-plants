@@ -101,4 +101,16 @@ public class LibraryService {
     public List<UserPlant> searchPlantsByName(Long userId, String searchTerm) {
         return userPlantRepository.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);
     }
+
+    /**
+     * Hämta växter sorterade alfabetiskt
+     */
+    public List<UserPlant> getPlantsAlphabetically(Long userId) {
+        return userPlantRepository.findByUserIdOrderByPlantNameAsc(userId);
+    }
+
+    public List<UserPlant> getPlantsReverseAlphabetically(Long userId) {
+        return userPlantRepository.findByUserIdOrderByPlantNameDesc(userId);
+    }
+    //kolla vad som ska behållas och inte
 }
