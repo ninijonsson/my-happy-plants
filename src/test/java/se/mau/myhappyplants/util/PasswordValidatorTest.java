@@ -8,23 +8,37 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PasswordValidatorTest {
 
-    @Disabled("Disabled until PasswordValidator logic has been imlpemented ACC.10F")
+    private final PasswordValidator validator = new PasswordValidator();
+
     @Test
-    @DisplayName("ACC.10F - Password strength validation")
-    void testPasswordStrengthRules() {
-        //Contains upper case, special character but too short (not 12 chars)
-        String tooShort = "Short1!";
+    @DisplayName("ACC.10F - Password should fail if under 12 characters")
+    void testPasswordTooShort() {
+        String tooShortPassword = "Short1!"; //Short pass but everything else is correct
+        assertFalse(validator.isValid(tooShortPassword), "11 characters " +
+                "should not be accepted");
+    }
 
-        //Long enough, has upper case but no special character
-        String noSpecial = "Password12345";
+    @Test
+    @DisplayName("ACC.10F - Password should fail if special character is missing")
+    void testPasswordMissingSpecialCharacter() {
+        String specialCharMissing = "NoSpecialChar2026"; //Missing special char but everything else is correct
+        assertFalse(validator.isValid(specialCharMissing), "Missing special character" +
+                "should be invalid");
+    }
 
-        //Valid password
-        String validPassword = "MyHappyPlantTest2026!";
+    @Test
+    @DisplayName("ACC.10F - Password should fail if uppercase is missing")
+    void testPasswordMissingUppercase() {
+        String passMissingUppercase = "lowercase12345!"; //Missing uppercase but everything else is correct
+        assertFalse(validator.isValid(passMissingUppercase), "Missing uppercase" +
+                "should be invalid");
+    }
 
-//        assertAll("Password rules validation",
-//                () -> assertFalse(PasswordValidator.isValid(tooShort), "Too short"),
-//                () -> assertFalse(PasswordValidator.isValid(noSpecial), "Missing special character"),
-//                () -> assertTrue(PasswordValidator.isValid(valid), "Valid password should pass")
-//        );
+    @Test
+    @DisplayName("ACC.10F - Valid password should pass all rules")
+    void testValidPassword() {
+        String validPassword = "MyHappyPlantTest2026!"; //Has everything to be a valid password
+        assertTrue(validator.isValid(validPassword), "A correct password " +
+                "must return true");
     }
 }
