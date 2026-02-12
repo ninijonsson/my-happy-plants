@@ -6,6 +6,11 @@ spring:
     url: jdbc:postgresql://postgres.mau.se:55432/ao7206
     username: ao7206
     password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10  # Limits how many connections this app instance creates
+      minimum-idle: 5
+      idle-timeout: 30000
+      max-lifetime: 1800000
   jpa:
     hibernate:
       ddl-auto: update
