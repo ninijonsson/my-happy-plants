@@ -13,7 +13,7 @@ class TagTest {
     @Disabled
     @Test
     @DisplayName("LIB.05F - add with tag")
-    void tagTest() {
+    void addTagTest() {
 
 
         // String tag = "test tag";
@@ -23,30 +23,30 @@ class TagTest {
         // UserPlant plant = new UserPlant("Monstera",7,tag );
 
 
-        assertAll("Tag test results",
-                () -> assertEquals("test tag", plant.getTag())
-        );
+       // assertAll("Tag test results",
+       //         () -> assertEquals("test tag", plant.getTag())
+      //  );
 
     }
 
     @Disabled
     @Test
     @DisplayName("LIB.05.1F - create tag")
-    void tagTest() {
+    void createTagTest() {
 
         // String tag = "test tag";
 
 
-        assertAll("Tag test results",
-                () -> assertEquals("test tag", plant.getTag())
-        );
+    //    assertAll("Tag test results",
+    //            () -> assertEquals("test tag", plant.getTag())
+    //    );
 
     }
 
     @Disabled
     @Test
     @DisplayName("LIB.05.2F - add with wishlist tag")
-    void tagTest() {
+    void wishlistTagTest() {
 
 
         // String tag = "test tag";
@@ -56,15 +56,15 @@ class TagTest {
         // UserPlant plant = new UserPlant("Monstera",7,tag );
 
 
-        assertAll("Tag test results",
-                () -> assertEquals("test tag", plant.getTag())
-        );
+     //   assertAll("Tag test results",
+     //           () -> assertEquals("test tag", plant.getTag())
+    //    );
     }
 
     @Disabled
     @Test
     @DisplayName("LIB.05.3F - change tag")
-    void tagTest() {
+    void changeTagTest() {
 
 
         // String tag = "test tag";
@@ -75,9 +75,9 @@ class TagTest {
          // plant.setTag("changedTag");
 
 
-        assertAll("Tag test results",
-                () -> assertEquals("changedTag", plant.getTag())
-        );
+    //    assertAll("Tag test results",
+    //            () -> assertEquals("changedTag", plant.getTag())
+     //   );
     }
 
 
