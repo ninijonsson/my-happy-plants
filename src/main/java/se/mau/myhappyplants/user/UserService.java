@@ -9,6 +9,10 @@ import se.mau.myhappyplants.util.PasswordValidator;
  */
 public class UserService {
 
+    public void deleteAccount(User user){}
+
+    public void login(){}
+  
     @Autowired
     private UserRepository userRepository;
 

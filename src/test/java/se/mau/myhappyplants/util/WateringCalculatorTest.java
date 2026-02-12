@@ -27,6 +27,18 @@ class WateringCalculatorTest {
 //        assertTrue(plant.needsWater(), "The plant should need water if 8 days have passed with a 7-day interval");
     }
 
+    @Disabled()
+    @Test
+    @DisplayName("CAR.02F - Water Plant Test")
+    void testWaterPlant() {
+
+       // UserPlant plant = new UserPlant("Monstera", 7);
+       // plant.water(1);
+
+       // assertEquals(plant.getWaterStatus(),1);
+
+    }
+
     @AfterEach
     void tearDown() {
     }

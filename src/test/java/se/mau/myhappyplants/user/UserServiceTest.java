@@ -43,6 +43,22 @@ class UserServiceTest {
 //        assertFalse(result, "Registration should fail when username exists in DB");
     }
 
+    @Disabled("Väntar på att logiken för ACC.05F, ACC.04F ACC.07F ska implementeras")
+    @Test
+    @DisplayName("ACC.04F ACC.04.1F ACC.07F - Delete Account Test")
+    void deleteAccountTest() {
+      //  User user = new User("Sven", "hashed_password123");
+      //  Userservice.deleteAccount(user);
+      //  UserService.login();
+
+        /**
+         * Test will be performed by creating an account, deleting it,
+         * then asserting the login results with a missing account result.
+         */
+
+
+    }
+
     @AfterEach
     void tearDown() {
     }
