@@ -40,11 +40,6 @@ public class PerenualClient {
                     return b.build();
                 })
                 .retrieve()
-                // (valfritt men bra) ger tydligare fel om Perenual svarar med HTML/fel
-                // .onStatus(HttpStatusCode::isError, r ->
-                //         r.bodyToMono(String.class).map(body ->
-                //                 new RuntimeException("Perenual error " + r.statusCode() + ": " + body))
-                // )
                 .bodyToMono(PerenualSpeciesListResponse.class)
                 .block();
 
