@@ -1,10 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>My plants</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+    <link rel="stylesheet" href="../../static/css/stylesheet.css">
 </head>
 <body>
-
+    <div id="container">
+        <div id="header">
+            <h1 id="welcome">Welcome back, *user*!</h1>
+            <h2 id="summary">*sammanfattning*</h2>
+            <div id="plant-containers">
+                <!-- Lägg till unika id:n via Thymeleaf -->
+                <div class="plant-container">
+                    <img class="plant-img" src="https://thursd.com/storage/media/63320/Watermelon-Premium-Sun-Coleus.jpg" alt="Plant image">
+                    <h3 class="plant-name">Namn på planta</h3>
+                    <h4 class="latin-name">Namn på latin</h4>
+                    <div class="tags-container">
+                        <div class="tag">#vardagsrum</div>
+                        <div class="tag">#fin</div>
+                    </div>
+                    <div class="hp-bar"></div>
+                    <div class="watered-container">
+                        <input type="checkbox" id="plant-1" class="watered" name="plant-1" value="Bike">
+                        <label for="plant-1">Watered</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
