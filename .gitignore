@@ -53,3 +53,4 @@ build/
 ### ===== Misc =====
 *.swp
 *~
+src/main/resources/application.yaml
