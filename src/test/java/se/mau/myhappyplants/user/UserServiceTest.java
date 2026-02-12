@@ -26,7 +26,7 @@ class UserServiceTest {
     }
 
     @Test
-    @Disabled("Waiting for UserService.regiseter and UserRepository.existsByUsername (ACC.01F)")
+    @Disabled("Waiting for UserService.register and UserRepository.existsByUsername (ACC.01F)")
     @DisplayName("ACC.01F - Should return false if username is taken")
     void registerUserButUsernameIsTaken() {
         /**
