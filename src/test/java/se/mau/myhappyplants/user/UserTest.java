@@ -30,6 +30,31 @@ class UserTest {
         );
     }
 
+    @Disabled
+    @Test
+    @DisplayName("ACC.01F - Login with valid credentials")
+    void loginWithValidCredentials() {
+
+        /**
+         * a login test, assertion can be made with either a notification; SET.02F,
+         * or other user info.
+         */
+
+    }
+
+    @Disabled
+    @Test
+    @DisplayName("ACC.02F - Login with valid credentials")
+    void logOut() {
+
+        /**
+         * a login test, assertion can be made with either a notification; SET.02F,
+         * or other user info.
+         */
+
+    }
+
+
 
     @AfterEach
     void tearDown() {
