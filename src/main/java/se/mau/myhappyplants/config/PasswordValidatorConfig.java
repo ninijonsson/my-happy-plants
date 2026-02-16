@@ -25,23 +25,23 @@ public class PasswordValidatorConfig {
         StringBuilder response = new StringBuilder();
         
         if (password == null || password.isEmpty()) {
-            response.append("Password cannot be empty\n");
+            response.append("Password cannot be empty.\n");
         }
 
         if (password.length() < MIN_LENGTH) {
-            response.append("Password must be at least " + MIN_LENGTH + " characters long\n");
+            response.append("Password must be at least " + MIN_LENGTH + " characters long.\n");
         }
 
         if (!password.matches(UPPERCASE_PATTERN)) {
-            response.append("Password must contain at least one uppercase letter (A-Z)\n");
+            response.append("Password must contain at least one uppercase letter (A-Z).\n");
         }
 
         if (!password.matches(DIGIT_PATTERN)) {
-            response.append("Password must contain at least one digit (0-9)\n");
+            response.append("Password must contain at least one digit (0-9).\n");
         }
 
         if (!password.matches(SPECIAL_CHAR_PATTERN)) {
-            response.append("Password must contain at least one special character (!@#$%^&*()_+-=[]{}; etc.)\n");
+            response.append("Password must contain at least one special character (!@#$%^&*()_+-=[]{}; etc.).\n");
         }
         
         return response.toString();
