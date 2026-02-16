@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 // Using mock to make sure we dont mess up the real database with out test
 @ExtendWith(MockitoExtension.class)
-class UserPlantRepositoryTest {
+class AccountUserPlantRepositoryTest {
 
     @BeforeEach
     void setUp() {

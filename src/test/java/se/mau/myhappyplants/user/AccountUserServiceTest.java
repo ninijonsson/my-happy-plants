@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class AccountUserServiceTest {
 
     /**
      * Using a @Mock annotation allows us to use fake data

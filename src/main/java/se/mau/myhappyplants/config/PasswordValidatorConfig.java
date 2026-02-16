@@ -1,4 +1,4 @@
-package se.mau.myhappyplants.util;
+package se.mau.myhappyplants.config;
 
 import org.springframework.stereotype.Component;
 
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class PasswordValidator {
+public class PasswordValidatorConfig {
 
     private static final int MIN_LENGTH = 12;
     private static final String UPPERCASE_PATTERN = ".*[A-Z].*";

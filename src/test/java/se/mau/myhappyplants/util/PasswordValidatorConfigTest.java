@@ -1,14 +1,14 @@
 package se.mau.myhappyplants.util;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import se.mau.myhappyplants.config.PasswordValidatorConfig;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PasswordValidatorTest {
+public class PasswordValidatorConfigTest {
 
-    private final PasswordValidator validator = new PasswordValidator();
+    private final PasswordValidatorConfig validator = new PasswordValidatorConfig();
 
     @Test
     @DisplayName("ACC.10F - Password should fail if under 12 characters")

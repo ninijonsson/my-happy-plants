@@ -4,7 +4,7 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserTest {
+class AccountUserTest {
 
     @BeforeEach
     void setUp() {
@@ -14,7 +14,7 @@ class UserTest {
     @Test
     @DisplayName("ACC.05F - Create account without username should fail")
     void createAccountWithoutUsername() {
-        User user = new User(null, "hashed_password123");
+        AccountUser user = new AccountUser(null, "hashed_password123");
 
         assertNotNull(user.getUsername(), "Username should not be null according to requirement ACC.05F");
     }
@@ -22,7 +22,7 @@ class UserTest {
     @Test
     @DisplayName("ACC.03F - Create account with valid credentials")
     void createAccountWithValidCredentials() {
-        User user = new User("TestUser", "secure_password");
+        AccountUser user = new AccountUser("TestUser", "secure_password");
 
         assertAll("User object should be correctly initialized",
                 () -> assertEquals("TestUser", user.getUsername()),

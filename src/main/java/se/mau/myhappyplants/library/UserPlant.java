@@ -2,11 +2,7 @@ package se.mau.myhappyplants.library;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import se.mau.myhappyplants.user.User;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import se.mau.myhappyplants.user.AccountUser;
 
 
 /**
@@ -31,7 +27,7 @@ public class UserPlant {
     // ManyToOne: Många växter kan tillhöra en användare
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private AccountUser user;
 
     // ManyToOne: En växt kan ha EN tagg
     @ManyToOne
@@ -72,11 +68,11 @@ public class UserPlant {
         this.plantName = plantName;
     }
 
-    public User getUser() {
+    public AccountUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(AccountUser user) {
         this.user = user;
     }
 

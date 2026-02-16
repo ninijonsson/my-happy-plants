@@ -1,9 +1,11 @@
 package se.mau.myhappyplants.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.jspecify.annotations.Nullable;
 import se.mau.myhappyplants.library.UserPlant;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +18,11 @@ import java.util.List;
  */
 @Entity
 @Table(name = "users")
-public class User {
+public class AccountUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @NotBlank(message = "Username får inte vara tomt")
     @Size(min = 2, max = 50)
@@ -36,22 +38,16 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<UserPlant> userPlants = new ArrayList<>();
-
-    // Constructors
-    public User() {
-    }
-
-    public User(String username, String passwordHash) {
-        this.username = username;
-        this.passwordHash = passwordHash;
-    }
-
+    
+    @Nonnull
+    private String role;
+    
     // Getters and Setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -69,6 +65,13 @@ public class User {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+    
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public List<UserPlant> getUserPlants() {
@@ -88,6 +91,10 @@ public class User {
     public void removeUserPlant(UserPlant userPlant) {
         userPlants.remove(userPlant);
         userPlant.setUser(null);
+    }
+
+    public @Nullable String getPassword() {
+        return passwordHash;
     }
 }
 

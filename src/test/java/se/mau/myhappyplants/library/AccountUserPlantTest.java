@@ -4,7 +4,7 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserPlantTest {
+class AccountUserPlantTest {
 
     @BeforeEach
     void setUp() {
