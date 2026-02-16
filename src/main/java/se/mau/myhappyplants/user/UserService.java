@@ -5,10 +5,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import se.mau.myhappyplants.config.PasswordValidatorConfig;
-
 import java.util.Optional;
 
 /**
@@ -19,13 +16,7 @@ public class UserService implements UserDetailsService {
       
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private PasswordValidatorConfig passwordValidatorConfig;
-    
+        
 
     /**
      * Skapa ny användare (registrering)
@@ -35,12 +26,10 @@ public class UserService implements UserDetailsService {
         if (userRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("Username already exists: " + username);
         }
-        //validera lösenordsstyrka
-        passwordValidatorConfig.validate(password);
         
         AccountUser user = new AccountUser();
         user.setUsername(username);
-        user.setPasswordHash(passwordEncoder.encode(password));
+        user.setPasswordHash(password);
         user.setRole(role);
         
         userRepository.save(user);
@@ -69,7 +58,7 @@ public class UserService implements UserDetailsService {
      */
     public AccountUser updateUsername(int userId, String newUsername) {
         // Kolla om nya username redan finns
-        if (userRepository.existsByUsername(newUsername)) {
+        if (userRepository.findByUsername(newUsername).isPresent()) {
             throw new RuntimeException("Username already exists: " + newUsername);
         }
 
@@ -77,34 +66,32 @@ public class UserService implements UserDetailsService {
         user.setUsername(newUsername);
         return userRepository.save(user);
     }
-
-
-
+    
     /**
      * Byta lösenord
      */
-    public void changePassword(int userId, String oldPassword, String newPassword) {
-        AccountUser user = getUserById(userId);
-
-        // Kolla att gamla lösenordet stämmer (jämför krypterat)
-        if (!passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
-            throw new RuntimeException("Wrong password");
-        }
-
-        //validera nya lösenordets styrka
-        passwordValidatorConfig.validate(newPassword);
-
-        //kryptera nya lösenordet
-        String hashedNewPassword = passwordEncoder.encode(newPassword);
-
-        user.setPasswordHash(hashedNewPassword);
-        userRepository.save(user);
-    }
+//    public void changePassword(int userId, String oldPassword, String newPassword) {
+//        AccountUser user = getUserById(userId);
+//
+//        // Kolla att gamla lösenordet stämmer (jämför krypterat)
+//        if (!passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
+//            throw new RuntimeException("Wrong password");
+//        }
+//
+//        //validera nya lösenordets styrka
+//        passwordValidatorConfig.validate(newPassword);
+//
+//        //kryptera nya lösenordet
+//        String hashedNewPassword = passwordEncoder.encode(newPassword);
+//
+//        user.setPasswordHash(hashedNewPassword);
+//        userRepository.save(user);
+//    }
 
     /**
      * Ta bort användare
      */
-    public void deleteUser(Long userId) {
+    public void deleteUser(int userId) {
         if (!userRepository.existsById(userId)) {
             throw new RuntimeException("User not found with id: " + userId);
         }

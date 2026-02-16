@@ -20,38 +20,39 @@ public class PasswordValidatorConfig {
      *
      */
 
-    public void validate(String password) {
+    private String validate(String password) {
+        
+        StringBuilder response = new StringBuilder();
+        
         if (password == null || password.isEmpty()) {
-            throw new RuntimeException("Password cannot be empty");
+            response.append("Password cannot be empty\n");
         }
 
         if (password.length() < MIN_LENGTH) {
-            throw new RuntimeException("Password must be at least " + MIN_LENGTH + " characters long");
+            response.append("Password must be at least " + MIN_LENGTH + " characters long\n");
         }
 
         if (!password.matches(UPPERCASE_PATTERN)) {
-            throw new RuntimeException("Password must contain at least one uppercase letter");
+            response.append("Password must contain at least one uppercase letter (A-Z)\n");
         }
 
         if (!password.matches(DIGIT_PATTERN)) {
-            throw new RuntimeException("Password must contain at least one number");
+            response.append("Password must contain at least one digit (0-9)\n");
         }
 
         if (!password.matches(SPECIAL_CHAR_PATTERN)) {
-            throw new RuntimeException("Password must contain at least one special character (!@#$%^&*()_+-=[]{}; etc.)");
+            response.append("Password must contain at least one special character (!@#$%^&*()_+-=[]{}; etc.)\n");
         }
+        
+        return response.toString();
     }
 
     /**
      * Kolla om det är giltigt lösenord utan att kasta exception
      */
-    public boolean isValid(String password) {
-        try {
-            validate(password);
-            return true;
-        } catch (RuntimeException e) {
-            return false;
-        }
+    public String isValid(String password) {
+        String response = validate(password);
+        return response.isEmpty() ? "OK" : response;
     }
 }
 /**
