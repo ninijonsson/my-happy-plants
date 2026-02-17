@@ -38,14 +38,14 @@ public class LoginController {
         
         String passwordValidation = passwordValidatorConfig.isValid(password);
         if(!passwordValidation.equals("OK")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", passwordValidation));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", passwordValidation));
         }
         
         boolean isCreated = userService.createUser(username, passwordEncoder.encode(password), "USER");
         if(isCreated) {
-            return ResponseEntity.ok("User created successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "User created successfully"));
         }else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", "Username already exists"));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Username already exists"));
         }
     }
 }

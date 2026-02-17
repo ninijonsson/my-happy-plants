@@ -23,12 +23,13 @@ public class HTTPSecurityConfig {
         return http
                 .authorizeHttpRequests(registry-> {
                     registry.requestMatchers("/login", "/register", "/logout").permitAll();
+                    registry.requestMatchers("/plants/**").hasRole("USER");
                     registry.anyRequest().hasRole("USER");//TODO: Make this more secure. Currently allow anyone to any site.
                 })
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .permitAll()
-                        .defaultSuccessUrl("/plants"))
+                        .defaultSuccessUrl("/plants/test"))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .permitAll()
