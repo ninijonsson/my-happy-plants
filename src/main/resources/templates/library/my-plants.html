@@ -12,6 +12,22 @@
         <div id="header">
             <h1 id="welcome">Welcome back, *user*!</h1>
             <h2 id="summary">*sammanfattning*</h2>
+
+
+            <!-- Knapparna för sortering, temporär plats -->
+            <div class="flex gap-3 my-6">
+                <a th:href="@{/library(sort='asc')}"
+                   class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
+                   th:classappend="${currentSort == 'asc' || currentSort == null ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
+                    A-Z
+                </a>
+                <a th:href="@{/library(sort='desc')}"
+                   class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
+                   th:classappend="${currentSort == 'desc' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
+                    Z-A
+                </a>
+            </div>
+
             <div id="plant-containers">
                 <!-- Lägg till unika id:n via Thymeleaf -->
                 <div class="plant-container">

@@ -1,6 +1,8 @@
 package se.mau.myhappyplants.library;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 import se.mau.myhappyplants.user.User;
 import se.mau.myhappyplants.user.UserRepository;
 
@@ -11,15 +13,40 @@ import java.util.List;
  * Service for managing a user's plant library.
  * Handles adding/removing plants, watering updates, and tag assignments.
  */
+@Service
 public class LibraryService {
     @Autowired
-    private UserPlantRepository userPlantRepository;
+    private final UserPlantRepository userPlantRepository;
 
     @Autowired
     private TagRepository tagRepository;
 
     @Autowired
     private UserRepository userRepository;
+
+    public LibraryService(UserPlantRepository userPlantRepository) {
+        this.userPlantRepository = userPlantRepository;
+    }
+
+    /**
+     * Method for sorting in Ascending and Descending order
+     * @param userId is the id of the relevant user
+     * @param sortDir is the sorting direction
+     * @return the way it is supposed to be sorted based on the user
+     */
+    public List<UserPlant> getUserLibrary(Long userId, String sortDir) {
+        Sort sort;
+        String plantName = "plantName";
+
+        if ("desc".equalsIgnoreCase(sortDir)) {
+            // Z - A sorting
+            sort = Sort.by(Sort.Direction.DESC, plantName);
+        } else {
+            // A - Z sorting
+            sort = Sort.by(Sort.Direction.ASC, plantName);
+        }
+        return userPlantRepository.findByUserId(userId, sort);
+    }
 
     /**
      * Lägg till en ny växt till användarens bibliotek
@@ -102,15 +129,17 @@ public class LibraryService {
         return userPlantRepository.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);
     }
 
+
+    //TODO se över om dessa fortfarande behövs när sorting fungerar
     /**
      * Hämta växter sorterade alfabetiskt
      */
-    public List<UserPlant> getPlantsAlphabetically(Long userId) {
-        return userPlantRepository.findByUserIdOrderByPlantNameAsc(userId);
-    }
-
-    public List<UserPlant> getPlantsReverseAlphabetically(Long userId) {
-        return userPlantRepository.findByUserIdOrderByPlantNameDesc(userId);
-    }
+//    public List<UserPlant> getPlantsAlphabetically(Long userId) {
+//        return userPlantRepository.findByUserIdOrderByPlantNameAsc(userId);
+//    }
+//
+//    public List<UserPlant> getPlantsReverseAlphabetically(Long userId) {
+//        return userPlantRepository.findByUserIdOrderByPlantNameDesc(userId);
+//    }
     //kolla vad som ska behållas och inte
 }

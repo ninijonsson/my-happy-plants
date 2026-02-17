@@ -1,5 +1,6 @@
 package se.mau.myhappyplants.library;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -47,10 +48,13 @@ public interface UserPlantRepository extends JpaRepository<UserPlant, Long> {
     /**
      * Hämta växter sorterade alfabetiskt (A-Z)
      */
-    List<UserPlant> findByUserIdOrderByPlantNameAsc(Long userId);
+    //List<UserPlant> findByUserIdOrderByPlantNameAsc(Long userId);
 
     /**
      * Hämta växter sorterade omvänt alfabetiskt (Z-A)
      */
-    List<UserPlant> findByUserIdOrderByPlantNameDesc(Long userId);
+    //List<UserPlant> findByUserIdOrderByPlantNameDesc(Long userId);
+
+    //TODO: se om de två metoderna ovan fortfarande behövs, denna är mer generisk
+    List<UserPlant> findByUserId(Long userId, Sort sort);
 }
