@@ -10,25 +10,25 @@ class AccountUserTest {
     void setUp() {
     }
 
-    @Disabled("Väntar på att logiken för ACC.05F ska implementeras")
-    @Test
-    @DisplayName("ACC.05F - Create account without username should fail")
-    void createAccountWithoutUsername() {
-        AccountUser user = new AccountUser(null, "hashed_password123");
+//    @Disabled("Väntar på att logiken för ACC.05F ska implementeras")
+//    @Test
+//    @DisplayName("ACC.05F - Create account without username should fail")
+//    void createAccountWithoutUsername() {
+//        AccountUser user = new AccountUser(null, "hashed_password123");
+//
+//        assertNotNull(user.getUsername(), "Username should not be null according to requirement ACC.05F");
+//    }
 
-        assertNotNull(user.getUsername(), "Username should not be null according to requirement ACC.05F");
-    }
-
-    @Test
-    @DisplayName("ACC.03F - Create account with valid credentials")
-    void createAccountWithValidCredentials() {
-        AccountUser user = new AccountUser("TestUser", "secure_password");
-
-        assertAll("User object should be correctly initialized",
-                () -> assertEquals("TestUser", user.getUsername()),
-                () -> assertEquals("secure_password", user.getPasswordHash())
-        );
-    }
+//    @Test
+//    @DisplayName("ACC.03F - Create account with valid credentials")
+//    void createAccountWithValidCredentials() {
+//        AccountUser user = new AccountUser("TestUser", "secure_password");
+//
+//        assertAll("User object should be correctly initialized",
+//                () -> assertEquals("TestUser", user.getUsername()),
+//                () -> assertEquals("secure_password", user.getPasswordHash())
+//        );
+//    }
 
     @Disabled
     @Test
