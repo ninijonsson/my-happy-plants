@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.boot.CommandLineRunner;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -119,5 +120,36 @@ public class LibraryService {
     public List<UserPlant> getPlantsReverseAlphabetically(Long userId) {
         return userPlantRepository.findByUserIdOrderByPlantNameDesc(userId);
     }
-    //kolla vad som ska behållas och inte
+
+    public void waterPlant(Long userId, Long plantId) {
+        UserPlant plant = userPlantRepository
+                .findByIdAndUserId(plantId, userId)
+                .orElseThrow(() ->
+                        new RuntimeException("Plant not found for this user"));
+
+        plant.setLastWatered(LocalDateTime.now());
+
+        userPlantRepository.save(plant);
+    }
+
+    public long countPlantsNeedingWater(Long userId) {
+        List<UserPlant> plants = userPlantRepository.findByUserId(userId);
+
+        LocalDate today = LocalDate.now();
+        long count = 0;
+
+        for (UserPlant plant : plants) {
+
+            if (plant.getLastWatered() == null)
+                continue;
+            if (plant.getWateringFrequencyDays() == null)
+                continue;
+            LocalDate nextWateringDate = plant.getLastWatered().toLocalDate().plusDays(plant.getWateringFrequencyDays());
+
+            if (!nextWateringDate.isAfter(today)) {
+                count++;
+            }
+        }
+        return count;
+    }
 }

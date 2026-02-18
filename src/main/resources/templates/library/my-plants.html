@@ -10,37 +10,62 @@
 </head>
 <body>
     <div id="container">
-        <div id="header">
-            <h1 id="welcome" th:text="'Welcome back, ' + ${user.username} + '!'"></h1>
-            <h2 id="summary">*sammanfattning*</h2>
-            <div id="plant-containers">
-                <!-- Lägg till unika id:n via Thymeleaf -->
-                <div class="plant-container" th:each="plant, iterStat : ${plants}"
-                     th:data-last-watered="${plant.lastWatered}"
-                     th:data-watering-days="${plant.getWateringFrequencyDays()}">
-                    <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
-                    <h3 class="plant-name" th:text="${plant.plantName}">Namn på planta</h3>
-                    <h4 class="latin-name" th:text="${plant.scientificName}">Namn på latin</h4>
+        <div class="welcome-panel">
+            <h1>Welcome back <span th:text="${user.username}">User</span>!</h1>
+            <p>You have <span th:text="${needsWatering}">0</span>
+                plants that need watering
+            </p>
 
-                    <!--Taggar-->
+            <a href="/plants/add" class="add-btn">
+                Add new plant to library
+            </a>
+        </div>
+        <div id="users-plants">
+            <h2 class="section-title">Your plants</h2>
+            <div class="plant-container"
+                 th:each="plant : ${plants}"
+                 th:data-plantid="${plant.id}"
+                 th:data-userid="${plant.user.id}"
+                 th:data-last-watered="${plant.lastWatered}"
+                 th:data-watering-days="${plant.getWateringFrequencyDays()}">
+
+                <!-- Image -->
+                <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
+
+                <!-- Info -->
+                <div class="plant-info">
+                    <h3 th:text="${plant.plantName}"></h3>
+                    <p class="latin-name" th:text="${plant.scientificName}"></p>
+                    <!-- Tags -->
                     <div class="tags-container">
-                        <div class="tag" th:text="'#' + ${plant.tag.label}" th:if="${plant.tag != null}">#vardagsrum</div>
-                        <div class="tag">#fin</div>
+                        <span class="tag" th:text="'#' + ${plant.tag.label}" th:if="${plant.tag != null}"></span>
                     </div>
 
-                    <!--Grafisk vattnings bar-->
-                    <div class="hp-bar w-full bg-gray-200 h-4 rounded">
-                        <div class="hp-bar-fill h-4 rounded"></div>
-                    </div>
                     <p class="days-since-watered"></p>
 
-                    <!--Checkbox för bevattnings markering-->
-                    <div class="watered-container">
-                        <input type="checkbox" th:id="'plant-' + ${iterStat.index}" class="watered"
-                        th:name="'plant-' + ${iterStat.index}" th:value="${plant.id}">
-                        <label th:for="'plant-' + ${iterStat.index}">Watered</label>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
                     </div>
                 </div>
+
+                <!-- Actions -->
+                <div class="plant-actions">
+                    <button type="button" class="water-btn">💧 Water it</button>
+                    <button type="button" class="delete-btn">Remove</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Confirm Deletion</h3>
+            <p>Are you sure you want to remove this plant?</p>
+            <div class="modal-buttons">
+                <button id="cancel-btn" class="modal-btn cancel-btn">Cancel</button>
+                <button id="confirm-btn" class="modal-btn confirm-btn">Remove</button>
             </div>
         </div>
     </div>
