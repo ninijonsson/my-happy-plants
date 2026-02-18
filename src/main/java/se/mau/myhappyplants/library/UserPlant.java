@@ -24,6 +24,9 @@ public class UserPlant {
     @Column(name = "perenual_id")
     private String perenualId;
 
+    @Column(name = "last_watered")
+    private LocalDateTime lastWatered;
+
     @NotBlank(message = "Växtnamn får inte vara tomt")
     @Column(name = "plant_name", nullable = false)
     private String plantName;
@@ -37,6 +40,15 @@ public class UserPlant {
     @ManyToOne
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "scientific_name")
+    private String scientificName;
+
+    @Column(name = "watering_frequency_days")
+    private Integer wateringFrequencyDays;
 
     // Constructors
     public UserPlant() {
@@ -86,5 +98,63 @@ public class UserPlant {
 
     public void setTag(Tag tag) {
         this.tag = tag;
+    }
+
+    public void setLastWatered(LocalDateTime lastWatered) {
+        this.lastWatered = lastWatered;
+    }
+
+    public LocalDateTime getLastWatered() {
+        return lastWatered;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getScientificName() {
+        return scientificName;
+    }
+
+    public void setScientificName(String scientificName) {
+        this.scientificName = scientificName;
+    }
+
+    public Integer getWateringFrequencyDays() {
+        return wateringFrequencyDays;
+    }
+
+    public void setWateringFrequencyDays(Integer wateringFrequencyDays) {
+        this.wateringFrequencyDays = wateringFrequencyDays;
+    }
+
+    public double getWateringProgressPercentage() {
+        if (lastWatered == null || wateringFrequencyDays <= 0) {
+            return 0;
+        }
+        long daysSinceWatered = java.time.Duration.between(lastWatered, java.time.LocalDateTime.now())
+                .toDays();
+
+        double percent = (double) daysSinceWatered / wateringFrequencyDays * 100;
+        return Math.min(percent, 100);
+    }
+
+    public long getDaysSinceLastWatered() {
+        if (lastWatered == null)
+            return 0;
+        return java.time.Duration.between(lastWatered, java.time.LocalDateTime.now()).toDays();
+    }
+
+    public double getDaysUntilNextWatering(){
+        if (lastWatered == null || wateringFrequencyDays <= 0)
+            return 0;
+
+        long daysSinceWatered = getDaysSinceLastWatered();
+        double percent = (double) daysSinceWatered / wateringFrequencyDays * 100;
+        return Math.min(percent, 100);
     }
 }

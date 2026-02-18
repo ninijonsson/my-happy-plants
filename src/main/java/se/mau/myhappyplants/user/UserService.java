@@ -2,11 +2,13 @@ package se.mau.myhappyplants.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import se.mau.myhappyplants.util.PasswordValidator;
 
 /**
  * Business logic for user-related operations (get profile, update settings, change password, etc.).
  */
+@Service
 public class UserService {
 
     public void deleteAccount(User user){}

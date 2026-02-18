@@ -4,28 +4,41 @@
     <meta charset="UTF-8">
     <title>My plants</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script th:src="@{/js/library.js}"></script>
     <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
     <link rel="stylesheet" href="../../static/css/stylesheet.css">
 </head>
 <body>
     <div id="container">
         <div id="header">
-            <h1 id="welcome">Welcome back, *user*!</h1>
+            <h1 id="welcome" th:text="'Welcome back, ' + ${user.username} + '!'"></h1>
             <h2 id="summary">*sammanfattning*</h2>
             <div id="plant-containers">
                 <!-- Lägg till unika id:n via Thymeleaf -->
-                <div class="plant-container">
-                    <img class="plant-img" src="https://thursd.com/storage/media/63320/Watermelon-Premium-Sun-Coleus.jpg" alt="Plant image">
-                    <h3 class="plant-name">Namn på planta</h3>
-                    <h4 class="latin-name">Namn på latin</h4>
+                <div class="plant-container" th:each="plant, iterStat : ${plants}"
+                     th:data-last-watered="${plant.lastWatered}"
+                     th:data-watering-days="${plant.getWateringFrequencyDays()}">
+                    <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
+                    <h3 class="plant-name" th:text="${plant.plantName}">Namn på planta</h3>
+                    <h4 class="latin-name" th:text="${plant.scientificName}">Namn på latin</h4>
+
+                    <!--Taggar-->
                     <div class="tags-container">
-                        <div class="tag">#vardagsrum</div>
+                        <div class="tag" th:text="'#' + ${plant.tag.label}" th:if="${plant.tag != null}">#vardagsrum</div>
                         <div class="tag">#fin</div>
                     </div>
-                    <div class="hp-bar"></div>
+
+                    <!--Grafisk vattnings bar-->
+                    <div class="hp-bar w-full bg-gray-200 h-4 rounded">
+                        <div class="hp-bar-fill h-4 rounded"></div>
+                    </div>
+                    <p class="days-since-watered"></p>
+
+                    <!--Checkbox för bevattnings markering-->
                     <div class="watered-container">
-                        <input type="checkbox" id="plant-1" class="watered" name="plant-1" value="Bike">
-                        <label for="plant-1">Watered</label>
+                        <input type="checkbox" th:id="'plant-' + ${iterStat.index}" class="watered"
+                        th:name="'plant-' + ${iterStat.index}" th:value="${plant.id}">
+                        <label th:for="'plant-' + ${iterStat.index}">Watered</label>
                     </div>
                 </div>
             </div>

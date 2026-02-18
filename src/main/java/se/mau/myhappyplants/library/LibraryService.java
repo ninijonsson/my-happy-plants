@@ -1,9 +1,14 @@
 package se.mau.myhappyplants.library;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import se.mau.myhappyplants.user.User;
 import se.mau.myhappyplants.user.UserRepository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.boot.CommandLineRunner;
 
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -11,6 +16,7 @@ import java.util.List;
  * Service for managing a user's plant library.
  * Handles adding/removing plants, watering updates, and tag assignments.
  */
+@Service
 public class LibraryService {
     @Autowired
     private UserPlantRepository userPlantRepository;
@@ -83,6 +89,7 @@ public class LibraryService {
 
     /**
      * Hämta alla växter för en användare
+     *
      */
     public List<UserPlant> getAllPlantsForUser(Long userId) {
         return userPlantRepository.findByUserId(userId);
