@@ -26,7 +26,7 @@ public class Tag {
     // OneToMany: En tagg kan användas på många växter
     @OneToMany(mappedBy = "tag")
     @JsonIgnore
-    private List<UserPlant> userPlants = new ArrayList<>();
+    private List<AccountUserPlant> accountUserPlants = new ArrayList<>();
 
     // Constructors
     public Tag() {
@@ -53,11 +53,11 @@ public class Tag {
         this.label = label;
     }
 
-    public List<UserPlant> getUserPlants() {
-        return userPlants;
+    public List<AccountUserPlant> getUserPlants() {
+        return accountUserPlants;
     }
 
-    public void setUserPlants(List<UserPlant> userPlants) {
-        this.userPlants = userPlants;
+    public void setUserPlants(List<AccountUserPlant> accountUserPlants) {
+        this.accountUserPlants = accountUserPlants;
     }
 }

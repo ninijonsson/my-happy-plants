@@ -20,7 +20,7 @@ class TagTest {
         // alterativly Enum
         // Tag tag = Tag.values()[0];
 
-        // UserPlant plant = new UserPlant("Monstera",7,tag );
+        // AccountUserPlant plant = new AccountUserPlant("Monstera",7,tag );
 
 
        // assertAll("Tag test results",
@@ -53,7 +53,7 @@ class TagTest {
         // alterativly Enum
         // Tag tag = Tag.values()[1];
 
-        // UserPlant plant = new UserPlant("Monstera",7,tag );
+        // AccountUserPlant plant = new AccountUserPlant("Monstera",7,tag );
 
 
      //   assertAll("Tag test results",
@@ -71,7 +71,7 @@ class TagTest {
         // alterativly Enum
         // Tag tag = Tag.values()[1];
 
-        // UserPlant plant = new UserPlant("Monstera",7,tag );
+        // AccountUserPlant plant = new AccountUserPlant("Monstera",7,tag );
          // plant.setTag("changedTag");
 
 

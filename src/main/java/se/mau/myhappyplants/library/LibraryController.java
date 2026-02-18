@@ -34,7 +34,7 @@ public class LibraryController {
             return "redirect:/login";
         }
 
-        List<UserPlant> plants = libraryService.getUserLibrary(currentUser.getId(), sort);
+        List<AccountUserPlant> plants = libraryService.getUserLibrary(currentUser.getId(), sort);
 
         model.addAttribute("plants", plants);
         model.addAttribute("currentSort", sort);
