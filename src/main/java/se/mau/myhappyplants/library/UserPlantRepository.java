@@ -56,5 +56,5 @@ public interface UserPlantRepository extends JpaRepository<UserPlant, Long> {
     //List<UserPlant> findByUserIdOrderByPlantNameDesc(Long userId);
 
     //TODO: se om de två metoderna ovan fortfarande behövs, denna är mer generisk
-    List<UserPlant> findByUserId(Long userId, Sort sort);
+    List<UserPlant> findByUserId(int userId, Sort sort);
 }

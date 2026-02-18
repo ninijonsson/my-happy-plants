@@ -3,7 +3,6 @@ package se.mau.myhappyplants.library;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import se.mau.myhappyplants.user.User;
 import se.mau.myhappyplants.user.AccountUser;
 import se.mau.myhappyplants.user.UserRepository;
 
@@ -35,17 +34,22 @@ public class LibraryService {
      * @param sortDir is the sorting direction
      * @return the way it is supposed to be sorted based on the user
      */
-    public List<UserPlant> getUserLibrary(Long userId, String sortDir) {
+    public List<UserPlant> getUserLibrary(int userId, String sortDir) {
         Sort sort;
         String plantName = "plantName";
 
         if ("desc".equalsIgnoreCase(sortDir)) {
             // Z - A sorting
             sort = Sort.by(Sort.Direction.DESC, plantName);
+        } else if ("water".equalsIgnoreCase(sortDir)) {
+            //sort by water status
+            //sorting by asc should put the oldest dates at the top
+            sort = Sort.by(Sort.Direction.ASC, "lastWateredDate");
         } else {
             // A - Z sorting
+            //default sorting
             sort = Sort.by(Sort.Direction.ASC, plantName);
-        }
+            }
         return userPlantRepository.findByUserId(userId, sort);
     }
 
@@ -129,18 +133,4 @@ public class LibraryService {
     public List<UserPlant> searchPlantsByName(Long userId, String searchTerm) {
         return userPlantRepository.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);
     }
-
-
-    //TODO se över om dessa fortfarande behövs när sorting fungerar
-    /**
-     * Hämta växter sorterade alfabetiskt
-     */
-//    public List<UserPlant> getPlantsAlphabetically(Long userId) {
-//        return userPlantRepository.findByUserIdOrderByPlantNameAsc(userId);
-//    }
-//
-//    public List<UserPlant> getPlantsReverseAlphabetically(Long userId) {
-//        return userPlantRepository.findByUserIdOrderByPlantNameDesc(userId);
-//    }
-    //kolla vad som ska behållas och inte
 }

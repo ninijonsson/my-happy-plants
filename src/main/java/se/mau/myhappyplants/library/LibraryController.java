@@ -6,7 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import se.mau.myhappyplants.user.User;
+import se.mau.myhappyplants.user.AccountUser;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class LibraryController {
     ) {
 
         //This is used for getting the currently logged in user
-        User currentUser = (User) session.getAttribute("user");
+        AccountUser currentUser = (AccountUser) session.getAttribute("user");
 
         if (currentUser == null) {
             return "redirect:/login";
