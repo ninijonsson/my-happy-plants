@@ -21,7 +21,7 @@ public class LibraryController {
         this.libraryService = libraryService;
     }
 
-    
+
     @GetMapping
     public String showLibrary(
             @RequestParam(required = false, defaultValue = "asc") String sort,
@@ -29,18 +29,19 @@ public class LibraryController {
             HttpSession session
     ) {
         AccountUser user = (AccountUser) session.getAttribute("user");
-        var plants = libraryService.getAllPlantsForUser(user.getId());
-        long needsWatering = libraryService.countPlantsNeedingWater(user.getId());
 
-        if (user == null) {
+        if (user.getRole() == null) {
             return "redirect:/login";
         }
+
+        var plants = libraryService.getAllPlantsForUser(user.getId());
+        long needsWatering = libraryService.countPlantsNeedingWater(user.getId());
 
         model.addAttribute("plants", plants);
         model.addAttribute("user", user);
         model.addAttribute("needsWatering", needsWatering);
         model.addAttribute("currentSort", sort);
-        return "library/my-plants"; //Thymeleaf template
+        return "/library/my-plants";
     }
 
     @DeleteMapping("/{userId}/plants/{plantId}")
