@@ -6,12 +6,25 @@
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+<body class="min-h-screen bg-gradient-to-r from-[#fef08a] via-[#84cc16] to-[#16a34a] flex items-center justify-center p-4">
 
 <!-- Login Form -->
-<div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-    <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h1>
+<div style="box-shadow: 0 25px 50px -5px rgba(0,0,0,0.6)" class="p-8 w-full max-w-md">
+    <div class="flex flex-col items-center mt-10 mb-4">
+        <svg viewBox="0 0 400 80" width="320" height="70" xmlns="http://www.w3.org/2000/svg">
+            <path id="arch" d="M 30,70 Q 200,5 370,70" fill="none"/>
+            <text font-size="44" font-weight="800" fill="#1f2937" font-family="sans-serif" letter-spacing="3">
+                <textPath href="#arch" startOffset="50%" text-anchor="middle">WELCOME TO</textPath>
+            </text>
+        </svg>
+
+        <div class="flex justify-center gap-4">
+            <img src="/images/jirasol.gif" alt="logo" class="w-24 h-24 object-contain" />
+        </div>
+
+        <p class="text-4xl font-bold text-gray-800 tracking-wide mt-2">My Happy Plants</p>
+    </div>
+    <div class="flex justify-center mb-6">
         <p class="text-gray-600">Sign in to your account</p>
     </div>
 
@@ -72,7 +85,7 @@
 
         <button
                 type="submit"
-                class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition shadow-lg"
+                class="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition shadow-lg"
         >
             Sign In
         </button>
@@ -83,7 +96,7 @@
             Don't have an account?
             <button
                     id="openRegisterBtn"
-                    class="text-indigo-600 font-semibold hover:text-indigo-700 transition"
+                    class="text-green-800 font-semibold hover:text-green-300 transition"
             >
                 Register here
             </button>
@@ -93,7 +106,7 @@
 
 <!-- Registration Popup -->
 <div id="registerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md relative">
+    <div class="bg-gradient-to-r from-[#fef08a] via-[#84cc16] to-[#16a34a] rounded-2xl shadow-2xl p-8 w-full max-w-md relative">
         <button
                 id="closeRegisterBtn"
                 class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
@@ -173,7 +186,7 @@
 
             <button
                     type="submit"
-                    class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition shadow-lg"
+                    class="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition shadow-lg"
             >
                 Register
             </button>
