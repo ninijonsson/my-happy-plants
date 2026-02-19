@@ -20,7 +20,7 @@ public class PasswordValidatorConfig {
      *
      */
 
-    private String validate(String password) {
+    public String validate(String password) {
         
         StringBuilder response = new StringBuilder();
         

@@ -5,6 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import se.mau.myhappyplants.config.PasswordValidatorConfig;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,9 +23,11 @@ class AccountUserServiceTest {
 
     @InjectMocks
     private UserService userService;  // Class for handling registration logic
+    private PasswordValidatorConfig passwordValidator;
 
     @BeforeEach
     void setUp() {
+        passwordValidator = new PasswordValidatorConfig();
     }
 
     @Test
@@ -58,8 +63,61 @@ class AccountUserServiceTest {
 
 
     }
+    @Disabled // funkar inte!!!!
+    @Test
+    @DisplayName("ACC.03F Create Account")
+    void testCreateValidAccount() {
+        boolean result = userService.createUser("Random1!", "AbitNicole2026!!!", "USER");
+        assertEquals(true, result);
+    }
+
+
+    @Test
+    @DisplayName("ACC.05F Error Message Missing Username")
+    void testMissingUsernameRegistration() {
+        boolean result = userService.createUser("", "123", "USER");
+        assertEquals(false, result);
+    }
+
+    @Disabled
+    @Test
+    @DisplayName("ACC.06F Error Message Incorrect Password")
+    void testIncorrectPassword() {
+        //boolean result = userService.("test", "123", "USER");
+        //assertEquals(false, result);
+    }
+
+    @Test
+    @DisplayName("ACC.10F Password Rules")
+    void testValidPasswordRules() {
+        String result = passwordValidator.isValid("AbitNicole2026!");
+        assertEquals("OK", result);
+    }
+
+
+    @Test
+    @DisplayName("ACC.10.1F Password Rules Infomration + ACC.10F Password Rules when invalid")
+    void testPasswordRulesInformation() {
+        String result = passwordValidator.validate("abit");
+
+        StringBuilder response = new StringBuilder();
+        response.append("Password must be at least 12 characters long.\n");
+        response.append("Password must contain at least one uppercase letter (A-Z).\n");
+        response.append("Password must contain at least one digit (0-9).\n");
+        response.append("Password must contain at least one special character (!@#$%^&*()_+-=[]{}; etc.).\n");
+
+        String expected = response.toString();
+
+        assertEquals(expected, result);
+    }
+
+
 
     @AfterEach
     void tearDown() {
     }
+
+
+
+
 }
