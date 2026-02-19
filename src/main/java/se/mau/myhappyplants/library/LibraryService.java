@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.mau.myhappyplants.user.AccountUser;
 import se.mau.myhappyplants.user.UserRepository;
-import org.springframework.context.annotation.Bean;
-import org.springframework.boot.CommandLineRunner;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;

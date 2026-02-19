@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import se.mau.myhappyplants.user.AccountUser;
 
+import java.time.LocalDateTime;
+
 
 /**
  * Entity connecting User + UserPlant + tag(?)
