@@ -11,6 +11,30 @@
 
 <body>
     <div id="container">
+        <ul class="bg-emerald-600" style="margin: 0; padding: 0; overflow: hidden;" >
+            <li style="float:left;">
+                <a th:href="@{/library}" style=" display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; text-decoration: none;">My Plants</a>
+            </li>
+            <li style="float:left;">
+                <a th:href="@{/plants}" style=" display: block; text-align: center; text-decoration: none;">
+                    <img th:href="@{/plants}" src="/images/magnifying-glass.png" alt="Search" class="w-8 h-8 object-contain mt-3 mb-2">
+                </a>
+            </li>
+            <li style="float:right;">
+                <a 
+                    th:href="@{/logout}" 
+                    onmouseover="this.style.color='white'; this.style.backgroundColor='#960532'"
+                    onmouseout="this.style.color='transperant'; this.style.backgroundColor='transparent'"
+                    style=" display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; "
+                >
+                    Logout
+                </a>
+            </li>
+            <li style="float:right;">
+                <a th:text="${user.username}" style=" display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; text-decoration: none;">User</a>
+            </li>
+        </ul>
+        
         <div class="welcome-panel">
             <h1>Welcome back <span th:text="${user.username}">User</span>!</h1>
             <p>You have <span th:text="${needsWatering}">0</span>
@@ -18,7 +42,7 @@
             </p>
             <a href="/plants/add" class="add-btn">Add new plant to library</a>
         </div>
-
+        
         <!-- Sorting buttons -->
         <div class="flex gap-3 my-6">
             <a th:href="@{/library(sort='asc')}"
