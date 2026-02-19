@@ -2,12 +2,10 @@ package se.mau.myhappyplants.library;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import se.mau.myhappyplants.user.User;
+import se.mau.myhappyplants.user.AccountUser;
 import se.mau.myhappyplants.user.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.boot.CommandLineRunner;
-
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,9 +29,9 @@ public class LibraryService {
     /**
      * Lägg till en ny växt till användarens bibliotek
      */
-    public UserPlant addPlantToLibrary(Long userId, String plantName, String perenualId) {
+    public UserPlant addPlantToLibrary(int userId, String plantName, String perenualId) {
         // Hitta användaren
-        User user = userRepository.findById(userId)
+        AccountUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
         // Skapa en ny växt
