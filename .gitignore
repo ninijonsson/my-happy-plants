@@ -55,3 +55,4 @@ build/
 *~
 src/main/resources/application.yaml
 *.yaml
+src/main/resources/application.yaml
