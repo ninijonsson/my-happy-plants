@@ -10,33 +10,51 @@
 </head>
 <body>
     <div id="container">
-        <div class="welcome-panel">
-            <h1>Welcome back <span th:text="${user.username}">User</span>!</h1>
-            <p>You have <span th:text="${needsWatering}">0</span>
-                plants that need watering
-            </p>
+        <div id="header">
+            <div class="welcome-panel">
+                <h1 id="welcome">Welcome back, <span th:text="${user.username}">User</span>!</h1>
+                <p>You have <span th:text="${needsWatering}">0</span> plants that need watering</p>
+                <a href="/plants/add" class="add-btn">Add new plant to library</a>
+            </div>
 
-            <a href="/plants/add" class="add-btn">
-                Add new plant to library
-            </a>
+            <!-- Sorting buttons -->
+            <div class="flex gap-3 my-6">
+                <a th:href="@{/library(sort='asc')}"
+                   class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
+                   th:classappend="${currentSort == 'asc' || currentSort == null ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
+                    A-Z
+                </a>
+                <a th:href="@{/library(sort='desc')}"
+                   class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
+                   th:classappend="${currentSort == 'desc' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
+                    Z-A
+                </a>
+                <a th:href="@{/library(sort='water')}"
+                   class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
+                   th:classappend="${currentSort == 'water' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
+                    Water Status 💧
+                </a>
+            </div>
+
+            <div id="users-plants">
+                <h2 class="section-title">Your plants</h2>
+                <div class="plant-container"
+                     th:each="plant : ${plants}"
+                     th:data-plantid="${plant.id}"
+                     th:data-userid="${plant.user.id}"
+                     th:data-last-watered="${plant.lastWatered}"
+                     th:data-watering-days="${plant.getWateringFrequencyDays()}">
+
+                    <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
+
+                    <div class="plant-info">
+                        <h3 th:text="${plant.plantName}"></h3>
+                        <p class="latin-name" th:text="${plant.scientificName}"></p>
+                        <!-- Tags and any remaining content from origin/main go here -->
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="users-plants">
-            <h2 class="section-title">Your plants</h2>
-            <div class="plant-container"
-                 th:each="plant : ${plants}"
-                 th:data-plantid="${plant.id}"
-                 th:data-userid="${plant.user.id}"
-                 th:data-last-watered="${plant.lastWatered}"
-                 th:data-watering-days="${plant.getWateringFrequencyDays()}">
-
-                <!-- Image -->
-                <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
-
-                <!-- Info -->
-                <div class="plant-info">
-                    <h3 th:text="${plant.plantName}"></h3>
-                    <p class="latin-name" th:text="${plant.scientificName}"></p>
-                    <!-- Tags -->
                     <div class="tags-container">
                         <span class="tag" th:text="'#' + ${plant.tag.label}" th:if="${plant.tag != null}"></span>
                     </div>

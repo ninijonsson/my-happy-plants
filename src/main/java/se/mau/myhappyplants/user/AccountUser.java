@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.jspecify.annotations.Nullable;
-import se.mau.myhappyplants.library.UserPlant;
+import se.mau.myhappyplants.library.AccountUserPlant;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class AccountUser {
     // OneToMany: En användare kan ha många växter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<UserPlant> userPlants = new ArrayList<>();
+    private List<AccountUserPlant> accountUserPlants = new ArrayList<>();
     
     @Nonnull
     private String role;
@@ -75,23 +76,23 @@ public class AccountUser {
         this.role = role;
     }
 
-    public List<UserPlant> getUserPlants() {
-        return userPlants;
+    public List<AccountUserPlant> getUserPlants() {
+        return accountUserPlants;
     }
 
-    public void setUserPlants(List<UserPlant> userPlants) {
-        this.userPlants = userPlants;
+    public void setUserPlants(List<AccountUserPlant> accountUserPlants) {
+        this.accountUserPlants = accountUserPlants;
     }
 
     // Helper methods för att hantera relationer
-    public void addUserPlant(UserPlant userPlant) {
-        userPlants.add(userPlant);
-        userPlant.setUser(this);
+    public void addUserPlant(AccountUserPlant accountUserPlant) {
+        accountUserPlants.add(accountUserPlant);
+        accountUserPlant.setUser(this);
     }
 
-    public void removeUserPlant(UserPlant userPlant) {
-        userPlants.remove(userPlant);
-        userPlant.setUser(null);
+    public void removeUserPlant(AccountUserPlant accountUserPlant) {
+        accountUserPlants.remove(accountUserPlant);
+        accountUserPlant.setUser(null);
     }
 
     public @Nullable String getPassword() {

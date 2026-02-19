@@ -1,11 +1,6 @@
 package se.mau.myhappyplants.util;
 
 import org.junit.jupiter.api.*;
-import se.mau.myhappyplants.library.UserPlant;
-
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class WateringCalculatorTest {
 
@@ -21,7 +16,7 @@ class WateringCalculatorTest {
          * Vet inte riktigt hur ofta Monstera ska vattnas
          * ändra gärna själv när du ska utföra testet
          */
-//        UserPlant plant = new UserPlant("Monstera", 7);
+//        AccountUserPlant plant = new AccountUserPlant("Monstera", 7);
 //        plant.setLastWatered(LocalDate.now().minusDays(8));
 //
 //        assertTrue(plant.needsWater(), "The plant should need water if 8 days have passed with a 7-day interval");
@@ -32,7 +27,7 @@ class WateringCalculatorTest {
     @DisplayName("CAR.02F - Water Plant Test")
     void testWaterPlant() {
 
-       // UserPlant plant = new UserPlant("Monstera", 7);
+       // AccountUserPlant plant = new AccountUserPlant("Monstera", 7);
        // plant.water(1);
 
        // assertEquals(plant.getWaterStatus(),1);
