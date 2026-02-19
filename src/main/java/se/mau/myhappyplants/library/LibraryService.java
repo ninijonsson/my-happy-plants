@@ -1,6 +1,7 @@
 package se.mau.myhappyplants.library;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import se.mau.myhappyplants.user.AccountUser;
 import se.mau.myhappyplants.user.UserRepository;
@@ -9,14 +10,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Add plant to library, update watering of plant, filter by tag, remove etc.
+ * Add plant to the library, update watering of the plant, filter by tag remove etc.
  * Service for managing a user's plant library.
  * Handles adding/removing plants, watering updates, and tag assignments.
  */
 @Service
 public class LibraryService {
     @Autowired
-    private UserPlantRepository userPlantRepository;
+    private final AccountUserPlantRepository accountUserPlantRepository;
 
     @Autowired
     private TagRepository tagRepository;
@@ -24,30 +25,60 @@ public class LibraryService {
     @Autowired
     private UserRepository userRepository;
 
+    public LibraryService(AccountUserPlantRepository accountUserPlantRepository) {
+        this.accountUserPlantRepository = accountUserPlantRepository;
+    }
+
+    /**
+     * Method for sorting in Ascending and Descending order
+     * @param userId is the id of the relevant user
+     * @param sortDir is the sorting direction
+     * @return the way it is supposed to be sorted based on the user
+     */
+    public List<AccountUserPlant> getUserLibrary(int userId, String sortDir) {
+        Sort sort;
+        String plantName = "plantName";
+
+        if ("desc".equalsIgnoreCase(sortDir)) {
+            // Z - A sorting
+            sort = Sort.by(Sort.Direction.DESC, plantName);
+        } else if ("water".equalsIgnoreCase(sortDir)) {
+            //sort by water status
+            //sorting by asc should put the oldest dates at the top
+            sort = Sort.by(Sort.Direction.ASC, "nextWateringDate");
+        } else {
+            // A - Z sorting
+            //default sorting
+            sort = Sort.by(Sort.Direction.ASC, plantName);
+            }
+        return accountUserPlantRepository.findByUserId(userId, sort);
+    }
+
     /**
      * Lägg till en ny växt till användarens bibliotek
      */
-    public UserPlant addPlantToLibrary(int userId, String plantName, String perenualId) {
+    public AccountUserPlant addPlantToLibrary(int userId, String plantName, String perenualId) {
         // Hitta användaren
         AccountUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
         // Skapa en ny växt
-        UserPlant plant = new UserPlant(plantName, perenualId);
+        AccountUserPlant plant = new AccountUserPlant(plantName, perenualId);
 
         // Koppla växten till användaren
         user.addUserPlant(plant);
 
         // Spara växten i databasen
-        return userPlantRepository.save(plant);
+        return accountUserPlantRepository.save(plant);
     }
 
     /**
      * Lägg till eller ändra tagg på en växt
      */
-    public UserPlant setTagOnPlant(int plantId, String tagLabel) {
+    public AccountUserPlant setTagOnPlant(int plantId, String tagLabel) {
+
         // Hitta växten
-        UserPlant plant = userPlantRepository.findById(plantId)
+        AccountUserPlant plant = accountUserPlantRepository.findById(plantId)
                 .orElseThrow(() -> new RuntimeException("Plant not found with id: " + plantId));
 
         // Hitta eller skapa taggen
@@ -58,18 +89,18 @@ public class LibraryService {
         plant.setTag(tag);
 
         // Spara växten med den nya taggen
-        return userPlantRepository.save(plant);
+        return accountUserPlantRepository.save(plant);
     }
 
     /**
      * Ta bort tagg från en växt
      */
-    public UserPlant removeTagFromPlant(int plantId) {
-        UserPlant plant = userPlantRepository.findById(plantId)
+    public AccountUserPlant removeTagFromPlant(int plantId) {
+        AccountUserPlant plant = accountUserPlantRepository.findById(plantId)
                 .orElseThrow(() -> new RuntimeException("Plant not found with id: " + plantId));
 
         plant.setTag(null);
-        return userPlantRepository.save(plant);
+        return accountUserPlantRepository.save(plant);
     }
 
     /**
@@ -77,64 +108,64 @@ public class LibraryService {
      */
     public void removePlant(int plantId, int userId) {
         // Hitta och kolla att den tillhör userId
-        UserPlant plant = userPlantRepository.findByIdAndUserId(plantId, userId)
+        AccountUserPlant plant = accountUserPlantRepository.findByIdAndUserId(plantId, userId)
                 .orElseThrow(() -> new RuntimeException("Plant not found with id: " + plantId + " for user id: " + userId));
 
         // Ta bort växten
-        userPlantRepository.delete(plant);
+        accountUserPlantRepository.delete(plant);
     }
 
     /**
      * Hämta alla växter för en användare
      *
      */
-    public List<UserPlant> getAllPlantsForUser(int userId) {
-        return userPlantRepository.findByUserId(userId);
+    public List<AccountUserPlant> getAllPlantsForUser(int userId) {
+        return accountUserPlantRepository.findByUserId(userId);
     }
 
     /**
      * Filtrera växter baserat på tagg
      */
-    public List<UserPlant> getPlantsByTag(int userId, int tagId) {
-        return userPlantRepository.findByUserIdAndTagId(userId, tagId);
+    public List<AccountUserPlant> getPlantsByTag(int userId, int tagId) {
+        return accountUserPlantRepository.findByUserIdAndTagId(userId, tagId);
     }
 
     /**
      * Sök växter baserat på namn
      */
-    public List<UserPlant> searchPlantsByName(int userId, String searchTerm) {
-        return userPlantRepository.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);
+    public List<AccountUserPlant> searchPlantsByName(int userId, String searchTerm) {
+        return accountUserPlantRepository.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);
     }
 
     /**
      * Hämta växter sorterade alfabetiskt
      */
-    public List<UserPlant> getPlantsAlphabetically(int userId) {
-        return userPlantRepository.findByUserIdOrderByPlantNameAsc(userId);
+    public List<AccountUserPlant> getPlantsAlphabetically(int userId) {
+        return accountUserPlantRepository.findByUserIdOrderByPlantNameAsc(userId);
     }
 
-    public List<UserPlant> getPlantsReverseAlphabetically(int userId) {
-        return userPlantRepository.findByUserIdOrderByPlantNameDesc(userId);
+    public List<AccountUserPlant> getPlantsReverseAlphabetically(int userId) {
+        return accountUserPlantRepository.findByUserIdOrderByPlantNameDesc(userId);
     }
 
     public void waterPlant(int userId, int plantId) {
-        UserPlant plant = userPlantRepository
+        AccountUserPlant plant = accountUserPlantRepository
                 .findByIdAndUserId(plantId, userId)
                 .orElseThrow(() ->
                         new RuntimeException("Plant not found for this user"));
 
         plant.setLastWatered(LocalDateTime.now());
 
-        userPlantRepository.save(plant);
+        accountUserPlantRepository.save(plant);
     }
 
     public long countPlantsNeedingWater(int userId) {
-        List<UserPlant> plants = userPlantRepository.findByUserId(userId);
+        List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId);
 
         LocalDate today = LocalDate.now();
         long count = 0;
 
-        for (UserPlant plant : plants) {
+        for (AccountUserPlant plant : plants) {
 
             if (plant.getLastWatered() == null)
                 continue;

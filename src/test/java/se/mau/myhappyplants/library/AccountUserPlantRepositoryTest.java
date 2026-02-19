@@ -6,8 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 // Using mock to make sure we dont mess up the real database with out test
 @ExtendWith(MockitoExtension.class)
 class AccountUserPlantRepositoryTest {
@@ -17,7 +15,7 @@ class AccountUserPlantRepositoryTest {
     }
 
     @Mock
-    private UserPlantRepository userPlantRepository; // Mock database interaction
+    private AccountUserPlantRepository accountUserPlantRepository; // Mock database interaction
 
     @InjectMocks
     private LibraryService libraryService; // Klassen som vi vill testa

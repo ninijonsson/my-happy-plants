@@ -3,21 +3,22 @@ package se.mau.myhappyplants.library;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import se.mau.myhappyplants.user.AccountUser;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
+
 /**
- * Entity connecting User + UserPlant + tag(?)
+ * Entity connecting User + AccountUserPlant + tag(?)
  * JPA entity representing a plant owned by a user ("My Plants").
  *
  */
 @Entity
 @Table(name = "user_plants")
-public class UserPlant {
+public class AccountUserPlant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(name = "perenual_id")
     private String perenualId;
@@ -39,30 +40,34 @@ public class UserPlant {
     @JoinColumn(name = "tag_id")
     private Tag tag;
 
+    @Column (name="next_watering_date")
+    private LocalDate nextWateringDate;
+
+    @Column (name = "watering_frequency_date")
+    private Integer wateringFrequencyDate;
+
     @Column(name = "image_url")
     private String imageUrl;
 
     @Column(name = "scientific_name")
     private String scientificName;
-
-    @Column(name = "watering_frequency_days")
-    private Integer wateringFrequencyDays;
-
+    
+    
     // Constructors
-    public UserPlant() {
+    public AccountUserPlant() {
     }
 
-    public UserPlant(String plantName, String perenualId) {
+    public AccountUserPlant(String plantName, String perenualId) {
         this.plantName = plantName;
         this.perenualId = perenualId;
     }
 
     // Getters and Setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -123,21 +128,21 @@ public class UserPlant {
     }
 
     public Integer getWateringFrequencyDays() {
-        return wateringFrequencyDays;
+        return wateringFrequencyDate;
     }
 
     public void setWateringFrequencyDays(Integer wateringFrequencyDays) {
-        this.wateringFrequencyDays = wateringFrequencyDays;
+        this.wateringFrequencyDate = wateringFrequencyDays;
     }
 
     public double getWateringProgressPercentage() {
-        if (lastWatered == null || wateringFrequencyDays <= 0) {
+        if (lastWatered == null || wateringFrequencyDate <= 0) {
             return 0;
         }
         long daysSinceWatered = java.time.Duration.between(lastWatered, java.time.LocalDateTime.now())
                 .toDays();
 
-        double percent = (double) daysSinceWatered / wateringFrequencyDays * 100;
+        double percent = (double) daysSinceWatered / wateringFrequencyDate * 100;
         return Math.min(percent, 100);
     }
 
@@ -148,11 +153,11 @@ public class UserPlant {
     }
 
     public double getDaysUntilNextWatering(){
-        if (lastWatered == null || wateringFrequencyDays <= 0)
+        if (lastWatered == null || wateringFrequencyDate <= 0)
             return 0;
 
         long daysSinceWatered = getDaysSinceLastWatered();
-        double percent = (double) daysSinceWatered / wateringFrequencyDays * 100;
+        double percent = (double) daysSinceWatered / wateringFrequencyDate * 100;
         return Math.min(percent, 100);
     }
 }

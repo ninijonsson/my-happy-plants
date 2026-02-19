@@ -1,34 +1,47 @@
 package se.mau.myhappyplants.library;
 
-import org.springframework.http.ResponseEntity;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import se.mau.myhappyplants.user.AccountUser;
-import se.mau.myhappyplants.user.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 
 @Controller
 @RequestMapping("/library")
 public class LibraryController {
+    
+    private final LibraryService libraryService;
 
-    private LibraryService libraryService;
-    private UserService userService;
-
-    public LibraryController(LibraryService libraryService, UserService userService) {
+    public LibraryController(LibraryService libraryService) {
         this.libraryService = libraryService;
-        this.userService = userService;
     }
 
+
     @GetMapping
-    public String showLibrary(Model model, @RequestParam int userId) {
-        var plants = libraryService.getAllPlantsForUser(userId);
-        AccountUser user = userService.getUserById(userId);
-        long needsWatering = libraryService.countPlantsNeedingWater(userId);
+    public String showLibrary(
+            @RequestParam(required = false, defaultValue = "asc") String sort,
+            Model model,
+            HttpSession session
+    ) {
+        AccountUser user = (AccountUser) session.getAttribute("user");
+
+        if (user.getRole() == null) {
+            return "redirect:/login";
+        }
+
+        var plants = libraryService.getAllPlantsForUser(user.getId());
+        long needsWatering = libraryService.countPlantsNeedingWater(user.getId());
 
         model.addAttribute("plants", plants);
         model.addAttribute("user", user);
         model.addAttribute("needsWatering", needsWatering);
-        return "library/my-plants"; //Thymeleaf template
+        model.addAttribute("currentSort", sort);
+        return "/library/my-plants";
     }
 
     @DeleteMapping("/{userId}/plants/{plantId}")
@@ -43,5 +56,4 @@ public class LibraryController {
         libraryService.waterPlant(userId, plantId);
         return ResponseEntity.ok().build();
     }
-
 }
