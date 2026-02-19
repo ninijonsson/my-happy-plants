@@ -63,7 +63,7 @@ public class AccountUserPlant {
     }
 
     // Getters and Setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
