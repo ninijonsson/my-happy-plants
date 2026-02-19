@@ -4,6 +4,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,31 +15,32 @@ import java.util.Optional;
  * Provides queries to list and manage a user's plant collection.
  */
 @Repository
-public interface AccountUserPlantRepository extends JpaRepository<AccountUserPlant, Long> {
+public interface AccountUserPlantRepository extends JpaRepository<AccountUserPlant, Integer> {
     /**
      * Hitta alla växter som tillhör en specifik användare
      */
-    List<AccountUserPlant> findByUserId(Long userId);
+    List<AccountUserPlant> findByUserId(int userId);
+
 
     /**
      * Hitta en specifik växt för en användare
      */
-    Optional<AccountUserPlant> findByIdAndUserId(Long id, Long userId);
-
+    Optional<AccountUserPlant> findByIdAndUserId(int id, int userId);
+    
     /**
      * Hitta växter baserat på namn (för en specifik användare)
      */
-    List<AccountUserPlant> findByUserIdAndPlantNameContainingIgnoreCase(Long userId, String plantName);
+    List<AccountUserPlant> findByUserIdAndPlantNameContainingIgnoreCase(int userId, String plantName);
 
-    /**
+    /**prenula api
      * Hitta växter med en specifik tagg
      */
-    List<AccountUserPlant> findByUserIdAndTagId(Long userId, Long tagId);
+    List<AccountUserPlant> findByUserIdAndTagId(int userId, int tagId);
 
     /**
      * Räkna antal växter för en användare
      */
-    long countByUserId(Long userId);
+    long countByUserId(int userId);
 
     /**
      * Hitta växter baserat på Perenual API ID
@@ -48,7 +50,7 @@ public interface AccountUserPlantRepository extends JpaRepository<AccountUserPla
     /**
      * Hämta växter sorterade alfabetiskt (A-Z)
      */
-    //List<AccountUserPlant> findByUserIdOrderByPlantNameAsc(Long userId);
+    List<AccountUserPlant> findByUserIdOrderByPlantNameAsc(int userId);
 
     /**
      * Hämta växter sorterade omvänt alfabetiskt (Z-A)
@@ -57,4 +59,6 @@ public interface AccountUserPlantRepository extends JpaRepository<AccountUserPla
 
     //TODO: se om de två metoderna ovan fortfarande behövs, denna är mer generisk
     List<AccountUserPlant> findByUserId(int userId, Sort sort);
+
+    List<AccountUserPlant> findByUserIdOrderByPlantNameDesc(int userId);
 }

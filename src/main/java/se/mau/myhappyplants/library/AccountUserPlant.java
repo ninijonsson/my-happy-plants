@@ -3,8 +3,9 @@ package se.mau.myhappyplants.library;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import se.mau.myhappyplants.user.AccountUser;
-
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 
 
 /**
@@ -17,10 +18,13 @@ import java.time.LocalDate;
 public class AccountUserPlant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(name = "perenual_id")
     private String perenualId;
+
+    @Column(name = "last_watered")
+    private LocalDateTime lastWatered;
 
     @NotBlank(message = "Växtnamn får inte vara tomt")
     @Column(name = "plant_name", nullable = false)
@@ -36,15 +40,19 @@ public class AccountUserPlant {
     @JoinColumn(name = "tag_id")
     private Tag tag;
 
-    @Column (name ="last_watered")
-    private LocalDate lastWatered;
-
     @Column (name="next_watering_date")
     private LocalDate nextWateringDate;
 
     @Column (name = "watering_frequency_date")
     private Integer wateringFrequencyDate;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "scientific_name")
+    private String scientificName;
+    
+    
     // Constructors
     public AccountUserPlant() {
     }
@@ -59,7 +67,7 @@ public class AccountUserPlant {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -93,5 +101,63 @@ public class AccountUserPlant {
 
     public void setTag(Tag tag) {
         this.tag = tag;
+    }
+
+    public void setLastWatered(LocalDateTime lastWatered) {
+        this.lastWatered = lastWatered;
+    }
+
+    public LocalDateTime getLastWatered() {
+        return lastWatered;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getScientificName() {
+        return scientificName;
+    }
+
+    public void setScientificName(String scientificName) {
+        this.scientificName = scientificName;
+    }
+
+    public Integer getWateringFrequencyDays() {
+        return wateringFrequencyDate;
+    }
+
+    public void setWateringFrequencyDays(Integer wateringFrequencyDays) {
+        this.wateringFrequencyDate = wateringFrequencyDays;
+    }
+
+    public double getWateringProgressPercentage() {
+        if (lastWatered == null || wateringFrequencyDate <= 0) {
+            return 0;
+        }
+        long daysSinceWatered = java.time.Duration.between(lastWatered, java.time.LocalDateTime.now())
+                .toDays();
+
+        double percent = (double) daysSinceWatered / wateringFrequencyDate * 100;
+        return Math.min(percent, 100);
+    }
+
+    public long getDaysSinceLastWatered() {
+        if (lastWatered == null)
+            return 0;
+        return java.time.Duration.between(lastWatered, java.time.LocalDateTime.now()).toDays();
+    }
+
+    public double getDaysUntilNextWatering(){
+        if (lastWatered == null || wateringFrequencyDate <= 0)
+            return 0;
+
+        long daysSinceWatered = getDaysSinceLastWatered();
+        double percent = (double) daysSinceWatered / wateringFrequencyDate * 100;
+        return Math.min(percent, 100);
     }
 }
