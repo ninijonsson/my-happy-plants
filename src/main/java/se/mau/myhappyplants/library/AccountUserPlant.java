@@ -26,6 +26,19 @@ public class AccountUserPlant {
     @Column(name = "last_watered")
     private LocalDateTime lastWatered;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    //automatically set the date when the plant is first saved
+    @PrePersist
+    private void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
     @NotBlank(message = "Växtnamn får inte vara tomt")
     @Column(name = "plant_name", nullable = false)
     private String plantName;

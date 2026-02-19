@@ -39,18 +39,30 @@ public class LibraryService {
         Sort sort;
         String plantName = "plantName";
 
-        if ("desc".equalsIgnoreCase(sortDir)) {
-            // Z - A sorting
-            sort = Sort.by(Sort.Direction.DESC, plantName);
-        } else if ("water".equalsIgnoreCase(sortDir)) {
-            //sort by water status
-            //sorting by asc should put the oldest dates at the top
-            sort = Sort.by(Sort.Direction.ASC, "nextWateringDate");
-        } else {
-            // A - Z sorting
-            //default sorting
-            sort = Sort.by(Sort.Direction.ASC, plantName);
-            }
+        //This is a safety fallback in case sortDir is ever null
+        String criteria = (sortDir == null) ? "water" : sortDir;
+
+        switch(criteria) {
+            case "asc":
+                //A-Z
+                sort = Sort.by(Sort.Direction.ASC, plantName);
+                break;
+            case "desc":
+                //Z-A
+                sort = Sort.by(Sort.Direction.DESC, plantName);
+                break;
+            case "recent":
+                //most recently added
+                sort = Sort.by(Sort.Direction.DESC, "createdAt");
+                break;
+            case "water":
+                //simply a safety measure in case something doesnt work
+            default:
+                //Closest to needing water
+                //default mode
+                sort = Sort.by(Sort.Direction.ASC, "nextWateringDate");
+                break;
+        }
         return accountUserPlantRepository.findByUserId(userId, sort);
     }
 

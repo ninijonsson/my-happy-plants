@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 plantToDelete.remove();
+                window.location.reload(); //update the window to show the sorted list
             } else {
                 alert("Failed to delete plant.");
             }
