@@ -45,7 +45,7 @@ public class LibraryService {
     /**
      * Lägg till eller ändra tagg på en växt
      */
-    public UserPlant setTagOnPlant(Long plantId, String tagLabel) {
+    public UserPlant setTagOnPlant(int plantId, String tagLabel) {
         // Hitta växten
         UserPlant plant = userPlantRepository.findById(plantId)
                 .orElseThrow(() -> new RuntimeException("Plant not found with id: " + plantId));
@@ -64,7 +64,7 @@ public class LibraryService {
     /**
      * Ta bort tagg från en växt
      */
-    public UserPlant removeTagFromPlant(Long plantId) {
+    public UserPlant removeTagFromPlant(int plantId) {
         UserPlant plant = userPlantRepository.findById(plantId)
                 .orElseThrow(() -> new RuntimeException("Plant not found with id: " + plantId));
 
@@ -75,7 +75,7 @@ public class LibraryService {
     /**
      * Ta bort en växt från biblioteket
      */
-    public void removePlant(Long plantId, Long userId) {
+    public void removePlant(int plantId, int userId) {
         // Hitta och kolla att den tillhör userId
         UserPlant plant = userPlantRepository.findByIdAndUserId(plantId, userId)
                 .orElseThrow(() -> new RuntimeException("Plant not found with id: " + plantId + " for user id: " + userId));
@@ -88,36 +88,36 @@ public class LibraryService {
      * Hämta alla växter för en användare
      *
      */
-    public List<UserPlant> getAllPlantsForUser(Long userId) {
+    public List<UserPlant> getAllPlantsForUser(int userId) {
         return userPlantRepository.findByUserId(userId);
     }
 
     /**
      * Filtrera växter baserat på tagg
      */
-    public List<UserPlant> getPlantsByTag(Long userId, Long tagId) {
+    public List<UserPlant> getPlantsByTag(int userId, int tagId) {
         return userPlantRepository.findByUserIdAndTagId(userId, tagId);
     }
 
     /**
      * Sök växter baserat på namn
      */
-    public List<UserPlant> searchPlantsByName(Long userId, String searchTerm) {
+    public List<UserPlant> searchPlantsByName(int userId, String searchTerm) {
         return userPlantRepository.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);
     }
 
     /**
      * Hämta växter sorterade alfabetiskt
      */
-    public List<UserPlant> getPlantsAlphabetically(Long userId) {
+    public List<UserPlant> getPlantsAlphabetically(int userId) {
         return userPlantRepository.findByUserIdOrderByPlantNameAsc(userId);
     }
 
-    public List<UserPlant> getPlantsReverseAlphabetically(Long userId) {
+    public List<UserPlant> getPlantsReverseAlphabetically(int userId) {
         return userPlantRepository.findByUserIdOrderByPlantNameDesc(userId);
     }
 
-    public void waterPlant(Long userId, Long plantId) {
+    public void waterPlant(int userId, int plantId) {
         UserPlant plant = userPlantRepository
                 .findByIdAndUserId(plantId, userId)
                 .orElseThrow(() ->
@@ -128,7 +128,7 @@ public class LibraryService {
         userPlantRepository.save(plant);
     }
 
-    public long countPlantsNeedingWater(Long userId) {
+    public long countPlantsNeedingWater(int userId) {
         List<UserPlant> plants = userPlantRepository.findByUserId(userId);
 
         LocalDate today = LocalDate.now();
