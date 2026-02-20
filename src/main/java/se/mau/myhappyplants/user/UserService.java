@@ -24,6 +24,9 @@ public class UserService implements UserDetailsService {
      */
     public boolean createUser(String username, String password, String role) {
         // Kolla om username redan finns
+        if(username.isBlank()) {
+            return false;
+        }
         if (userRepository.findByUsername(username).isPresent()) {
             return false;
         }
