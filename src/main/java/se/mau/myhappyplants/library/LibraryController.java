@@ -55,6 +55,7 @@ public class LibraryController {
     }
 
     @PutMapping("/{userId}/plants/{plantId}/water")
+    @ResponseBody
     public ResponseEntity<Void> waterPlant(@PathVariable int userId, @PathVariable int plantId) {
         libraryService.waterPlant(userId, plantId);
         return ResponseEntity.ok().build();

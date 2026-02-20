@@ -56,8 +56,8 @@ public class AccountUserPlant {
     @Column (name="next_watering_date")
     private LocalDate nextWateringDate;
 
-    @Column (name = "watering_frequency_date")
-    private Integer wateringFrequencyDate;
+    @Column (name = "watering_frequency_days")
+    private Integer wateringFrequencyDays;
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -141,21 +141,21 @@ public class AccountUserPlant {
     }
 
     public Integer getWateringFrequencyDays() {
-        return wateringFrequencyDate;
+        return wateringFrequencyDays;
     }
 
     public void setWateringFrequencyDays(Integer wateringFrequencyDays) {
-        this.wateringFrequencyDate = wateringFrequencyDays;
+        this.wateringFrequencyDays = wateringFrequencyDays;
     }
 
     public double getWateringProgressPercentage() {
-        if (lastWatered == null || wateringFrequencyDate <= 0) {
+        if (lastWatered == null || wateringFrequencyDays <= 0) {
             return 0;
         }
         long daysSinceWatered = java.time.Duration.between(lastWatered, java.time.LocalDateTime.now())
                 .toDays();
 
-        double percent = (double) daysSinceWatered / wateringFrequencyDate * 100;
+        double percent = (double) daysSinceWatered / wateringFrequencyDays * 100;
         return Math.min(percent, 100);
     }
 
@@ -166,11 +166,11 @@ public class AccountUserPlant {
     }
 
     public double getDaysUntilNextWatering(){
-        if (lastWatered == null || wateringFrequencyDate <= 0)
+        if (lastWatered == null || wateringFrequencyDays <= 0)
             return 0;
 
         long daysSinceWatered = getDaysSinceLastWatered();
-        double percent = (double) daysSinceWatered / wateringFrequencyDate * 100;
+        double percent = (double) daysSinceWatered / wateringFrequencyDays * 100;
         return Math.min(percent, 100);
     }
 }
