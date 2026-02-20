@@ -93,8 +93,7 @@
                             <h3 th:text="${plant.plantName}"></h3>
                             <!-- Tags -->
                             <div class="tags-container ml-3 mb-2">
-                                <button id="open-tag-selection" type="button" class="tag" th:text="'Add Tag'" th:if="${plant.tag == null}"></button>
-                                <button id="open-selected-tag" type="button" class="tag" th:text="'#' + ${plant.tag.label}" th:if="${plant.tag != null}"></button>
+                                <button id="open-tag-selection" type="button" class="tag" th:text="${plant.tag != null ? '#' + plant.tag.label : 'Add Tag'}"></button>
                             </div>
                         </div>
                         

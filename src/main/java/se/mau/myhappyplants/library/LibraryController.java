@@ -1,6 +1,7 @@
 package se.mau.myhappyplants.library;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,18 +11,20 @@ import se.mau.myhappyplants.user.AccountUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 
 @Controller
 @RequestMapping("/library")
 public class LibraryController {
     
-    private final LibraryService libraryService;
-
-    public LibraryController(LibraryService libraryService) {
-        this.libraryService = libraryService;
-    }
-
-
+    @Autowired
+    private LibraryService libraryService;
+    
+    @Autowired
+    private TagService tagService;
+    
     @GetMapping
     public String showLibrary(
             @RequestParam(required = false, defaultValue = "water")
@@ -58,5 +61,11 @@ public class LibraryController {
     public ResponseEntity<Void> waterPlant(@PathVariable int userId, @PathVariable int plantId) {
         libraryService.waterPlant(userId, plantId);
         return ResponseEntity.ok().build();
+    }
+    
+    @GetMapping("/tags")
+    public ResponseEntity<?> getTags() {
+        ArrayList<Tag> tags = (ArrayList<Tag>) tagService.getAllTags();
+        return ResponseEntity.ok(Map.of("tags", tags));
     }
 }

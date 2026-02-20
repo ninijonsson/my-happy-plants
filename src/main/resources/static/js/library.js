@@ -148,3 +148,18 @@ function updatePlantBar(plant) {
     const daysText = plant.querySelector('.days-since-watered');
     daysText.textContent = `Days since last watered: ${daysSinceWatered} days`;
 }
+
+async function getTags(){
+    
+    const response = await fetch(
+        `/library/tags`,
+        {
+            method: 'GET'
+        }
+    )
+    if(response.ok) {
+        return response.json().then(tags => {
+            
+        })
+    }
+}
