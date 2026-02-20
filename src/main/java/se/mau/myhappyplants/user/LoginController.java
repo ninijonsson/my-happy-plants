@@ -1,9 +1,7 @@
 package se.mau.myhappyplants.user;
 
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -24,7 +22,7 @@ public class LoginController {
     private PasswordValidatorConfig passwordValidatorConfig;
     
     @Autowired
-    private UserService userService;
+    private AccountUserService accountUserService;
    
     
     @GetMapping("/login")
@@ -41,7 +39,7 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", passwordValidation));
         }
         
-        boolean isCreated = userService.createUser(username, passwordEncoder.encode(password), "USER");
+        boolean isCreated = accountUserService.createUser(username, passwordEncoder.encode(password), "USER");
         if(isCreated) {
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "User created successfully"));
         }else {
