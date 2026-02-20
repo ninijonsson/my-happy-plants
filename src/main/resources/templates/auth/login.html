@@ -260,7 +260,9 @@
            body: new URLSearchParams({ username, password }),
            redirect: 'follow'
        });
-       
+        
+        loading.classList.add('hidden');
+        
        if(response.url.includes('/login?error')) {
            loginErrorMsg.querySelector('span').innerHTML = 'Username or password is incorrect.';
            loginErrorMsg.classList.remove('hidden');
