@@ -24,10 +24,13 @@ class AccountUserServiceTest {
     @InjectMocks
     private UserService userService;  // Class for handling registration logic
     private PasswordValidatorConfig passwordValidator;
+    private LoginSuccessHandler loginSuccessHandler; // Class for redirecting successful login
 
     @BeforeEach
     void setUp() {
+        userService = new UserService();
         passwordValidator = new PasswordValidatorConfig();
+        loginSuccessHandler = new LoginSuccessHandler(userService);
     }
 
     @Test
@@ -111,7 +114,17 @@ class AccountUserServiceTest {
         assertEquals(expected, result);
     }
 
+    @Disabled
+    @Test
+    @DisplayName("ACC.0.3.1F - Login after creation")
+    void testValidLoginAfterCreation() {
 
+    }
+
+    @Disabled
+    @Test
+    @DisplayName("ACC.0.3.1F - Login after creation")
+    void testInvalidLoginAfterCreation() {}
 
     @AfterEach
     void tearDown() {
