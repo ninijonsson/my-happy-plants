@@ -10,6 +10,8 @@ import se.mau.myhappyplants.user.AccountUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Controller
 @RequestMapping("/library")
@@ -24,8 +26,8 @@ public class LibraryController {
 
     @GetMapping
     public String showLibrary(
-            @RequestParam(required = false, defaultValue = "water")
-            String sort,
+            @RequestParam(required = false, defaultValue = "water") String sort,
+            @RequestParam(required = false) String search,
             Model model,
             HttpSession session
     ) {
@@ -35,8 +37,13 @@ public class LibraryController {
             return "redirect:/login";
         }
 
-        var plants = libraryService.getUserLibrary(user.getId(), sort);
-
+        List<AccountUserPlant> plants;
+        if (search != null && search.length() >= 3) {
+            plants = libraryService.searchPlantsByName(user.getId(), search);
+        } else {
+            plants = libraryService.getUserLibrary(user.getId(), sort);
+        }
+        
         //Todo might need to update this call later for the sorting of water levels
         long needsWatering = libraryService.countPlantsNeedingWater(user.getId());
 

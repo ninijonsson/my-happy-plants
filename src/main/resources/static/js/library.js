@@ -1,6 +1,48 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     const plants = document.querySelectorAll('.plant-container');
+    const searchLibrary = document.getElementById('library-search');
+    const plantList = document.getElementById('users-plants');
+
+    //Listen for typing into the search bar
+    searchLibrary.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+
+        //Only filter once the user types 3 or more characters
+        if (term.length >= 3) {
+            const matches = [];
+            const nonMatches = [];
+
+            plants.forEach(plant => {
+                //Get the common name of the plant for comparison
+                const name = plant.querySelector('h3').textContent.toLowerCase();
+
+                if (name.includes(term)) {
+                    //We show matches with full opacity and the original size
+                    plant.style.opacity = "1";
+                    plant.style.transform = "scale(1)";
+                    matches.push(plant);
+                } else {
+                    //Dim out the non matches and slightly shrink them
+                    plant.style.opacity ="0.3";
+                    plant.style.transform ="scale(0.95)";
+                    nonMatches.push(plant);
+                }
+            });
+
+            //Move the most relevant searches to the top while keeping the others visible below
+            const newOrder = [...matches, ...nonMatches];
+            newOrder.forEach(node => plantList.appendChild(node));
+        } else {
+            //Reset the view if search is cleared or < 3 characters, restore all plants to 100% visible
+            plants.forEach(plant => {
+                plant.style.opacity = "1";
+                plant.style.transform ="scale(1)";
+            });
+            //Restore the original sort order
+            plants.forEach(node => plantList.appendChild(node));
+        }
+    });
 
     plants.forEach(plant => {
         updatePlantBar(plant);
