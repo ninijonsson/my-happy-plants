@@ -19,6 +19,12 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     Optional<Tag> findByLabel(String label);
 
     /**
+     * One tag to rule them all, One tag to find them, One tag to bring them all and in the darkness bind them.
+     * @return a list of the tags, three tags for the Elven-kings under the sky, Seven for the Dwarf-lords in their halls of stone, Nine for the Mortal Men doomed to die, One for the Dark Lord on his dark throne.
+     */
+    List<Tag> findAll();
+
+    /**
      * Hitta taggar som innehåller en viss text (case-insensitive)
      * Användbart för sökfunktion
      */

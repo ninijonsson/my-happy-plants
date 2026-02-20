@@ -32,7 +32,7 @@ public interface AccountUserPlantRepository extends JpaRepository<AccountUserPla
      */
     List<AccountUserPlant> findByUserIdAndPlantNameContainingIgnoreCase(int userId, String plantName);
 
-    /**prenula api
+    /**Prenula api
      * Hitta växter med en specifik tagg
      */
     List<AccountUserPlant> findByUserIdAndTagId(int userId, int tagId);

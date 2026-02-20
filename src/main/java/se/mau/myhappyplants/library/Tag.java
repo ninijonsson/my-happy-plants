@@ -16,7 +16,7 @@ import java.util.*;
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @NotBlank(message = "Tag-namn får inte vara tomt")
     @Size(min = 1, max = 50)
@@ -37,11 +37,11 @@ public class Tag {
     }
 
     // Getters and Setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -49,8 +49,10 @@ public class Tag {
         return label;
     }
 
-    public void setLabel(String label) {
+    public boolean setLabel(String label) {
+        if(label.isBlank()) return false;
         this.label = label;
+        return true;
     }
 
     public List<AccountUserPlant> getUserPlants() {

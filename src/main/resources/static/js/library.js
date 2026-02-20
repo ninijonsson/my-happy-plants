@@ -6,12 +6,19 @@ document.addEventListener("DOMContentLoaded", () => {
         updatePlantBar(plant);
     });
 
-    /// Modal elements
+    /// Delete Modal elements
     const modal = document.getElementById('delete-modal');
     const cancelBtn = document.getElementById('cancel-btn');
     const confirmBtn = document.getElementById('confirm-btn');
 
     let plantToDelete = null; // Referens till plant-container som ska tas bort
+
+    /// Tag Modal elements
+    const tagModal = document.getElementById('tag-selection-modal');
+    const tagCancelBtn = document.getElementById('tag-cancel-btn');
+    const tagConfirmBtn = document.getElementById('tag-confirm-btn');
+
+    let currentPlantForTag = null; // Reference to plant-container for tagging
 
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', (e) => {
@@ -59,6 +66,25 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.style.display = 'none';
             plantToDelete = null;
         }
+        if (e.target === tagModal) {
+            tagModal.classList.add('hidden');
+            currentPlantForTag = null;
+        }
+    });
+
+    // Tag Modal: Open when clicking "Add Tag" button
+    document.querySelectorAll('#open-tag-selection').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            currentPlantForTag = e.target.closest('.plant-container');
+            tagModal.classList.remove('hidden');
+        });
+    });
+
+    // Tag Modal: Cancel button
+    tagCancelBtn.addEventListener('click', () => {
+        tagModal.classList.add('hidden');
+        currentPlantForTag = null;
     });
 
     // Water
