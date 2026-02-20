@@ -25,7 +25,7 @@
                 <img th:src="${plant.imageUrl}" th:alt="${plant.name}" class="plant-image">
 
                 <div class="plant-info">
-                    <div class="plant-name" th:text="${plant.name}">Växtnamn</div>
+                    <div class="plant-name" th:text="${plant.name}">Plant name</div>
                     <div class="scientific-name" th:text="${plant.scientificName}">Scientific namn</div>
 
                     <form th:action="@{/library/add}" method="post">
