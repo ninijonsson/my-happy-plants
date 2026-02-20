@@ -27,7 +27,7 @@ public class AccountUserService implements UserDetailsService {
         if(username.isBlank()) {
             return false;
         }
-        if (userRepository.findByUsername(username).isPresent()) {
+        if (accountUserRepository.findByUsername(username).isPresent()) {
             return false;
         }
         
