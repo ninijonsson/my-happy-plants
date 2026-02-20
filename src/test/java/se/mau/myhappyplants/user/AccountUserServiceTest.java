@@ -15,14 +15,11 @@ class AccountUserServiceTest {
 
     private AccountUserService accountUserService;  // Class for handling registration logic
     private PasswordValidatorConfig passwordValidator;
-    private LoginSuccessHandler loginSuccessHandler;
 
     @BeforeEach
     void setUp() {
         passwordValidator = new PasswordValidatorConfig();
         accountUserService = new AccountUserService();
-        loginSuccessHandler = new LoginSuccessHandler(accountUserService);
-
     }
 
     @Test
