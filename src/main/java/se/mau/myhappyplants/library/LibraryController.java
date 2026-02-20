@@ -24,7 +24,8 @@ public class LibraryController {
 
     @GetMapping
     public String showLibrary(
-            @RequestParam(required = false, defaultValue = "asc") String sort,
+            @RequestParam(required = false, defaultValue = "water")
+            String sort,
             Model model,
             HttpSession session
     ) {
@@ -34,7 +35,9 @@ public class LibraryController {
             return "redirect:/login";
         }
 
-        var plants = libraryService.getAllPlantsForUser(user.getId());
+        var plants = libraryService.getUserLibrary(user.getId(), sort);
+
+        //Todo might need to update this call later for the sorting of water levels
         long needsWatering = libraryService.countPlantsNeedingWater(user.getId());
 
         model.addAttribute("plants", plants);

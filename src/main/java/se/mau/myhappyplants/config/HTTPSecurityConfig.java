@@ -11,13 +11,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import se.mau.myhappyplants.user.LoginSuccessHandler;
-import se.mau.myhappyplants.user.UserService;
+import se.mau.myhappyplants.user.AccountUserService;
 
 @Configuration
 public class HTTPSecurityConfig {
 
     @Autowired
-    UserService userService;
+    AccountUserService accountUserService;
     
     @Autowired
     LoginSuccessHandler loginSuccessHandler;
@@ -47,7 +47,7 @@ public class HTTPSecurityConfig {
     
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userService);
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(accountUserService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }

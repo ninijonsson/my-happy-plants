@@ -45,9 +45,14 @@
         
         <!-- Sorting buttons -->
         <div class="flex gap-3 my-6">
+            <a th:href="@{/library(sort='water')}"
+               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
+               th:classappend="${currentSort == 'water' || currentSort == null ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
+                Water Status 💧
+            </a>
             <a th:href="@{/library(sort='asc')}"
                class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
-               th:classappend="${currentSort == 'asc' || currentSort == null ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
+               th:classappend="${currentSort == 'asc' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
                 A-Z
             </a>
             <a th:href="@{/library(sort='desc')}"
@@ -55,10 +60,10 @@
                th:classappend="${currentSort == 'desc' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
                 Z-A
             </a>
-            <a th:href="@{/library(sort='water')}"
+            <a th:href="@{/library(sort='recent')}"
                class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
-               th:classappend="${currentSort == 'water' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
-                Water Status 💧
+               th:classappend="${currentSort == 'recent' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
+                Recently added
             </a>
         </div>
 
