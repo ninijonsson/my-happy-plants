@@ -10,42 +10,28 @@
     </head>
 
     <body>
-
     <div class="container">
         <header>
-            <h1>Hitta din nästa växt</h1>
-            <p>Sök bland hundratals arter och lägg till dem i ditt personliga bibliotek.</p>
+            <h1 th:text="${pageTitle}">Search plants</h1>
+            <p>Find inspiration for your library</p>
         </header>
 
         <div class="search-container">
-            <input type="text" id="plantSearch" placeholder="Sök på namn eller vetenskapligt namn..." onkeyup="filterPlants()">
+            <input type="text" id="plantSearch" placeholder="Search plants..." onkeyup="filterPlants()">
         </div>
 
         <main class="plant-grid" id="plantGrid">
-            <article class="plant-card">
-                <img src="https://images.unsplash.com/photo-1545241047-6083a3684587?auto=format&fit=crop&q=80&w=400" alt="Monstera" class="plant-image">
-                <div class="plant-info">
-                    <div class="plant-name">Monstera</div>
-                    <div class="scientific-name">Monstera deliciosa</div>
-                    <button class="add-btn">+ Lägg till i bibliotek</button>
-                </div>
-            </article>
+            <article class="plant-card" th:each="plant : ${plants}">
+                <img th:src="${plant.imageUrl}" th:alt="${plant.name}" class="plant-image">
 
-            <article class="plant-card">
-                <img src="https://images.unsplash.com/photo-1512428813824-f7139c823350?auto=format&fit=crop&q=80&w=400" alt="Fredskalla" class="plant-image">
                 <div class="plant-info">
-                    <div class="plant-name">Fredskalla</div>
-                    <div class="scientific-name">Spathiphyllum</div>
-                    <button class="add-btn">+ Lägg till i bibliotek</button>
-                </div>
-            </article>
+                    <div class="plant-name" th:text="${plant.name}">Växtnamn</div>
+                    <div class="scientific-name" th:text="${plant.scientificName}">Scientific namn</div>
 
-            <article class="plant-card">
-                <img src="https://images.unsplash.com/photo-1520412099551-62b6bafeb5bb?auto=format&fit=crop&q=80&w=400" alt="Gullranka" class="plant-image">
-                <div class="plant-info">
-                    <div class="plant-name">Gullranka</div>
-                    <div class="scientific-name">Epipremnum aureum</div>
-                    <button class="add-btn">+ Lägg till i bibliotek</button>
+                    <form th:action="@{/library/add}" method="post">
+                        <input type="hidden" name="plantId" th:value="${plant.id}" />
+                        <button type="submit" class="add-btn">+ Add to your library</button>
+                    </form>
                 </div>
             </article>
         </main>
