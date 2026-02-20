@@ -13,10 +13,10 @@ import java.util.Optional;
  */
 @Service
 
-public class UserService implements UserDetailsService {
+public class AccountUserService implements UserDetailsService {
       
     @Autowired
-    private UserRepository userRepository;
+    private AccountUserRepository accountUserRepository;
         
 
     /**
@@ -24,7 +24,7 @@ public class UserService implements UserDetailsService {
      */
     public boolean createUser(String username, String password, String role) {
         // Kolla om username redan finns
-        if (userRepository.findByUsername(username).isPresent()) {
+        if (accountUserRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("Username already exists: " + username);
         }
         
@@ -33,16 +33,16 @@ public class UserService implements UserDetailsService {
         user.setPasswordHash(password);
         user.setRole(role);
         
-        userRepository.save(user);
+        accountUserRepository.save(user);
         
-        return userRepository.findByUsername(username).isPresent();
+        return accountUserRepository.findByUsername(username).isPresent();
     }
 
     /**
      * Hitta användare baserat på ID
      */
     public AccountUser getUserById(int userId) {
-        return userRepository.findById(userId)
+        return accountUserRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
     }
 
@@ -50,7 +50,7 @@ public class UserService implements UserDetailsService {
      * Hitta användare baserat på username
      */
     public AccountUser getUserByUsername(String username) {
-        return userRepository.findByUsername(username)
+        return accountUserRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
     }
 
@@ -59,13 +59,13 @@ public class UserService implements UserDetailsService {
      */
     public AccountUser updateUsername(int userId, String newUsername) {
         // Kolla om nya username redan finns
-        if (userRepository.findByUsername(newUsername).isPresent()) {
+        if (accountUserRepository.findByUsername(newUsername).isPresent()) {
             throw new RuntimeException("Username already exists: " + newUsername);
         }
 
         AccountUser user = getUserById(userId);
         user.setUsername(newUsername);
-        return userRepository.save(user);
+        return accountUserRepository.save(user);
     }
     
     /**
@@ -93,16 +93,16 @@ public class UserService implements UserDetailsService {
      * Ta bort användare
      */
     public void deleteUser(int userId) {
-        if (!userRepository.existsById(userId)) {
+        if (!accountUserRepository.existsById(userId)) {
             throw new RuntimeException("User not found with id: " + userId);
         }
-        userRepository.deleteById(userId);
+        accountUserRepository.deleteById(userId);
     }
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<AccountUser> accountUser = userRepository.findByUsername(username);
+        Optional<AccountUser> accountUser = accountUserRepository.findByUsername(username);
         if(accountUser.isPresent()) {
             var userObj = accountUser.get();
             return User.builder()

@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import se.mau.myhappyplants.user.AccountUser;
-import se.mau.myhappyplants.user.UserRepository;
+import se.mau.myhappyplants.user.AccountUserRepository;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +24,7 @@ public class LibraryService {
     private TagRepository tagRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private AccountUserRepository accountUserRepository;
 
     public LibraryService(AccountUserPlantRepository accountUserPlantRepository) {
         this.accountUserPlantRepository = accountUserPlantRepository;
@@ -71,7 +72,7 @@ public class LibraryService {
      */
     public AccountUserPlant addPlantToLibrary(int userId, String plantName, String perenualId) {
         // Hitta användaren
-        AccountUser user = userRepository.findById(userId)
+        AccountUser user = accountUserRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
         // Skapa en ny växt

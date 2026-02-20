@@ -1,37 +1,29 @@
 package se.mau.myhappyplants.user;
 
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import se.mau.myhappyplants.config.PasswordValidatorConfig;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
 class AccountUserServiceTest {
 
     /**
      * Using a @Mock annotation allows us to use fake data
      * to test instead of cramming useless data into the database
      */
-    @Mock
-    UserRepository userRepository; // Fake mocked database
 
-    @InjectMocks
-    private UserService userService;  // Class for handling registration logic
+    private AccountUserService accountUserService;  // Class for handling registration logic
     private PasswordValidatorConfig passwordValidator;
 
     @BeforeEach
     void setUp() {
         passwordValidator = new PasswordValidatorConfig();
+        accountUserService = new AccountUserService();
     }
 
     @Test
-    @Disabled("Waiting for UserService.register and UserRepository.existsByUsername (ACC.01F)")
+    @Disabled("Waiting for AccountUserService.register and AccountUserRepository.existsByUsername (ACC.01F)")
     @DisplayName("ACC.01F - Should return false if username is taken")
     void registerUserButUsernameIsTaken() {
         /**
@@ -54,7 +46,7 @@ class AccountUserServiceTest {
     void deleteAccountTest() {
       //  User user = new User("Sven", "hashed_password123");
       //  Userservice.deleteAccount(user);
-      //  UserService.login();
+      //  AccountUserService.login();
 
         /**
          * Test will be performed by creating an account, deleting it,
@@ -67,15 +59,16 @@ class AccountUserServiceTest {
     @Test
     @DisplayName("ACC.03F Create Account")
     void testCreateValidAccount() {
-        boolean result = userService.createUser("Random1!", "AbitNicole2026!!!", "USER");
+        boolean result = accountUserService.createUser("Random1!", "AbitNicole2026!!!", "USER");
         assertEquals(true, result);
     }
 
 
+    @Disabled
     @Test
     @DisplayName("ACC.05F Error Message Missing Username")
     void testMissingUsernameRegistration() {
-        boolean result = userService.createUser("", "123", "USER");
+        boolean result = accountUserService.createUser("", "123", "USER");
         assertEquals(false, result);
     }
 

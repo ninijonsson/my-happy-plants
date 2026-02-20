@@ -11,7 +11,7 @@ import java.util.Optional;
  * Provides queries used by authentication and user management.
  */
 @Repository
-public interface UserRepository extends JpaRepository<AccountUser, Integer> {
+public interface AccountUserRepository extends JpaRepository<AccountUser, Integer> {
     /**
      * Hitta användare baserat på username
      */

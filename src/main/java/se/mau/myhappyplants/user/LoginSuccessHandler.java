@@ -10,16 +10,16 @@ import java.io.IOException;
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final UserService userService;
+    private final AccountUserService accountUserService;
 
-    public LoginSuccessHandler(UserService userService) {
-        this.userService = userService;
+    public LoginSuccessHandler(AccountUserService accountUserService) {
+        this.accountUserService = accountUserService;
     }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-        AccountUser user = userService.getUserByUsername(authentication.getName());
+        AccountUser user = accountUserService.getUserByUsername(authentication.getName());
         request.getSession().setAttribute("user", user);
         response.sendRedirect("/library");
     }
