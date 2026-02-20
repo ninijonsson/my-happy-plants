@@ -25,7 +25,7 @@ public class UserService implements UserDetailsService {
     public boolean createUser(String username, String password, String role) {
         // Kolla om username redan finns
         if (userRepository.findByUsername(username).isPresent()) {
-            throw new RuntimeException("Username already exists: " + username);
+            return false;
         }
         
         AccountUser user = new AccountUser();
