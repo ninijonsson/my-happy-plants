@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="sv" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Plants</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <script th:src="@{/js/plant-search.js}"></script>
+        <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+        <link rel="stylesheet" href="../../static/css/stylesheet.css">
+    </head>
+
+    <body>
+
+    <div class="container">
+        <header>
+            <h1>Hitta din nästa växt</h1>
+            <p>Sök bland hundratals arter och lägg till dem i ditt personliga bibliotek.</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="plantSearch" placeholder="Sök på namn eller vetenskapligt namn..." onkeyup="filterPlants()">
+        </div>
+
+        <main class="plant-grid" id="plantGrid">
+            <article class="plant-card">
+                <img src="https://images.unsplash.com/photo-1545241047-6083a3684587?auto=format&fit=crop&q=80&w=400" alt="Monstera" class="plant-image">
+                <div class="plant-info">
+                    <div class="plant-name">Monstera</div>
+                    <div class="scientific-name">Monstera deliciosa</div>
+                    <button class="add-btn">+ Lägg till i bibliotek</button>
+                </div>
+            </article>
+
+            <article class="plant-card">
+                <img src="https://images.unsplash.com/photo-1512428813824-f7139c823350?auto=format&fit=crop&q=80&w=400" alt="Fredskalla" class="plant-image">
+                <div class="plant-info">
+                    <div class="plant-name">Fredskalla</div>
+                    <div class="scientific-name">Spathiphyllum</div>
+                    <button class="add-btn">+ Lägg till i bibliotek</button>
+                </div>
+            </article>
+
+            <article class="plant-card">
+                <img src="https://images.unsplash.com/photo-1520412099551-62b6bafeb5bb?auto=format&fit=crop&q=80&w=400" alt="Gullranka" class="plant-image">
+                <div class="plant-info">
+                    <div class="plant-name">Gullranka</div>
+                    <div class="scientific-name">Epipremnum aureum</div>
+                    <button class="add-btn">+ Lägg till i bibliotek</button>
+                </div>
+            </article>
+        </main>
+    </div>
+    </body>
+</html>
