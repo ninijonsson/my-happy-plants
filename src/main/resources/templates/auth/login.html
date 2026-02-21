@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/loading.css">
 </head>
 <body class="min-h-screen bg-gradient-to-r from-[#fef08a] via-[#84cc16] to-[#16a34a] flex items-center justify-center p-4">
 
@@ -194,6 +195,15 @@
     </div>
 </div>
 
+<!--Loading animation-->
+<div id="loading" class="loader-container fixed top-0 left-0 w-full h-full flex items-center justify-center bg-green-900/70 z-50">
+    <div class="bouncing-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+</div>
+
 <script>
     // Get elements
     const registerModal = document.getElementById('registerModal');
@@ -205,6 +215,9 @@
     const regErrorMsg = document.getElementById('registrationErrorMessage');
     const regDoneMsg = document.getElementById('registrationDoneMessage');
     const loginErrorMsg = document.getElementById('loginErrorMessage');
+    
+    const loading = document.getElementById('loading');
+    loading.classList.add('hidden');
     
     //Hide the error when the user clicks on input.
     document.querySelectorAll('input').forEach(input => {
@@ -235,16 +248,21 @@
     // Handle login form submission
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        loading.classList.remove('hidden');
         const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
         
-       const response = await fetch('/login', { 
+        
+        
+        const response = await fetch('/login', { 
            method: 'POST', 
            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
            body: new URLSearchParams({ username, password }),
            redirect: 'follow'
        });
-       
+        
+        loading.classList.add('hidden');
+        
        if(response.url.includes('/login?error')) {
            loginErrorMsg.querySelector('span').innerHTML = 'Username or password is incorrect.';
            loginErrorMsg.classList.remove('hidden');
@@ -267,12 +285,16 @@
             return;
         }
         
+        loading.classList.remove('hidden');
+        
         const params = new URLSearchParams({ username, password });
         const response = await fetch('/register', { 
             method: 'POST', 
             body: params 
         });
-
+        
+        loading.classList.add('hidden');
+        
         if(!response.ok) {
             return response.json().then(data => {
                 regErrorMsg.classList.remove('hidden');
