@@ -1,5 +1,6 @@
 package se.mau.myhappyplants.perenual;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,6 +31,7 @@ public class PerenualClient {
      * @param query
      * @return List of plants
      */
+    @Cacheable(value = "plantSearch", key = "#query == null ? 'default_home' : #query")
     public List<PlantDetailsView> fetchPlants(String query) {
         PerenualSpeciesListResponse response = webClient.get()
                 .uri(uri -> {
