@@ -40,7 +40,7 @@
             <p>You have <span th:text="${needsWatering}">0</span>
                 plants that need watering
             </p>
-            <a href="/plants/add" class="add-btn">Add new plant to library</a>
+            <a th:href="@{/plants/searchAndAdd}" class="add-btn">Add new plant to library</a>
         </div>
         
         <!-- Sorting buttons -->
