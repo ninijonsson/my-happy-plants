@@ -30,6 +30,7 @@
 
                     <form th:action="@{/library/add}" method="post">
                         <input type="hidden" name="plantId" th:value="${plant.id}" />
+                        <input type="hidden" name="plantName" th:value="${plant.name}" />
                         <button type="submit" class="add-btn">+ Add to your library</button>
                     </form>
                 </div>
