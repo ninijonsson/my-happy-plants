@@ -3,8 +3,10 @@ package se.mau.myhappyplants.library;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import se.mau.myhappyplants.plant.dto.PlantDetailsView;
 import se.mau.myhappyplants.user.AccountUser;
 import se.mau.myhappyplants.user.AccountUserRepository;
+import se.mau.myhappyplants.util.WateringFrequencyParser;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -70,18 +72,20 @@ public class LibraryService {
     /**
      * Lägg till en ny växt till användarens bibliotek
      */
-    public AccountUserPlant addPlantToLibrary(int userId, String plantName, String perenualId) {
+    public AccountUserPlant addPlantToLibrary(PlantDetailsView plantDetails, int userId) {
         // Hitta användaren
         AccountUser user = accountUserRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-        // Skapa en ny växt
-        AccountUserPlant plant = new AccountUserPlant(plantName, perenualId);
+        AccountUserPlant plant = new AccountUserPlant();
+        plant.setPlantName(plantDetails.name());
+        plant.setUser(user);
+        plant.setImageUrl(plantDetails.imageUrl());
+        plant.setScientificName(plantDetails.scientificName());
+        plant.setPerenualId(String.valueOf(plantDetails.id()));
+        plant.setLastWatered(LocalDateTime.now());
+        plant.setWateringFrequencyDays(WateringFrequencyParser.parseWateringFrequency(plantDetails.wateringFrequency()));
 
-        // Koppla växten till användaren
-        user.addUserPlant(plant);
-
-        // Spara växten i databasen
         return accountUserPlantRepository.save(plant);
     }
 

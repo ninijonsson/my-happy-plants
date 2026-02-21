@@ -2,21 +2,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const plantGrid = document.getElementById('plantGrid');
     const initialPlantsHTML = plantGrid.innerHTML;
-    //Listener for search bar
     const searchInput = document.getElementById('plantSearch');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
+
+    if (!searchInput) return;
+
+    //Listener for 3 or more letters in search bar
+    let debounceTimer;
+    searchInput.addEventListener('input', (e) => {
         const query = e.target.value.trim();
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
             if (query.length >= 3) {
                 fetchPlants(query);
-            } else if (query.length > 0) {
-                plantGrid.innerHTML = '<div class="search-notice">Please enter at least 3 characters to search...</div>';
-            }
-            else {
+            } else if (query.length === 0) {
                 plantGrid.innerHTML = initialPlantsHTML;
             }
-        });
-    }
+        }, 400);
+    });
+
+    // Enter press on search bar
+    searchInput.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const query = e.target.value.trim();
+            if (query.length > 0) {
+                await fetchPlants(query);
+            }
+        }
+    });
 
     //Listener for add button
     plantGrid.addEventListener('click', async (e) => {
@@ -31,21 +44,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function fetchPlants(query) {
     const grid = document.getElementById('plantGrid');
-    try {
-        const response = await fetch(`/api/plants/search?query=${encodeURIComponent(query)}`);
-        const plants = await response.json();
 
-        //View result
-        grid.innerHTML = '';
-        if (plants.length === 0) {
-            grid.innerHTML = '<p class="no-results">No plants found matching your search.</p>';
-            return;
+    try {
+        const response = await fetch(`/plants/search?q=${encodeURIComponent(query)}`);
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newGrid = doc.getElementById('plantGrid');
+
+        if (newGrid) {
+            grid.innerHTML = newGrid.innerHTML;
         }
-        //Rendering new plants
-        plants.forEach(plant => {
-            const card = createPlantCard(plant);
-            grid.appendChild(card);
-        });
     } catch (error) {
         console.error("Fetch error:", error);
     }
