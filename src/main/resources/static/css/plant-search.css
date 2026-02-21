@@ -136,3 +136,10 @@ header p {
 .add-btn:active {
     transform: scale(0.98);
 }
+.search-notice, .info-text {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+    font-style: italic;
+}
