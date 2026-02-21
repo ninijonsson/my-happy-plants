@@ -11,20 +11,29 @@
 
 <body>
     <div id="container">
-        <ul class="bg-emerald-600" style="margin: 0; padding: 0; overflow: hidden;" >
+        <!---Navbar-->
+        <ul class="bg-[#427A43]" style="margin: 0; padding: 0; overflow: hidden; border-radius: 20px" >
             <li style="float:left;">
-                <a th:href="@{/library}" style=" display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; text-decoration: none;">My Plants</a>
+                <a 
+                        th:href="@{/library}" 
+                        onmouseover="this.style.color='white'; this.style.backgroundColor='#005F02'"
+                        onmouseout="this.style.color='white'; this.style.backgroundColor='transparent'"
+                        style=" display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; text-decoration: none;">My Plants</a>
             </li>
             <li style="float:left;">
-                <a th:href="@{/plants}" style=" display: block; text-align: center; text-decoration: none;">
-                    <img th:href="@{/plants}" src="/images/magnifying-glass.png" alt="Search" class="w-8 h-8 object-contain mt-3 mb-2">
+                <a 
+                        th:href="@{/plants}" 
+                        onmouseover="this.style.backgroundColor='#005F02'"
+                        onmouseleave="this.style.backgroundColor='transparent'"
+                        style=" display: block; text-align: center; text-decoration: none; padding: 0.6rem 1rem">
+                    <img th:href="@{/plants}" src="/images/magnifying-glass.png" alt="Search" class="w-8 h-8 object-contain">
                 </a>
             </li>
             <li style="float:right;">
                 <a 
                     th:href="@{/logout}" 
-                    onmouseover="this.style.color='white'; this.style.backgroundColor='#960532'"
-                    onmouseout="this.style.color='transperant'; this.style.backgroundColor='transparent'"
+                    onmouseover="this.style.color='#EA7B7B'; this.style.backgroundColor='#005F02'"
+                    onmouseout="this.style.color='white'; this.style.backgroundColor='transparent'"
                     style=" display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; "
                 >
                     Logout
@@ -46,22 +55,22 @@
         <!-- Sorting buttons -->
         <div class="flex gap-3 my-6">
             <a th:href="@{/library(sort='water')}"
-               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
+               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02]"
                th:classappend="${currentSort == 'water' || currentSort == null ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
                 Water Status 💧
             </a>
             <a th:href="@{/library(sort='asc')}"
-               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
+               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02]"
                th:classappend="${currentSort == 'asc' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
                 A-Z
             </a>
             <a th:href="@{/library(sort='desc')}"
-               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
+               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02]"
                th:classappend="${currentSort == 'desc' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
                 Z-A
             </a>
             <a th:href="@{/library(sort='recent')}"
-               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
+               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02]"
                th:classappend="${currentSort == 'recent' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
                 Recently added
             </a>
@@ -77,22 +86,26 @@
                      th:data-watering-days="${plant.getWateringFrequencyDays()}">
 
                     <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
+                    
                     <!-- Info -->
                     <div class="plant-info">
-                        <h3 th:text="${plant.plantName}"></h3>
-                        <p class="latin-name" th:text="${plant.scientificName}"></p>
-                        <!-- Tags -->
-                        <div class="tags-container">
-                            <span class="tag" th:text="'#' + ${plant.tag.label}" th:if="${plant.tag != null}"></span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h3 th:text="${plant.plantName}"></h3>
+                            <!-- Tags -->
+                            <div class="tags-container ml-3 mb-2">
+                                <button id="open-tag-selection" type="button" class="tag" th:text="${plant.tag != null ? '#' + plant.tag.label : 'Add Tag'}"></button>
+                            </div>
                         </div>
-
+                        
+                        <p class="latin-name" th:text="${plant.scientificName}"></p>
+                        
                         <p class="days-since-watered"></p>
 
                         <div class="progress-bar">
                             <div class="progress-fill"></div>
                         </div>
                     </div>
-
+                    
                     <!-- Actions -->
                     <div class="plant-actions">
                         <button type="button" class="water-btn">💧 Water it</button>
@@ -109,6 +122,16 @@
             <div class="modal-buttons">
                 <button id="cancel-btn" class="modal-btn cancel-btn">Cancel</button>
                 <button id="confirm-btn" class="modal-btn confirm-btn">Remove</button>
+            </div>
+        </div>
+    </div>
+    <!-- Tag Modal -->
+    <div id="tag-selection-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div id="modal-content" class="modal-content">
+            <h3>Select a tag</h3>
+            <div class="modal-buttons">
+                <button id="tag-cancel-btn" class="modal-btn cancel-btn">Cancel</button>
+                <button id="tag-confirm-btn" class="modal-btn confirm-btn">Add</button>
             </div>
         </div>
     </div>
