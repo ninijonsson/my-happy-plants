@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="sv" xmlns:th="http://www.thymeleaf.org"><head>
+    <meta charset="UTF-8">
+    <title th:text="${plant.plantName} + ' - Detais'">Plant Details</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" th:href="@{/css/plant-details.css}">
+</head>
+<body class="p-4 md:p-10" style="background-color: #C0B87A;">
+    <div class="max-w-4xl mx-auto">
+        <div th:replace="~{/fragments/fragment :: navbar}"></div>
+
+        <article class="details-wrapper">
+            <div class="details-hero">
+
+                <div class="details-hero flex flex-wrap gap-8"> <div class="flex-1 min-w-[300px]">
+                    <img th:src="${(plant.imageUrl == null or plant.imageUrl.isEmpty()) ? '/images/default-plant.png' : plant.imageUrl}"
+                         class="details-img shadow-lg w-full rounded-2xl object-cover">
+                </div>
+
+                <div class="details-content flex-1 min-w-[300px]">
+                    <h1 th:text="${plant.plantName}">Plant Name</h1>
+
+                    <p class="scientific"
+                       th:text="${details.scientific_name != null and !details.scientific_name.isEmpty() ? #strings.listJoin(details.scientific_name, ', ') : 'N/A'}">
+                    </p>
+
+                    <p class="text-sm font-bold uppercase tracking-widest text-[#427A43] mt-1"
+                       th:text="${details.family != null ? 'Family: ' + details.family : 'Family: Unknown'}">
+                        Family: Rosaceae
+                    </p>
+
+                    <hr class="my-4 border-emerald-100">
+
+                    <p class="text-gray-700 leading-relaxed mb-6"
+                       th:text="${details?.description ?: 'No description available.'}"></p>
+
+                    <div class="care-grid">
+                        <div class="care-item">
+                            <label>Watering</label>
+                            <span th:text="${plant.wateringFrequencyDays} + ' days'">7 days</span>
+                        </div>
+
+                        <div class="care-item">
+                            <label>Sunlight</label>
+                            <span th:text="${details?.sunlight != null ? #strings.listJoin(details.sunlight, ', ') : 'Unknown'}"></span>
+                        </div>
+
+                        <div class="care-item">
+                            <label>Growth</label>
+                            <span th:text="${details?.cycle ?: 'Perennial'}"></span>
+                        </div>
+
+                        <div class="care-item">
+                            <label>Maintenance</label>
+                            <span th:text="${details?.maintenance ?: 'Medium'}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</body>
+</html>

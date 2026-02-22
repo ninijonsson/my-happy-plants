@@ -34,7 +34,7 @@ public class LibraryController {
     ) {
         AccountUser user = (AccountUser) session.getAttribute("user");
 
-        if (user.getRole() == null) {
+        if (user == null) {
             return "redirect:/login";
         }
 
