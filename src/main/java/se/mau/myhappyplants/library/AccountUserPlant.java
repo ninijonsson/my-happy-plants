@@ -34,6 +34,14 @@ public class AccountUserPlant {
     @PrePersist
     private void onCreate() {
         this.createdAt = LocalDateTime.now();
+        if (this.lastWatered == null) {
+            this.lastWatered = LocalDateTime.now();
+        }
+        calculateNextWateringDate();
+    }
+    @PreUpdate
+    private void onUpdate() {
+        calculateNextWateringDate();
     }
 
     public LocalDateTime getCreatedAt() {
@@ -149,15 +157,10 @@ public class AccountUserPlant {
         this.wateringFrequencyDays = wateringFrequencyDays;
     }
 
-    public double getWateringProgressPercentage() {
-        if (lastWatered == null || wateringFrequencyDays <= 0) {
-            return 0;
+    public void calculateNextWateringDate() {
+        if (lastWatered != null && wateringFrequencyDays != null && wateringFrequencyDays > 0) {
+            this.nextWateringDate = lastWatered.toLocalDate().plusDays(wateringFrequencyDays);
         }
-        long daysSinceWatered = java.time.Duration.between(lastWatered, java.time.LocalDateTime.now())
-                .toDays();
-
-        double percent = (double) daysSinceWatered / wateringFrequencyDays * 100;
-        return Math.min(percent, 100);
     }
 
     public long getDaysSinceLastWatered() {

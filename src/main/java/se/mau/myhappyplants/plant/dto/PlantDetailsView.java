@@ -8,5 +8,6 @@ public record PlantDetailsView(
         int id,
         String name,
         String scientificName,
-        String imageUrl
+        String imageUrl,
+        String wateringFrequency
 ) {}
