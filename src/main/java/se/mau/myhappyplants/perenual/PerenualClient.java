@@ -96,4 +96,15 @@ public class PerenualClient {
                         ? response.wateringFrequency().wateringFrequencyDays() : null
         );
     }
+
+    public PerenualPlantDetailsResponse fetchPlantDetails(String perenualId) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/species/details/" + perenualId)
+                        .queryParam("key", props.apiKey())
+                        .build())
+                .retrieve()
+                .bodyToMono(PerenualPlantDetailsResponse.class)
+                .block();
+    }
 }

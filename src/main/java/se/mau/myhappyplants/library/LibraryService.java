@@ -154,11 +154,8 @@ public class LibraryService {
         return accountUserPlantRepository.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);
     }
 
-    /**
-     * Hämta växter sorterade alfabetiskt
-     */
-    public List<AccountUserPlant> getPlantsAlphabetically(int userId) {
-        return accountUserPlantRepository.findByUserIdOrderByPlantNameAsc(userId);
+    public AccountUserPlant getPlantById(int plantId) {
+        return accountUserPlantRepository.findById(plantId).orElse(null);
     }
 
     public List<AccountUserPlant> getPlantsReverseAlphabetically(int userId) {

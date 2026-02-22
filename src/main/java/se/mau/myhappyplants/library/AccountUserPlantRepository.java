@@ -47,17 +47,6 @@ public interface AccountUserPlantRepository extends JpaRepository<AccountUserPla
      */
     List<AccountUserPlant> findByPerenualId(String perenualId);
 
-    /**
-     * Hämta växter sorterade alfabetiskt (A-Z)
-     */
-    List<AccountUserPlant> findByUserIdOrderByPlantNameAsc(int userId);
-
-    /**
-     * Hämta växter sorterade omvänt alfabetiskt (Z-A)
-     */
-    //List<AccountUserPlant> findByUserIdOrderByPlantNameDesc(Long userId);
-
-    //TODO: se om de två metoderna ovan fortfarande behövs, denna är mer generisk
     List<AccountUserPlant> findByUserId(int userId, Sort sort);
 
     List<AccountUserPlant> findByUserIdOrderByPlantNameDesc(int userId);

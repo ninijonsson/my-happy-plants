@@ -20,6 +20,7 @@ public class AccountUserPlant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    //TODO: Ändra till int istället?
     @Column(name = "perenual_id")
     private String perenualId;
 

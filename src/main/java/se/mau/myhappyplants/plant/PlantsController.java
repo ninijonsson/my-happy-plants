@@ -1,5 +1,8 @@
 package se.mau.myhappyplants.plant;
 
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import se.mau.myhappyplants.library.AccountUserPlant;
 import ch.qos.logback.core.model.NamedModel;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +12,7 @@ import se.mau.myhappyplants.perenual.PerenualClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import se.mau.myhappyplants.perenual.PerenualPlantDetailsResponse;
 import se.mau.myhappyplants.plant.dto.PlantDetailsView;
 import se.mau.myhappyplants.user.AccountUser;
 
@@ -16,12 +20,28 @@ import se.mau.myhappyplants.user.AccountUser;
 @RequestMapping("/plants")
 public class PlantsController {
 
-    private final PerenualClient perenualClient;
-    private final LibraryService libraryService;
+    @Autowired
+    private PerenualClient perenualClient;
 
-    public PlantsController(PerenualClient perenualClient, LibraryService libraryService) {
-        this.perenualClient = perenualClient;
-        this.libraryService = libraryService;
+    @Autowired
+    private LibraryService libraryService;
+
+    @GetMapping("/plant-details/{id}")
+    public String showPlantDetails(@PathVariable int id, Model model, HttpSession session) {
+        //Get the user from the session
+        AccountUser user = (AccountUser) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+        //Fetch the plant from the database
+        AccountUserPlant plant = libraryService.getPlantById(id);
+
+        PerenualPlantDetailsResponse apiDetails = perenualClient.fetchPlantDetails(plant.getPerenualId());
+
+        //send the plant and user to the database
+        model.addAttribute("user", user);
+        model.addAttribute("plant", plant);
+        model.addAttribute("details", apiDetails);
+        return "plant-details";
     }
 
     @GetMapping("/test")
