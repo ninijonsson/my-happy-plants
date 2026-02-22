@@ -119,6 +119,25 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
+    
+    // Getting Tags
+    const loadTags = async () => {
+    
+        const response = await fetch('/library/tags', {method: 'GET'});
+        const data = await response.json();
+
+        const tagContainer = document.getElementById('tag-list');
+        tagContainer.innerHTML = '';
+        
+        const tags = Array.isArray(data) ? data : (data.tags || []);
+       
+
+        tags.forEach(tag => {
+            tagContainer.innerHTML += `<button class="tag">${tag.label}</button>`;
+        });
+    };
+
+    loadTags();
 });
 
 function updatePlantBar(plant) {
@@ -147,19 +166,4 @@ function updatePlantBar(plant) {
 
     const daysText = plant.querySelector('.days-since-watered');
     daysText.textContent = `Days since last watered: ${daysSinceWatered} days`;
-}
-
-async function getTags(){
-    
-    const response = await fetch(
-        `/library/tags`,
-        {
-            method: 'GET'
-        }
-    )
-    if(response.ok) {
-        return response.json().then(tags => {
-            
-        })
-    }
 }

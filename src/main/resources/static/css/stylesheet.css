@@ -262,6 +262,11 @@ body {
     border-color: #960532;
     color: #960532;
 }
+.tag-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
 
 
 
