@@ -1,4 +1,7 @@
 package se.mau.myhappyplants.perenual;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import se.mau.myhappyplants.perenual.dto.PerenualPlant;
+
 import java.util.List;
 /**
  * DTO mapping the JSON response from Perenual API.
@@ -6,14 +9,20 @@ import java.util.List;
  */
 public class PerenualPlantDetailsResponse {
     private int id;
-    private String common_name;
-    private List<String> scientific_name;
+    @JsonProperty("common_name")
+    private String commonName;
+
+    @JsonProperty("scientific_name")
+    private List<String> scientificName;
     private String family;
     private String watering;
     private List<String> sunlight;
     private String description;
     private String cycle;
     private String maintenance;
+
+    @JsonProperty("default_image")
+    private PerenualPlant.DefaultImage defaultImage;
 
     public int getId() {
         return id;
@@ -23,21 +32,6 @@ public class PerenualPlantDetailsResponse {
         this.id = id;
     }
 
-    public String getCommon_name() {
-        return common_name;
-    }
-
-    public void setCommon_name(String common_name) {
-        this.common_name = common_name;
-    }
-
-    public List<String> getScientific_name() {
-        return scientific_name;
-    }
-
-    public void setScientific_name(List<String> scientific_name) {
-        this.scientific_name = scientific_name;
-    }
 
     public String getFamily() {
         return family;
@@ -85,5 +79,29 @@ public class PerenualPlantDetailsResponse {
 
     public void setMaintenance(String maintenance) {
         this.maintenance = maintenance;
+    }
+
+    public String getCommonName() {
+        return commonName;
+    }
+
+    public void setCommonName(String commonName) {
+        this.commonName = commonName;
+    }
+
+    public List<String> getScientificName() {
+        return scientificName;
+    }
+
+    public void setScientificName(List<String> scientificName) {
+        this.scientificName = scientificName;
+    }
+
+    public PerenualPlant.DefaultImage getDefaultImage() {
+        return defaultImage;
+    }
+
+    public void setDefaultImage(PerenualPlant.DefaultImage defaultImage) {
+        this.defaultImage = defaultImage;
     }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="sv" xmlns:th="http://www.thymeleaf.org"><head>
     <meta charset="UTF-8">
-    <title th:text="${plant.plantName} + ' - Detais'">Plant Details</title>
+    <title th:text="${plant?.plantName ?: details?.commonName} + ' - Details'">Plant Details</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" th:href="@{/css/plant-details.css}">
 </head>
@@ -10,18 +10,16 @@
         <div th:replace="~{/fragments/fragment :: navbar}"></div>
 
         <article class="details-wrapper">
-            <div class="details-hero">
-
-                <div class="details-hero flex flex-wrap gap-8"> <div class="flex-1 min-w-[300px]">
-                    <img th:src="${(plant.imageUrl == null or plant.imageUrl.isEmpty()) ? '/images/default-plant.png' : plant.imageUrl}"
+            <div class="details-hero flex flex-wrap gap-8">
+                <div class="flex-1 min-w-[300px]">
+                    <img th:src="${plant?.imageUrl != null ? plant.imageUrl : (details?.defaultImage?.regularUrl ?: '/images/plant.jpg')}"
                          class="details-img shadow-lg w-full rounded-2xl object-cover">
                 </div>
 
                 <div class="details-content flex-1 min-w-[300px]">
-                    <h1 th:text="${plant.plantName}">Plant Name</h1>
-
+                    <h1 th:text="${plant?.plantName ?: details?.commonName}">Plant Name</h1>
                     <p class="scientific"
-                       th:text="${details.scientific_name != null and !details.scientific_name.isEmpty() ? #strings.listJoin(details.scientific_name, ', ') : 'N/A'}">
+                       th:text="${details.scientificName != null and !details.scientificName.isEmpty() ? #strings.listJoin(details.scientificName, ', ') : 'N/A'}">
                     </p>
 
                     <p class="text-sm font-bold uppercase tracking-widest text-[#427A43] mt-1"
@@ -37,13 +35,16 @@
                     <div class="care-grid">
                         <div class="care-item">
                             <label>Watering</label>
-                            <span th:text="${plant.wateringFrequencyDays} + ' days'">7 days</span>
+                            <span th:if="${plant == null}"
+                                  th:class="'watering-badge ' + ${details?.watering == 'Frequent' ? 'badge-frequent' : (details?.watering == 'Average' ? 'badge-average' : 'badge-minimum')}"
+                                  th:text="${details?.watering ?: 'Unknown'}">
+                            </span>
+                            <span th:if="${plant != null}" th:text="${plant.wateringFrequencyDays + ' days'}"></span>
                         </div>
 
                         <div class="care-item">
                             <label>Sunlight</label>
-                            <span th:text="${details?.sunlight != null ? #strings.listJoin(details.sunlight, ', ') : 'Unknown'}"></span>
-                        </div>
+                            <span th:text="${details?.sunlight != null ? #strings.listJoin(details.sunlight, ', ') : 'Unknown'}"></span>                        </div>
 
                         <div class="care-item">
                             <label>Growth</label>
@@ -52,8 +53,7 @@
 
                         <div class="care-item">
                             <label>Maintenance</label>
-                            <span th:text="${details?.maintenance ?: 'Medium'}"></span>
-                        </div>
+                            <span th:text="${details?.maintenance ?: 'Medium'}"></span>                        </div>
                     </div>
                 </div>
             </div>
