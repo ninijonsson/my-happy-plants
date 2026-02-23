@@ -174,7 +174,7 @@ public class AccountUserPlant {
 
     public double getDaysUntilNextWatering(){
 
-        if (lastWatered == null || wateringFrequencyDate == null || wateringFrequencyDate <= 0)
+        if (lastWatered == null || wateringFrequencyDays == null || wateringFrequencyDays <= 0)
             return 0;
 
         long daysSinceWatered = getDaysSinceLastWatered();
