@@ -24,7 +24,7 @@ public class Tag {
     private String label;
 
     // OneToMany: En tagg kan användas på många växter
-    @OneToMany(mappedBy = "tag")
+    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<AccountUserPlant> accountUserPlants = new ArrayList<>();
 
@@ -55,10 +55,12 @@ public class Tag {
         return true;
     }
 
+    @JsonIgnore
     public List<AccountUserPlant> getUserPlants() {
         return accountUserPlants;
     }
 
+    @JsonIgnore
     public void setUserPlants(List<AccountUserPlant> accountUserPlants) {
         this.accountUserPlants = accountUserPlants;
     }

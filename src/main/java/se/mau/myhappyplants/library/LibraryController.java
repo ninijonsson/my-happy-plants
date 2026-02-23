@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import se.mau.myhappyplants.user.AccountUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 
 @Controller
@@ -64,8 +62,24 @@ public class LibraryController {
     }
     
     @GetMapping("/tags")
+    @ResponseBody
     public ResponseEntity<?> getTags() {
-        ArrayList<Tag> tags = (ArrayList<Tag>) tagService.getAllTags();
-        return ResponseEntity.ok(Map.of("tags", tags));
+       
+        List<Tag> tags = tagService.getAllTags();
+        System.out.println("Found " + tags.size() + " tags");
+        
+        return ResponseEntity.ok(tags);
+        
+    }
+    
+    @PutMapping("/plants/{plantId}/tags/{tagId}")
+    public ResponseEntity<?> updateTag(@PathVariable int plantId, @PathVariable int tagId) {
+        boolean isUpdated = libraryService.setTagOnPlant(plantId, tagId);
+        
+        if(isUpdated) {
+            return ResponseEntity.ok("Tag updated successfully");
+        } else {
+            return ResponseEntity.status(400).body("Tag update failed");
+        }
     }
 }

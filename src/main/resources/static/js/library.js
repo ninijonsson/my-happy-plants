@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Tag Modal: Open when clicking "Add Tag" button
-    document.querySelectorAll('#open-tag-selection').forEach(button => {
+    document.querySelectorAll('.open-tag-selection').forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
             currentPlantForTag = e.target.closest('.plant-container');
@@ -120,6 +120,38 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
     
+    // Update tag
+    tagConfirmBtn.addEventListener('click', async () => {
+        if (!currentPlantForTag) return;
+        
+        const selectedTag = document.querySelector('input[name="tag-selection"]:checked');
+
+        if (!selectedTag) {
+            alert("Please select a tag.");
+            return;
+        }
+        
+        const plantId = currentPlantForTag.dataset.plantid;
+        const tagId = selectedTag.value;
+
+        try {
+            const response = await fetch(`/library/plants/${plantId}/tags/${tagId}`, {
+                method: 'PUT'
+            });
+
+            if (response.ok) {
+                tagModal.classList.add('hidden');
+                currentPlantForTag = null;
+                window.location.reload();
+            } else {
+                alert("Failed to update tag.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Failed to update tag.");
+        }
+    });
+    
     // Getting Tags
     const loadTags = async () => {
     
@@ -134,8 +166,8 @@ document.addEventListener("DOMContentLoaded", () => {
         tags.forEach(tag => {
             tagContainer.innerHTML += `
                                         <div class="tag">
-                                            <input type="checkbox" class="float: left" id="tag${tag.id}">
-                                            <label class="float: right" for="tag${tag.id}">${tag.label}</label>
+                                            <input type="radio" name="tag-selection" value="${tag.id}" id="tag${tag.id}">
+                                            <label for="tag${tag.id}">${tag.label}</label>
                                         </div>
                                         `;
         });
@@ -170,8 +202,4 @@ function updatePlantBar(plant) {
 
     const daysText = plant.querySelector('.days-since-watered');
     daysText.textContent = `Days since last watered: ${daysSinceWatered} days`;
-}
-
-function addTag(plant) {
-    console.log(plant);
 }

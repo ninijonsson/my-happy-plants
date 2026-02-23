@@ -12,7 +12,7 @@ import java.util.Optional;
  * Supports retrieving/creating tags per user.
  */
 @Repository
-public interface TagRepository extends JpaRepository<Tag, Long> {
+public interface TagRepository extends JpaRepository<Tag, Integer> {
     /**
      * Hitta en tagg baserat på dess label
      */
