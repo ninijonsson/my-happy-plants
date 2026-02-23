@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="sv" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Plants</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <script th:src="@{/js/plant-search.js}"></script>
+        <link rel="stylesheet" th:href="@{/css/plant-search.css}">
+        <link rel="stylesheet" href="../../static/css/plant-search.css">
+    </head>
+
+    <body>
+    <div class="container">
+        <div th:replace="~{/fragments/fragment :: navbar}"></div>
+        <header>
+            <h1 th:text="${pageTitle}">Search plants</h1>
+            <p>Find inspiration for your library</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="plantSearch" placeholder="Search plants...">
+            <div id="searchNotice" class="search-notice" style="display:none;"></div>
+        </div>
+
+        <main class="plant-grid" id="plantGrid">
+            <article class="plant-card" th:each="plant : ${plants}">
+                <img th:src="${plant.imageUrl}" th:alt="${plant.name}" class="plant-image">
+
+                <div class="plant-info">
+                    <div class="plant-name" th:text="${plant.name}">Plant name</div>
+                    <div class="scientific-name" th:text="${plant.scientificName}">Scientific namn</div>
+
+                    <form th:action="@{/library/add}" method="post">
+                        <input type="hidden" name="plantId" th:value="${plant.id}" />
+                        <input type="hidden" name="plantName" th:value="${plant.name}" />
+                        <button type="submit" class="add-btn">+ Add to your library</button>
+                    </form>
+                </div>
+            </article>
+        </main>
+    </div>
+    </body>
+</html>

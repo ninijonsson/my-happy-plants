@@ -11,6 +11,9 @@ import se.mau.myhappyplants.user.AccountUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+
 
 
 @Controller
@@ -25,19 +28,24 @@ public class LibraryController {
     
     @GetMapping
     public String showLibrary(
-            @RequestParam(required = false, defaultValue = "water")
-            String sort,
+            @RequestParam(required = false, defaultValue = "water") String sort,
+            @RequestParam(required = false) String search,
             Model model,
             HttpSession session
     ) {
         AccountUser user = (AccountUser) session.getAttribute("user");
 
-        if (user.getRole() == null) {
+        if (user == null) {
             return "redirect:/login";
         }
 
-        var plants = libraryService.getUserLibrary(user.getId(), sort);
-
+        List<AccountUserPlant> plants;
+        if (search != null && search.length() >= 3) {
+            plants = libraryService.searchPlantsByName(user.getId(), search);
+        } else {
+            plants = libraryService.getUserLibrary(user.getId(), sort);
+        }
+        
         //Todo might need to update this call later for the sorting of water levels
         long needsWatering = libraryService.countPlantsNeedingWater(user.getId());
 
@@ -56,6 +64,7 @@ public class LibraryController {
     }
 
     @PutMapping("/{userId}/plants/{plantId}/water")
+    @ResponseBody
     public ResponseEntity<Void> waterPlant(@PathVariable int userId, @PathVariable int plantId) {
         libraryService.waterPlant(userId, plantId);
         return ResponseEntity.ok().build();

@@ -6,52 +6,38 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script th:src="@{/js/library.js}"></script>
     <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
-    <link rel="stylesheet" href="../../static/css/stylesheet.css">
 </head>
 
 <body>
     <div id="container">
         <!---Navbar-->
-        <ul class="bg-[#427A43]" style="margin: 0; padding: 0; overflow: hidden; border-radius: 20px" >
-            <li style="float:left;">
-                <a 
-                        th:href="@{/library}" 
-                        onmouseover="this.style.color='white'; this.style.backgroundColor='#005F02'"
-                        onmouseout="this.style.color='white'; this.style.backgroundColor='transparent'"
-                        style=" display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; text-decoration: none;">My Plants</a>
-            </li>
-            <li style="float:left;">
-                <a 
-                        th:href="@{/plants}" 
-                        onmouseover="this.style.backgroundColor='#005F02'"
-                        onmouseleave="this.style.backgroundColor='transparent'"
-                        style=" display: block; text-align: center; text-decoration: none; padding: 0.6rem 1rem">
-                    <img th:href="@{/plants}" src="/images/magnifying-glass.png" alt="Search" class="w-8 h-8 object-contain">
-                </a>
-            </li>
-            <li style="float:right;">
-                <a 
-                    th:href="@{/logout}" 
-                    onmouseover="this.style.color='#EA7B7B'; this.style.backgroundColor='#005F02'"
-                    onmouseout="this.style.color='white'; this.style.backgroundColor='transparent'"
-                    style=" display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; "
-                >
-                    Logout
-                </a>
-            </li>
-            <li style="float:right;">
-                <a th:text="${user.username}" style=" display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; text-decoration: none;">User</a>
-            </li>
-        </ul>
+        <div th:replace="~{/fragments/fragment :: navbar}"></div>
         
         <div class="welcome-panel">
             <h1>Welcome back <span th:text="${user.username}">User</span>!</h1>
             <p>You have <span th:text="${needsWatering}">0</span>
                 plants that need watering
             </p>
-            <a href="/plants/add" class="add-btn">Add new plant to library</a>
+            <a th:href="@{/plants/search}" class="add-btn">Add new plant to library</a>
         </div>
-        
+
+        <!-- Search bar -->
+        <div class="my-6 relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg class="w-5 h-5" style="color: #427A43" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </span>
+
+            <input type="text"
+                   id="library-search"
+                   placeholder="Type 3+ letters to filter..."
+                   class="w-full pl-10 p-3 rounded-xl outline-none border-2 transition-all bg-white shadow-sm"
+                   style="border-color: #427A43; color: #005F02;"
+                   onfocus="this.style.borderColor='#C0B87A'; this.style.boxShadow='0 0 10px rgba(192, 184, 122, 0.2)';"
+                   onblur="this.style.borderColor='#427A43'; this.style.boxShadow='none';">
+        </div>
+
         <!-- Sorting buttons -->
         <div class="flex gap-3 my-6">
             <a th:href="@{/library(sort='water')}"
@@ -64,11 +50,13 @@
                th:classappend="${currentSort == 'asc' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
                 A-Z
             </a>
+
             <a th:href="@{/library(sort='desc')}"
                class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02]"
                th:classappend="${currentSort == 'desc' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
                 Z-A
             </a>
+
             <a th:href="@{/library(sort='recent')}"
                class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02]"
                th:classappend="${currentSort == 'recent' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
@@ -78,6 +66,7 @@
 
             <div id="users-plants">
                 <h2 class="section-title">Your plants</h2>
+
                 <div class="plant-container"
                      th:each="plant : ${plants}"
                      th:data-plantid="${plant.id}"
@@ -85,12 +74,16 @@
                      th:data-last-watered="${plant.lastWatered}"
                      th:data-watering-days="${plant.getWateringFrequencyDays()}">
 
-                    <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
-                    
+                    <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link">
+                        <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
+                    </a>
+
                     <!-- Info -->
                     <div class="plant-info">
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            <h3 th:text="${plant.plantName}"></h3>
+                            <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link" style="text-decoration: none;">
+                                <h3 th:text="${plant.plantName}" class="plant-name" style="margin: 0;"></h3>
+                            </a>
                             <!-- Tags -->
                             <div id="tags-container" class="tags-container ml-3 mb-2">
                                 <button class="open-tag-selection tag" th:text="'Add Tag'" th:if="${plant.tag == null}" ></button>
