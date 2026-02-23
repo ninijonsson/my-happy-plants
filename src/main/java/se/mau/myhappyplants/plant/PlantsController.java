@@ -37,21 +37,10 @@ public class PlantsController {
 
         PerenualPlantDetailsResponse apiDetails = perenualClient.fetchPlantDetails(plant.getPerenualId());
 
-        //send the plant and user to the database
         model.addAttribute("user", user);
         model.addAttribute("plant", plant);
         model.addAttribute("details", apiDetails);
         return "plant-details";
-    }
-
-    @GetMapping("/test")
-    public String showTestPlants(
-            @RequestParam(required = false) String q,
-            Model model
-    ) {
-        model.addAttribute("query", q == null ? "" : q);
-        model.addAttribute("plants", perenualClient.fetchPlants(q)); // din fetch()
-        return "plants-list";
     }
 
     @GetMapping("/search")
