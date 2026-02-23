@@ -92,21 +92,23 @@ public class LibraryService {
     /**
      * Lägg till eller ändra tagg på en växt
      */
-    public AccountUserPlant setTagOnPlant(int plantId, String tagLabel) {
+    public boolean setTagOnPlant(int plantId, int tagId) {
 
-        // Hitta växten
+        // Find the plant
         AccountUserPlant plant = accountUserPlantRepository.findById(plantId)
                 .orElseThrow(() -> new RuntimeException("Plant not found with id: " + plantId));
 
-        // Hitta eller skapa taggen
-        Tag tag = tagRepository.findByLabel(tagLabel)
-                .orElseGet(() -> tagRepository.save(new Tag(tagLabel)));
+        // Verify the tag exists (optional but recommended)
+        Tag tag = tagRepository.findById(tagId)
+                .orElseThrow(() -> new RuntimeException("Tag not found with id: " + tagId));
 
-        // Sätt taggen på växten
+        // Set the tag ID on the plant (not the Tag object)
         plant.setTag(tag);
 
-        // Spara växten med den nya taggen
-        return accountUserPlantRepository.save(plant);
+        // Save the plant with the new tag
+        accountUserPlantRepository.save(plant);
+        
+        return accountUserPlantRepository.existsById(plantId);
     }
 
     /**

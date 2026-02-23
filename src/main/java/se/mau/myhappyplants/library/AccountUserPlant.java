@@ -1,5 +1,6 @@
 package se.mau.myhappyplants.library;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import se.mau.myhappyplants.user.AccountUser;
@@ -55,11 +56,13 @@ public class AccountUserPlant {
     // ManyToOne: Många växter kan tillhöra en användare
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"userPlants", "password", "role"})
     private AccountUser user;
 
     // ManyToOne: En växt kan ha EN tagg
     @ManyToOne
     @JoinColumn(name = "tag_id")
+    @JsonIgnoreProperties({"accountUserPlants", "userPlants"})
     private Tag tag;
 
     @Column (name="next_watering_date")
@@ -170,7 +173,8 @@ public class AccountUserPlant {
     }
 
     public double getDaysUntilNextWatering(){
-        if (lastWatered == null || wateringFrequencyDays <= 0)
+
+        if (lastWatered == null || wateringFrequencyDays == null || wateringFrequencyDays <= 0)
             return 0;
 
         long daysSinceWatered = getDaysSinceLastWatered();
