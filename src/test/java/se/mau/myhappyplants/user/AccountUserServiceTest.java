@@ -1,25 +1,41 @@
 package se.mau.myhappyplants.user;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import se.mau.myhappyplants.config.PasswordValidatorConfig;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 class AccountUserServiceTest {
+
+    @Mock
+    private AccountUserRepository accountUserRepository;
+
+
+    @InjectMocks
+    private AccountUserService accountUserService;
+
+    private PasswordValidatorConfig passwordValidator;
 
     /**
      * Using a @Mock annotation allows us to use fake data
      * to test instead of cramming useless data into the database
      */
 
-    private AccountUserService accountUserService;  // Class for handling registration logic
-    private PasswordValidatorConfig passwordValidator;
 
     @BeforeEach
     void setUp() {
-        passwordValidator = new PasswordValidatorConfig();
-        accountUserService = new AccountUserService();
+       passwordValidator = new PasswordValidatorConfig();
+        //accountUserService = new AccountUserService();
     }
 
     @Test
@@ -40,6 +56,7 @@ class AccountUserServiceTest {
 //        assertFalse(result, "Registration should fail when username exists in DB");
     }
 
+
     @Disabled("Väntar på att logiken för ACC.05F, ACC.04F ACC.07F ska implementeras")
     @Test
     @DisplayName("ACC.04F ACC.04.1F ACC.07F - Delete Account Test")
@@ -55,16 +72,32 @@ class AccountUserServiceTest {
 
 
     }
-    @Disabled // funkar inte!!!!
+    //@Disabled // funkar inte!!!!
     @Test
     @DisplayName("ACC.03F Create Account")
     void testCreateValidAccount() {
-        boolean result = accountUserService.createUser("Random1!", "AbitNicole2026!!!", "USER");
-        assertEquals(true, result);
+
+        AccountUser user = new AccountUser();
+        user.setUsername("RandomUser");
+
+        when(accountUserRepository.findByUsername("RandomUser"))
+                .thenReturn(Optional.empty())  // före save
+                .thenReturn(Optional.of(user)); // efter save
+
+        when(accountUserRepository.save(any(AccountUser.class)))
+                .thenReturn(user);
+
+        boolean result = accountUserService.createUser(
+                "RandomUser",
+                "AbitNicole2026!!!",
+                "USER"
+        );
+
+        assertTrue(result);
     }
 
 
-    @Disabled
+    //@Disabled
     @Test
     @DisplayName("ACC.05F Error Message Missing Username")
     void testMissingUsernameRegistration() {
@@ -102,6 +135,25 @@ class AccountUserServiceTest {
         String expected = response.toString();
 
         assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("ACC.11F Username Taken Error Message")
+    void testUsernameTaken() {
+
+        AccountUser existingUser = new AccountUser();
+        existingUser.setUsername("test");
+
+        when(accountUserRepository.findByUsername("test"))
+                .thenReturn(Optional.of(existingUser));
+
+        boolean result = accountUserService.createUser(
+                "test",
+                "password123!",
+                "USER"
+        );
+
+        assertFalse(result, "Username is already taken");
     }
 
 
