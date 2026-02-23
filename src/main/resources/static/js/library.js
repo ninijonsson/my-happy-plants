@@ -130,10 +130,14 @@ document.addEventListener("DOMContentLoaded", () => {
         tagContainer.innerHTML = '';
         
         const tags = Array.isArray(data) ? data : (data.tags || []);
-       
 
         tags.forEach(tag => {
-            tagContainer.innerHTML += `<button class="tag">${tag.label}</button>`;
+            tagContainer.innerHTML += `
+                                        <div class="tag">
+                                            <input type="checkbox" class="float: left" id="tag${tag.id}">
+                                            <label class="float: right" for="tag${tag.id}">${tag.label}</label>
+                                        </div>
+                                        `;
         });
     };
 
@@ -166,4 +170,8 @@ function updatePlantBar(plant) {
 
     const daysText = plant.querySelector('.days-since-watered');
     daysText.textContent = `Days since last watered: ${daysSinceWatered} days`;
+}
+
+function addTag(plant) {
+    console.log(plant);
 }
