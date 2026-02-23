@@ -10,6 +10,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,25 @@ class LibraryServiceTest {
         plantRepo = mock(AccountUserPlantRepository.class); // Creating mock of repo
         libraryService = new LibraryService(plantRepo);     // Service object where we send our mock repo
         userId = 1;                                         // Default user id
+    }
+
+    @Test
+    @DisplayName("LIB.02F - Library Overview - Get all user's plants")
+    void testGetAllUserPlants() {
+        // Create mock data
+        AccountUserPlant plantOne = new AccountUserPlant("Rose", "1");
+        AccountUserPlant plantTwo = new AccountUserPlant("Sunflower", "2");
+        //AccountUserPlant plantThree = new AccountUserPlant("Cactus", "3");
+        List<AccountUserPlant> expected = Arrays.asList(plantOne, plantTwo);
+
+        // Repo should give us back the two plants initiated
+        when(plantRepo.findByUserId(userId)).thenReturn(expected);
+
+        // Act
+        List<AccountUserPlant> result = libraryService.getAllPlantsForUser(userId);
+
+        assertEquals(2, result.size());
+        assertSame(expected, result); // Lists should be same
     }
 
     @Test
