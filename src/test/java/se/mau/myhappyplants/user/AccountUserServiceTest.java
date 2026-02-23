@@ -72,7 +72,7 @@ class AccountUserServiceTest {
 
 
     }
-    //@Disabled // funkar inte!!!!
+
     @Test
     @DisplayName("ACC.03F Create Account")
     void testCreateValidAccount() {
@@ -97,7 +97,6 @@ class AccountUserServiceTest {
     }
 
 
-    //@Disabled
     @Test
     @DisplayName("ACC.05F Error Message Missing Username")
     void testMissingUsernameRegistration() {
@@ -112,6 +111,24 @@ class AccountUserServiceTest {
         //boolean result = userService.("test", "123", "USER");
         //assertEquals(false, result);
     }
+
+    @Test
+    @DisplayName("ACC.07F Error Message Non-Existent Account")
+    void testNonExistentAccount() {
+
+        when(accountUserRepository.findByUsername("NoName"))
+                .thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            accountUserService.getUserByUsername("NoName");
+        });
+
+        assertEquals(
+                "User not found with username: NoName",
+                exception.getMessage()
+        );
+    }
+
 
     @Test
     @DisplayName("ACC.10F Password Rules")
