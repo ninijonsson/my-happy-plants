@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!searchInput) return;
 
     //Listener for 3 or more letters in search bar
+    /*
     let debounceTimer;
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.trim();
@@ -19,14 +20,21 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }, 400);
     });
+     */
 
     // Enter press on search bar
     searchInput.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault();
             const query = e.target.value.trim();
-            if (query.length > 0) {
+            if (query.length >= 3) {
                 await fetchPlants(query);
+                document.getElementById("searchNotice").style.display = "none"
+            } else if (query.length === 0) {
+                plantGrid.innerHTML = initialPlantsHTML;
+            }else{
+                document.getElementById("searchNotice").textContent = "You must type at least 3 letters to see results.";
+                document.getElementById("searchNotice").style.display = "block";
+                e.preventDefault();
             }
         }
     });
