@@ -38,7 +38,7 @@ class LibraryControllerTest {
 
         when(session.getAttribute("user")).thenReturn(null);
 
-        String viewName = libraryController.showLibrary("water", model, session);
+        String viewName = libraryController.showLibrary("water", null, model, session);
 
         assertEquals("redirect:/login", viewName);
 
@@ -66,7 +66,7 @@ class LibraryControllerTest {
         when(libraryService.getUserLibrary(1, sort)).thenReturn(plants);
         when(libraryService.countPlantsNeedingWater(1)).thenReturn(1L);
 
-        String viewName = libraryController.showLibrary(sort, model, session);
+        String viewName = libraryController.showLibrary(sort, null, model, session);
 
         assertEquals("/library/my-plants", viewName);
         assertEquals(plants, model.getAttribute("plants"));
