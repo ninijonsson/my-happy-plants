@@ -75,10 +75,8 @@ public class LibraryController {
     public ResponseEntity<?> getTags() {
        
         List<Tag> tags = tagService.getAllTags();
-        System.out.println("Found " + tags.size() + " tags");
         
         return ResponseEntity.ok(tags);
-        
     }
     
     @PutMapping("/plants/{plantId}/tags/{tagId}")
