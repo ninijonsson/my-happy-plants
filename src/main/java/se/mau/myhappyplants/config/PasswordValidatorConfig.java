@@ -3,7 +3,15 @@ package se.mau.myhappyplants.config;
 import org.springframework.stereotype.Component;
 
 /**
- * Validator för lösenordsstyrka
+ * Configuration class for validating password strength.
+ * Enforces the following criteria for passwords:
+ * - Minimum length of 12 characters.
+ * - At least one uppercase letter (A-Z).
+ * - At least one digit (0-9).
+ * - At least one special character (!@#$%^&*()_+-=[]{}; etc.).
+ *
+ * Contains methods for validating a given password against these rules and
+ * determining whether a password meets the defined security standards.
  */
 
 @Component
@@ -15,9 +23,14 @@ public class PasswordValidatorConfig {
     private static final String SPECIAL_CHAR_PATTERN = ".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*";
 
     /**
-     * Validera lösenordsstyrka
-     * Krav: minst 12 tecken, en stor bokstav, en siffra, ett specialtecken
+     * Validates a given password against the defined security rules.
+     * The rules include checks for minimum length, presence of uppercase letters, digits,
+     * and special characters. If the password does not meet one or more criteria,
+     * a detailed response message is returned specifying the violations.
      *
+     * @param password the password to validate, provided as a String
+     * @return a String containing validation error messages if the password is invalid;
+     *         an empty String if the password passes all validations
      */
 
     public String validate(String password) {
@@ -48,7 +61,7 @@ public class PasswordValidatorConfig {
     }
 
     /**
-     * Kolla om det är giltigt lösenord utan att kasta exception
+     * Check if the password is valid without throwing an exception
      */
     public String isValid(String password) {
         String response = validate(password);
