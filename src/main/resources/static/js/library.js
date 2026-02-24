@@ -134,8 +134,16 @@ document.addEventListener("DOMContentLoaded", () => {
         button.addEventListener('click', async (e) => {
             e.preventDefault();
             const plantContainer = e.target.closest('.plant-container');
+            const lastWatered = new Date(plantContainer.dataset.lastWatered);
+            const wateringDays = parseInt(plantContainer.dataset.wateringDays, 10);
             const plantId = plantContainer.dataset.plantid;
             const userId = plantContainer.dataset.userid;
+
+            const now = new Date();
+            const diffTime = now - lastWatered;
+            const diffDays = diffTime / (1000 * 60 * 60 * 24);
+            const percent = (diffDays / wateringDays) * 100;
+            const wasNeedingWater = percent >= 100;
 
             try {
                 const response = await fetch(
@@ -149,12 +157,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Update lastWatered in frontend
                     plantContainer.dataset.lastWatered = new Date().toISOString();
                     updatePlantBar(plantContainer);
-
-                    const counter = document.getElementById("needs-watering-count");
-                    if (counter) {
-                        let current = parseInt(counter.textContent, 10);
-                        if (current > 0) {
-                            counter.textContent = current - 1;
+                    if (wasNeedingWater) {
+                        const counter = document.getElementById("needs-watering-count");
+                        if (counter) {
+                            let current = parseInt(counter.textContent, 10);
+                            if (current > 0) {
+                                counter.textContent = current - 1;
+                            }
                         }
                     }
 
