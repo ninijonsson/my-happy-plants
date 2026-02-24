@@ -5,13 +5,16 @@
     <title>My plants</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script th:src="@{/js/library.js}"></script>
+    <script th:src="@{/js/loader.js}"></script>
     <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{/css/loading.css}">
 </head>
 
 <body>
     <div id="container">
         <!---Navbar-->
         <div th:replace="~{/fragments/fragment :: navbar}"></div>
+        <div th:replace="~{/fragments/fragment :: loader}"></div>
         
         <div class="welcome-panel">
             <h1>Welcome back <span th:text="${user.username}">User</span>!</h1>
@@ -42,24 +45,24 @@
         <!-- Sorting buttons -->
         <div class="flex gap-3 my-6">
             <a th:href="@{/library(sort='water')}"
-               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02]"
+               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02] no-loader"
                th:classappend="${currentSort == 'water' || currentSort == null ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
                 Water Status 💧
             </a>
             <a th:href="@{/library(sort='asc')}"
-               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02]"
+               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02] no-loader"
                th:classappend="${currentSort == 'asc' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
                 A-Z
             </a>
 
             <a th:href="@{/library(sort='desc')}"
-               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02]"
+               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02] no-loader"
                th:classappend="${currentSort == 'desc' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
                 Z-A
             </a>
 
             <a th:href="@{/library(sort='recent')}"
-               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02]"
+               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02] no-loader"
                th:classappend="${currentSort == 'recent' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
                 Recently added
             </a>

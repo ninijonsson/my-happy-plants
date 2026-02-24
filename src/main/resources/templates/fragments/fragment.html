@@ -30,6 +30,18 @@
         </li>
     </ul>
 </nav>
+<!-- Loading animation -->
+<div th:fragment="loader" id="loading" class="hidden fixed top-0 left-0 w-full h-full bg-green-900/70 z-50">
+
+    <div class="w-full h-full flex items-center justify-center">
+        <div class="bouncing-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+</div>
 
 </body>
 </html>
