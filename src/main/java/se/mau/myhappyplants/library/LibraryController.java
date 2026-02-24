@@ -45,10 +45,9 @@ public class LibraryController {
         } else {
             plants = libraryService.getUserLibrary(user.getId(), sort);
         }
-        
-        //Todo might need to update this call later for the sorting of water levels
-        long needsWatering = libraryService.countPlantsNeedingWater(user.getId());
 
+        long needsWatering = libraryService.countPlantsNeedingWater(user.getId());
+        plants.forEach(AccountUserPlant::calculateNextWateringDate);
         model.addAttribute("plants", plants);
         model.addAttribute("user", user);
         model.addAttribute("needsWatering", needsWatering);

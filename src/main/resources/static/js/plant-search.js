@@ -6,22 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!searchInput) return;
 
-    //Listener for 3 or more letters in search bar
-    /*
-    let debounceTimer;
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.trim();
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            if (query.length >= 3) {
-                fetchPlants(query);
-            } else if (query.length === 0) {
-                plantGrid.innerHTML = initialPlantsHTML;
-            }
-        }, 400);
-    });
-     */
-
     // Enter press on search bar
     searchInput.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
@@ -85,32 +69,7 @@ function createPlantCard(plant) {
     return article;
 }
 
-async function addToLibrary(plantId, button){
-    const originalText = button.innerHTML;
-    if(plantId === null) return (
-        alert("WE HAVE HIT THE RATE LIMIT!")
-    )
-
-    try {
-        button.disabled = true;
-        button.innerHTML = 'Adding...';
-        const response = await fetch(`/plants/add/${plantId}`, {
-            method: 'PUT',
-        });
-
-        if (response.ok) {
-            button.innerHTML = '✓ Added to Library';
-            button.style.backgroundColor = '#585E58';
-            button.classList.add('success');
-        } else {
-            throw new Error('Could not add plant');
-        }
-    } catch (error) {
-        console.error("Error:", error);
-        button.innerHTML = 'Error! Try again';
-        button.disabled = false;
-        setTimeout(() => {
-            button.innerHTML = originalText;
-        }, 2000);
-    }
-}
+setTimeout(()=>{
+    const toast = document.querySelector(".toast");
+    if(toast) toast.style.display = "none";
+}, 3000);
