@@ -79,8 +79,8 @@ public class AccountUserPlant {
 
     @Column(name = "description", length = 5000)
     private String description;
-    
-    
+
+
     // Constructors
     public AccountUserPlant() {
     }
@@ -169,6 +169,18 @@ public class AccountUserPlant {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDate getNextWateringDate() {
+        return nextWateringDate;
+    }
+
+    public void setNextWateringDate(LocalDate nextWateringDate) {
+        this.nextWateringDate = nextWateringDate;
     }
 
     public void calculateNextWateringDate() {
