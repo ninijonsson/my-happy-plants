@@ -57,7 +57,7 @@ public class PerenualClient {
                             p.id(),
                             p.commonName() != null && !p.commonName().isBlank() ? p.commonName() : "(no common name)",
                             p.scientificName() != null && !p.scientificName().isEmpty() ? p.scientificName().get(0) : null,
-                            p.defaultImage() != null ? (p.defaultImage().thumbnail() != null ? p.defaultImage().thumbnail() : p.defaultImage().regularUrl()) : null,
+                            p.defaultImage() != null ? p.defaultImage().regularUrl() : "/images/plant.jpg",
                             p.wateringFrequency() != null && p.wateringFrequency().wateringFrequencyDays() != null && !p.wateringFrequency().wateringFrequencyDays().isBlank()
                                     ? p.wateringFrequency().wateringFrequencyDays() : "0"
                     ))
