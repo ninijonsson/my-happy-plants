@@ -87,11 +87,14 @@ function createPlantCard(plant) {
 
 async function addToLibrary(plantId, button){
     const originalText = button.innerHTML;
+    if(plantId === null) return (
+        alert("WE HAVE HIT THE RATE LIMIT!")
+    )
 
     try {
         button.disabled = true;
         button.innerHTML = 'Adding...';
-        const response = await fetch(`/api/library/add/${plantId}`, {
+        const response = await fetch(`/plants/add/${plantId}`, {
             method: 'PUT',
         });
 

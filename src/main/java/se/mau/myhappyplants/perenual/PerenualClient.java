@@ -72,8 +72,9 @@ public class PerenualClient {
         }
     }
 
-    @Cacheable
+    @Cacheable("plants")
     public PlantDetailsView fetchPlantById(String perenualPlantId){
+        if(perenualPlantId == null) throw new IllegalArgumentException("Plant id cannot be null");
         PerenualPlant response = webClient.get()
                 .uri(uri -> uri.path("/species/details/" + perenualPlantId)
                         .queryParam("key", props.apiKey())

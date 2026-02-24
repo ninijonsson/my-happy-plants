@@ -70,8 +70,8 @@ public class PlantsController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/add")
-    public String addPlant(@RequestParam String plantName, @RequestParam String pPlantId, HttpSession session) {
+    @PutMapping("/add/{pPlantId}")
+    public String addPlant(@PathVariable String pPlantId, HttpSession session) {
         AccountUser user = (AccountUser) session.getAttribute("user");
 
         if (user == null) {
