@@ -1,16 +1,15 @@
 <!doctype html>
 <html lang="sv" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8"/>
-        <title>Plants</title>
-        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-        <script th:src="@{/js/plant-search.js}"></script>
-        <script th:src="@{/js/loader.js}"></script>
-        <link rel="stylesheet" th:href="@{/css/plant-search.css}">
-        <link rel="stylesheet" th:href="@{/css/loading.css}">
-    </head>
-
-    <body>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Plants</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script th:src="@{/js/plant-search.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/plant-search.css}">
+    <link rel="stylesheet" href="../../static/css/plant-search.css">
+    <link rel="stylesheet" th:href="@{/css/loading.css}">
+</head>
+<body>
     <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-3"></div>
     <div class="container">
         <div th:replace="~{/fragments/fragment :: navbar}"></div>
@@ -58,5 +57,7 @@
             </article>
         </main>
     </div>
-    </body>
+    <!-- Loading animation -->
+    <div th:replace="~{/fragments/fragment :: loading}"></div>
+</body>
 </html>

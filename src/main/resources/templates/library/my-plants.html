@@ -68,55 +68,54 @@
             </a>
         </div>
 
-            <div id="users-plants" th:attr="data-currentsort=${currentSort}">
-                <h2 class="section-title">Your plants</h2>
+        <div id="users-plants" th:attr="data-currentsort=${currentSort}">
+            <h2 class="section-title">Your plants</h2>
 
-                <div class="plant-container"
-                     th:each="plant : ${plants}"
-                     th:data-plantid="${plant.id}"
-                     th:data-userid="${plant.user.id}"
-                     th:data-last-watered="${plant.lastWatered}"
-                     th:data-watering-days="${plant.getWateringFrequencyDays()}">
+            <div class="plant-container"
+                 th:each="plant : ${plants}"
+                 th:data-plantid="${plant.id}"
+                 th:data-userid="${plant.user.id}"
+                 th:data-last-watered="${plant.lastWatered}"
+                 th:data-watering-days="${plant.getWateringFrequencyDays()}">
 
-                    <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link">
-                        <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
-                    </a>
+                <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link">
+                    <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
+                </a>
 
-                    <!-- Info -->
-                    <div class="plant-info">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link" style="text-decoration: none;">
-                                <h3 th:text="${plant.plantName}" class="plant-name" style="margin: 0;"></h3>
-                            </a>
-                            <!-- Tags -->
-                            <div id="tags-container" class="tags-container ml-3 mb-2">
-                                <button class="open-tag-selection tag" th:text="'Add Tag'" th:if="${plant.tag == null}" ></button>
-                                <button class="open-tag-selection tag" th:text="'#' + ${plant.tag.label}" th:if="${plant.tag != null}"></button>
-                            </div>
+                <!-- Info -->
+                <div class="plant-info">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link" style="text-decoration: none;">
+                            <h3 th:text="${plant.plantName}" class="plant-name" style="margin: 0;"></h3>
+                        </a>
+                        <!-- Tags -->
+                        <div id="tags-container" class="tags-container ml-3 mb-2">
+                            <button class="open-tag-selection tag" th:text="'Add Tag'" th:if="${plant.tag == null}" ></button>
+                            <button class="open-tag-selection tag" th:text="'#' + ${plant.tag.label}" th:if="${plant.tag != null}"></button>
                         </div>
-                        
-                        <p class="latin-name" th:text="${plant.scientificName}"></p>
-                        <p class="days-since-watered"></p>
-
-                        <!--Watering progress bar-->
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
-                            <span class="water-status-text"></span>
-                        </div>
-                        <p>Next watering date:
-                            <span th:text="${#temporals.format(plant.nextWateringDate, 'dd MMM yyyy')}" style="color: #005F02;"></span>
-                        </p>
                     </div>
                     
-                    <!-- Actions -->
-                    <div class="plant-actions">
-                        <button type="button" class="water-btn">💧 Water it</button>
-                        <button type="button" class="delete-btn">Remove</button>
+                    <p class="latin-name" th:text="${plant.scientificName}"></p>
+                    <p class="days-since-watered"></p>
+
+                    <!--Watering progress bar-->
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                        <span class="water-status-text"></span>
                     </div>
+                    <p>Next watering date:
+                        <span th:text="${#temporals.format(plant.nextWateringDate, 'dd MMM yyyy')}" style="color: #005F02;"></span>
+                    </p>
+                </div>
+                
+                <!-- Actions -->
+                <div class="plant-actions">
+                    <button type="button" class="water-btn">💧 Water it</button>
+                    <button type="button" class="delete-btn">Remove</button>
                 </div>
             </div>
         </div>
-    <!-- Delete Confirmation Modal -->
+    </div>
     <div id="delete-modal" class="modal-overlay">
         <div class="modal-content">
             <h3>Confirm Deletion</h3>
@@ -140,6 +139,7 @@
             </div>
         </div>
     </div>
-    
+    <!--Loading animation-->
+    <div th:replace="~{/fragments/fragment :: loading}"></div>
 </body>
 </html>

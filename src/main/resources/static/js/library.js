@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const plants = document.querySelectorAll('.plant-container');
     const searchLibrary = document.getElementById('library-search');
     const plantList = document.getElementById('users-plants');
+    
+    const loading = document.getElementById('loading');
 
     //Listen for typing into the search bar
     searchLibrary.addEventListener('input', (e) => {
