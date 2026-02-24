@@ -15,7 +15,8 @@
         
         <div class="welcome-panel">
             <h1>Welcome back <span th:text="${user.username}">User</span>!</h1>
-            <p>You have <span th:text="${needsWatering}">0</span>
+            <p>You have
+                <span id="needs-watering-count" th:text="${needsWatering}">0</span>
                 plants that need watering
             </p>
             <a th:href="@{/plants/search}" class="add-btn">Add new plant to library</a>
@@ -64,7 +65,7 @@
             </a>
         </div>
 
-            <div id="users-plants">
+            <div id="users-plants" th:attr="data-currentsort=${currentSort}">
                 <h2 class="section-title">Your plants</h2>
 
                 <div class="plant-container"
@@ -92,12 +93,16 @@
                         </div>
                         
                         <p class="latin-name" th:text="${plant.scientificName}"></p>
-                        
                         <p class="days-since-watered"></p>
 
+                        <!--Watering progress bar-->
                         <div class="progress-bar">
                             <div class="progress-fill"></div>
+                            <span class="water-status-text"></span>
                         </div>
+                        <p>Next watering date:
+                            <span th:text="${#temporals.format(plant.nextWateringDate, 'dd MMM yyyy')}" style="color: #005F02;"></span>
+                        </p>
                     </div>
                     
                     <!-- Actions -->

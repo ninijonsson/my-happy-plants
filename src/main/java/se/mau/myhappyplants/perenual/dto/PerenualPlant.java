@@ -8,7 +8,8 @@ public record PerenualPlant(
         @JsonProperty("common_name") String commonName,
         @JsonProperty("scientific_name") List<String> scientificName,
         @JsonProperty("default_image") DefaultImage defaultImage,
-        @JsonProperty("watering_general_benchmark") WateringFrequency wateringFrequency
+        @JsonProperty("watering_general_benchmark") WateringFrequency wateringFrequency,
+        @JsonProperty("description") String description
 ) {
     public record DefaultImage(
             @JsonProperty("thumbnail") String thumbnail,

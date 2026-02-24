@@ -134,8 +134,16 @@ document.addEventListener("DOMContentLoaded", () => {
         button.addEventListener('click', async (e) => {
             e.preventDefault();
             const plantContainer = e.target.closest('.plant-container');
+            const lastWatered = new Date(plantContainer.dataset.lastWatered);
+            const wateringDays = parseInt(plantContainer.dataset.wateringDays, 10);
             const plantId = plantContainer.dataset.plantid;
             const userId = plantContainer.dataset.userid;
+
+            const now = new Date();
+            const diffTime = now - lastWatered;
+            const diffDays = diffTime / (1000 * 60 * 60 * 24);
+            const percent = (diffDays / wateringDays) * 100;
+            const wasNeedingWater = percent >= 100;
 
             try {
                 const response = await fetch(
@@ -146,11 +154,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
                 if (response.ok) {
-
-                    // Uppdatera lastWatered i frontend
+                    // Update lastWatered in frontend
                     plantContainer.dataset.lastWatered = new Date().toISOString();
-
                     updatePlantBar(plantContainer);
+                    if (wasNeedingWater) {
+                        const counter = document.getElementById("needs-watering-count");
+                        if (counter) {
+                            let current = parseInt(counter.textContent, 10);
+                            if (current > 0) {
+                                counter.textContent = current - 1;
+                            }
+                        }
+                    }
+
+                    const plantList = document.getElementById('users-plants');
+                    //Move to the end of the list
+                    if (plantList.dataset.currentsort === 'water') {
+                        plantList.appendChild(plantContainer);
+                    }
 
                 } else {
                     alert("Failed to water plant.");
@@ -161,18 +182,18 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-    
+
     // Update tag
     tagConfirmBtn.addEventListener('click', async () => {
         if (!currentPlantForTag) return;
-        
+
         const selectedTag = document.querySelector('input[name="tag-selection"]:checked');
 
         if (!selectedTag) {
             alert("Please select a tag.");
             return;
         }
-        
+
         const plantId = currentPlantForTag.dataset.plantid;
         const tagId = selectedTag.value;
 
@@ -193,16 +214,16 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Failed to update tag.");
         }
     });
-    
+
     // Getting Tags
     const loadTags = async () => {
-    
+
         const response = await fetch('/library/tags', {method: 'GET'});
         const data = await response.json();
 
         const tagContainer = document.getElementById('tag-list');
         tagContainer.innerHTML = '';
-        
+
         const tags = Array.isArray(data) ? data : (data.tags || []);
 
         tags.forEach(tag => {
@@ -231,17 +252,37 @@ function updatePlantBar(plant) {
     const percent = Math.min((daysSinceWatered / wateringDays) * 100, 100);
     const barFill = plant.querySelector('.progress-fill');
     barFill.style.width = percent + '%';
+    const statusText = plant.querySelector(".water-status-text");
 
+    // Bar coloring
+    let color, text;
     if (percent >= 100) {
-        barFill.style.background = "#ef4444";
-    } else if (percent >= 70) {
-        barFill.style.background = "#f97316";
-    } else if (percent >= 40) {
-        barFill.style.background = "#eab308";
+        color = "#ef4444";
+        text = "Needs watering now!";
+    } else if (percent >= 80) {
+        color = "#f97316";
+        text = "Almost thirsty";
+    } else if (percent >= 60) {
+        color = "#eab308";
+        text = "Getting dry";
     } else {
-        barFill.style.background = "#22c55e";
+        color = "#22c55e";
+        text = "Plenty of water";
     }
+    barFill.style.background = color;
 
+    // View text when hover on bar
+    const progressBar = plant.querySelector('.progress-bar');
+    progressBar.addEventListener('mouseenter', () => {
+        statusText.textContent = text;
+        statusText.style.opacity = 1;
+        statusText.style.color = color; // matcha barfärgen
+    });
+    progressBar.addEventListener('mouseleave', () => {
+        statusText.style.opacity = 0;
+    });
+
+    // Days since last watered
     const daysText = plant.querySelector('.days-since-watered');
     daysText.textContent = `Days since last watered: ${daysSinceWatered} days`;
 }

@@ -59,7 +59,8 @@ public class PerenualClient {
                             p.scientificName() != null && !p.scientificName().isEmpty() ? p.scientificName().get(0) : null,
                             p.defaultImage() != null ? p.defaultImage().regularUrl() : "/images/plant.jpg",
                             p.wateringFrequency() != null && p.wateringFrequency().wateringFrequencyDays() != null && !p.wateringFrequency().wateringFrequencyDays().isBlank()
-                                    ? p.wateringFrequency().wateringFrequencyDays() : "0"
+                                    ? p.wateringFrequency().wateringFrequencyDays() : "0",
+                            p.description()!= null && !p.description().isBlank() ? p.description() : null
                     ))
                     .toList();
 
@@ -72,10 +73,10 @@ public class PerenualClient {
         }
     }
 
-    @Cacheable
-    public PlantDetailsView fetchPlantById(String perenualPlantId){
+    @Cacheable("plantDetails")
+    public PlantDetailsView fetchPlantById(String query){
         PerenualPlant response = webClient.get()
-                .uri(uri -> uri.path("/species/details/" + perenualPlantId)
+                .uri(uri -> uri.path("/species/details/" + query)
                         .queryParam("key", props.apiKey())
                         .build())
                 .retrieve()
@@ -93,7 +94,8 @@ public class PerenualClient {
                         ? response.defaultImage().regularUrl() : null,
                 response.wateringFrequency() != null &&
                         response.wateringFrequency().wateringFrequencyDays() != null
-                        ? response.wateringFrequency().wateringFrequencyDays() : null
+                        ? response.wateringFrequency().wateringFrequencyDays() : null,
+                response.description()
         );
     }
 
