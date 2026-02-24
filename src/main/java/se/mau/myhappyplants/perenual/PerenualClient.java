@@ -75,6 +75,7 @@ public class PerenualClient {
 
     @Cacheable("plantDetails")
     public PlantDetailsView fetchPlantById(String query){
+
         PerenualPlant response = webClient.get()
                 .uri(uri -> uri.path("/species/details/" + query)
                         .queryParam("key", props.apiKey())

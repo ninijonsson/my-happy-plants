@@ -76,6 +76,7 @@ public class PlantsController {
     @PostMapping("/add")
     public String addPlant(@RequestParam String plantName, @RequestParam String perenualPlantId,
                            RedirectAttributes redirectAttributes, Principal principal, HttpSession session) {
+
         AccountUser user = (AccountUser) session.getAttribute("user");
         if (user == null) {
             return "redirect:/login";

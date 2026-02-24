@@ -30,6 +30,7 @@ public class HTTPSecurityConfig {
                     registry.requestMatchers("/images/**", "/css/**", "/js/**").permitAll();
                     registry.requestMatchers("/plants/**").hasRole("USER");
                     registry.requestMatchers("/library/**").hasRole("USER");
+                    registry.requestMatchers("/error/**").permitAll();
                     registry.anyRequest().hasRole("USER");//TODO: Make this more secure. Currently allow anyone to any site.
                 })
                 .formLogin(formLogin -> formLogin
