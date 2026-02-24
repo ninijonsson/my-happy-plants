@@ -82,10 +82,15 @@ public class LibraryService {
         plant.setUser(user);
         plant.setImageUrl(plantDetails.imageUrl());
         plant.setScientificName(plantDetails.scientificName());
+        plant.setDescription(plantDetails.description());
         plant.setPerenualId(String.valueOf(plantDetails.id()));
         plant.setLastWatered(LocalDateTime.now());
-        plant.setWateringFrequencyDays(WateringFrequencyParser.parseWateringFrequency(plantDetails.wateringFrequency()));
-
+        int wateringFreq = WateringFrequencyParser.parseWateringFrequency(plantDetails.wateringFrequency());
+        if(wateringFreq > 0) {
+            plant.setWateringFrequencyDays(wateringFreq);
+        }else {
+            plant.setWateringFrequencyDays(7);
+        }
         return accountUserPlantRepository.save(plant);
     }
 

@@ -20,7 +20,7 @@ public class AccountUserPlant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    //TODO: Ändra till int istället?
+    //TODO: Ändra till snt istället?
     @Column(name = "perenual_id")
     private String perenualId;
 
@@ -68,11 +68,14 @@ public class AccountUserPlant {
     @Column (name = "watering_frequency_days")
     private Integer wateringFrequencyDays;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 700)
     private String imageUrl;
 
     @Column(name = "scientific_name")
     private String scientificName;
+
+    @Column(name = "description", length = 5000)
+    private String description;
     
     
     // Constructors
@@ -155,6 +158,14 @@ public class AccountUserPlant {
 
     public void setWateringFrequencyDays(Integer wateringFrequencyDays) {
         this.wateringFrequencyDays = wateringFrequencyDays;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void calculateNextWateringDate() {
