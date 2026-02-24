@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const plantGrid = document.getElementById('plantGrid');
     const initialPlantsHTML = plantGrid.innerHTML;
     const searchInput = document.getElementById('plantSearch');
+    
+    const loading = document.getElementById('loading');
 
     if (!searchInput) return;
 
@@ -11,8 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.key === 'Enter') {
             const query = e.target.value.trim();
             if (query.length >= 3) {
+                loading.classList.remove('hidden');
+                loading.classList.add('flex');
                 await fetchPlants(query);
                 document.getElementById("searchNotice").style.display = "none"
+                loading.classList.remove('flex');
+                loading.classList.add('hidden');
             } else if (query.length === 0) {
                 plantGrid.innerHTML = initialPlantsHTML;
             }else{
@@ -28,8 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.target.classList.contains('add-btn')) {
             const button = e.target;
             const plantId = button.getAttribute('data-id');
-
+            loading.classList.remove('hidden');
+            loading.classList.add('flex');
             await addToLibrary(plantId, button);
+            loading.classList.remove('flex');
+            loading.classList.add('hidden');
+            
         }
     });
 });
@@ -43,7 +53,8 @@ async function fetchPlants(query) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         const newGrid = doc.getElementById('plantGrid');
-
+        
+        
         if (newGrid) {
             grid.innerHTML = newGrid.innerHTML;
         }
