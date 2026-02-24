@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import se.mau.myhappyplants.library.AccountUserPlant;
-import ch.qos.logback.core.model.NamedModel;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
-import se.mau.myhappyplants.library.LibraryController;
 import se.mau.myhappyplants.library.LibraryService;
 import se.mau.myhappyplants.perenual.PerenualClient;
 import org.springframework.stereotype.Controller;
@@ -30,19 +27,32 @@ public class PlantsController {
     private LibraryService libraryService;
 
     @GetMapping("/plant-details/{id}")
-    public String showPlantDetails(@PathVariable int id, Model model, HttpSession session) {
-        //Get the user from the session
+    public String showLibraryPlantDetails(@PathVariable int id, Model model, HttpSession session) {
+        AccountUserPlant plant = libraryService.getPlantById(id);
+
+        return prepareDetails(plant.getPerenualId(), plant, model, session);
+    }
+
+    @GetMapping("/preview/{perenualId}")
+    public String previewSearchPlant(@PathVariable String perenualId, Model model, HttpSession session) {
+        return prepareDetails(perenualId, null, model, session);
+    }
+
+    /**
+     * Helper method for fetching plant details
+     * to use it for the library plants and
+     * the search plants
+     */
+    private String prepareDetails(String apiId, AccountUserPlant plant, Model model, HttpSession session) {
         AccountUser user = (AccountUser) session.getAttribute("user");
         if (user == null) return "redirect:/login";
 
-        //Fetch the plant from the database
-        AccountUserPlant plant = libraryService.getPlantById(id);
-
-        PerenualPlantDetailsResponse apiDetails = perenualClient.fetchPlantDetails(plant.getPerenualId());
+        PerenualPlantDetailsResponse apiDetails = perenualClient.fetchPlantDetails(apiId);
 
         model.addAttribute("user", user);
-        model.addAttribute("plant", plant);
         model.addAttribute("details", apiDetails);
+        model.addAttribute("plant", plant);
+
         return "plant-details";
     }
 

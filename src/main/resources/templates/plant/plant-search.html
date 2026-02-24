@@ -34,10 +34,17 @@
 
         <main class="plant-grid" id="plantGrid">
             <article class="plant-card" th:each="plant : ${plants}">
-                <img th:src="${plant.imageUrl}" th:alt="${plant.name}" class="plant-image">
+                <a th:href="@{/plants/preview/{id}(id=${plant.id})}" class="plant-link">
+                    <img th:src="${plant.imageUrl != null ? plant.imageUrl : '/images/plant.jpg'}"
+                         th:alt="${plant.name}"
+                         class="plant-image">
+                </a>
 
                 <div class="plant-info">
-                    <div class="plant-name" th:text="${plant.name}">Plant name</div>
+                    <a th:href="@{/plants/preview/{id}(id=${plant.id})}" class="plant-link" style="text-decoration: none;">
+                        <div class="plant-name" th:text="${plant.name}">Plant name</div>
+                    </a>
+
                     <div class="scientific-name" th:text="${plant.scientificName}">Scientific namn</div>
 
                     <form th:action="@{/plants/add}" method="post">
