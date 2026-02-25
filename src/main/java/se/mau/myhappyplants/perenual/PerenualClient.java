@@ -2,18 +2,22 @@ package se.mau.myhappyplants.perenual;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import se.mau.myhappyplants.perenual.dto.PerenualPlant;
 import se.mau.myhappyplants.perenual.dto.PerenualSpeciesListResponse;
 import se.mau.myhappyplants.plant.dto.PlantDetailsView;
-import org.springframework.http.HttpStatusCode;
 import java.util.List;
 
 /**
- * HTTP client for the Perenual API (base url, API key, endpoints).
- * Responsible for calling external endpoints and returning response DTOs.
+ * The PerenualClient class is a service component that provides methods for interacting
+ * with the Perenual API to perform operations related to plant data. It allows fetching
+ * plant search results, detailed information about specific plants, and additional plant
+ * details using API endpoints. The client is configured with a base URL and API key, which
+ * are provided via the application's properties.
+ *
+ * This client leverages WebClient for making HTTP requests and supports caching for
+ * some of its methods to improve performance and reduce redundant API calls.
  */
 
 @Service
@@ -27,10 +31,14 @@ public class PerenualClient {
     }
 
     /**
-     * Fetches the plants, used for home page
-     * Currently capped to get 100 plants
-     * @param query
-     * @return List of plants
+     * Fetches a list of plants based on the provided query string. This method sends a request to
+     * an external API to retrieve plant data and returns a mapped list of `PlantDetailsView` objects,
+     * representing the details of each plant.
+     *
+     * If no query is provided or an error occurs, an empty list is returned.
+     *
+     * @param query the search term used to filter plant results. If null or blank, a default search is performed.
+     * @return a list of `PlantDetailsView` objects containing details about each plant, or an empty list if no results are found.
      */
     @Cacheable(value = "plantSearch", key = "#query == null ? 'default' : #query.toLowerCase().trim()")
     public List<PlantDetailsView> fetchPlants(String query) {
@@ -73,6 +81,17 @@ public class PerenualClient {
         }
     }
 
+    /**
+     * Fetches plant details by its unique identifier. This method sends a request to an external
+     * API to retrieve detailed information about a specific plant and maps it into a
+     * {@code PlantDetailsView} object.
+     *
+     * Returns {@code null} if no plant is found.
+     *
+     * @param query the unique identifier of the plant to fetch details for
+     * @return a {@code PlantDetailsView} object containing detailed information about the plant,
+     *         or {@code null} if the plant is not found
+     */
     @Cacheable("plantDetails")
     public PlantDetailsView fetchPlantById(String query){
 
@@ -100,6 +119,15 @@ public class PerenualClient {
         );
     }
 
+    /**
+     * Fetches detailed plant information from the Perenual API using the provided unique identifier.
+     * This method sends a request to an external API to retrieve detailed information about a specific
+     * plant and returns a {@code PerenualPlantDetailsResponse} containing the plant's details.
+     *
+     * @param perenualId the unique identifier of the plant to fetch details for
+     * @return a {@code PerenualPlantDetailsResponse} object containing detailed information about the plant,
+     *         or {@code null} if the plant is not found
+     */
     public PerenualPlantDetailsResponse fetchPlantDetails(String perenualId) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder

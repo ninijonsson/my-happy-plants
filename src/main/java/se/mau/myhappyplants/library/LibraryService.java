@@ -7,7 +7,6 @@ import se.mau.myhappyplants.plant.dto.PlantDetailsView;
 import se.mau.myhappyplants.user.AccountUser;
 import se.mau.myhappyplants.user.AccountUserRepository;
 import se.mau.myhappyplants.util.WateringFrequencyParser;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,10 +32,18 @@ public class LibraryService {
     }
 
     /**
-     * Method for sorting in Ascending and Descending order
-     * @param userId is the id of the relevant user
-     * @param sortDir is the sorting direction
-     * @return the way it is supposed to be sorted based on the user
+     * Retrieves a list of plants from the user's library based on the specified sorting criteria.
+     * The sorting criteria can include alphabetical (asc, desc), most recently added (recent),
+     * or priority based on the next watering date (default if criteria is not valid or null).
+     *
+     * @param userId The ID of the user whose plant library is being retrieved.
+     * @param sortDir The sorting direction or criteria. Possible values:
+     *                - "asc": Alphabetical order (A-Z).
+     *                - "desc": Reverse alphabetical order (Z-A).
+     *                - "recent": Sort by most recently added.
+     *                - "water": Sort by closest to needing water. Default if null or invalid.
+     * @return A list of {@code AccountUserPlant} objects representing the plants in the user's library
+     *         sorted according to the specified criteria.
      */
     public List<AccountUserPlant> getUserLibrary(int userId, String sortDir) {
         Sort sort;
@@ -70,7 +77,7 @@ public class LibraryService {
     }
 
     /**
-     * Lägg till en ny växt till användarens bibliotek
+     * Add a new plant to the user library
      */
     public AccountUserPlant addPlantToLibrary(PlantDetailsView plantDetails, int userId) {
         // Hitta användaren
@@ -95,7 +102,7 @@ public class LibraryService {
     }
 
     /**
-     * Lägg till eller ändra tagg på en växt
+     * Add or change tag on a plant
      */
     public boolean setTagOnPlant(int plantId, int tagId) {
 
@@ -117,7 +124,7 @@ public class LibraryService {
     }
 
     /**
-     * Ta bort tagg från en växt
+     * Remove tag from a plant
      */
     public AccountUserPlant removeTagFromPlant(int plantId) {
         AccountUserPlant plant = accountUserPlantRepository.findById(plantId)
@@ -128,7 +135,14 @@ public class LibraryService {
     }
 
     /**
-     * Ta bort en växt från biblioteket
+     * Removes a plant from the user's library.
+     * This method ensures that the plant belongs to the specified user
+     * before attempting to remove it from the database.
+     *
+     * @param plantId The ID of the plant to be removed.
+     * @param userId The ID of the user who owns the plant.
+     * @throws RuntimeException If the plant with the specified ID does not exist
+     *                          or does not belong to the specified user.
      */
     public void removePlant(int plantId, int userId) {
         // Hitta och kolla att den tillhör userId
@@ -161,6 +175,13 @@ public class LibraryService {
         return accountUserPlantRepository.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);
     }
 
+    /**
+     * Retrieves a plant from the repository using its unique ID.
+     *
+     * @param plantId The unique identifier of the plant to retrieve.
+     * @return The {@code AccountUserPlant} object if found, or {@code null} if no plant
+     *         with the given ID exists in the repository.
+     */
     public AccountUserPlant getPlantById(int plantId) {
         return accountUserPlantRepository.findById(plantId).orElse(null);
     }
@@ -169,6 +190,14 @@ public class LibraryService {
         return accountUserPlantRepository.findByUserIdOrderByPlantNameDesc(userId);
     }
 
+    /**
+     * Updates the last watered time for a specific plant in the user's library to the current time.
+     * Ensures the plant exists and belongs to the specified user before updating.
+     *
+     * @param userId The ID of the user who owns the plant.
+     * @param plantId The ID of the plant to be updated.
+     * @throws RuntimeException If the plant does not exist or does not belong to the specified user.
+     */
     public void waterPlant(int userId, int plantId) {
         AccountUserPlant plant = accountUserPlantRepository
                 .findByIdAndUserId(plantId, userId)
@@ -180,6 +209,12 @@ public class LibraryService {
         accountUserPlantRepository.save(plant);
     }
 
+    /**
+     * Counts the number of plants associated with a user that need watering.
+     *
+     * @param userId the unique identifier for the user whose plants are to be checked
+     * @return the number of plants that require watering
+     */
     public long countPlantsNeedingWater(int userId) {
         List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId);
 

@@ -3,9 +3,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import se.mau.myhappyplants.perenual.dto.PerenualPlant;
 
 import java.util.List;
+
 /**
- * DTO mapping the JSON response from Perenual API.
- * Mirrors the external API structure (not the internal domain model).
+ * Represents the response containing detailed information about a plant
+ * from the Perenual API. This class is used to map the detailed data provided
+ * by the API into corresponding objects for ease of access and manipulation.
+ *
+ * The class includes plant identifiers, names, care instructions,
+ * sunlight requirements, and other related properties. Some properties
+ * are annotated with {@link JsonProperty} to handle serialization
+ * and deserialization with specific JSON keys.
  */
 public class PerenualPlantDetailsResponse {
     private int id;

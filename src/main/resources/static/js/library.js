@@ -1,3 +1,7 @@
+/**
+ * Library Dashboard Controller
+ * Manages plant filtering, watering logic, and modal interactions.
+ */
 document.addEventListener("DOMContentLoaded", () => {
 
     const plants = document.querySelectorAll('.plant-container');
@@ -6,7 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const loading = document.getElementById('loading');
 
-    //Listen for typing into the search bar
+    /**
+     * Live Library Filter
+     * Filters plants existing in the DOM. Does not make API calls.
+     * Diminishes non-matches and reorders the list to move matches to the top.
+     */
     searchLibrary.addEventListener('input', (e) => {
         const term = e.target.value.toLowerCase();
 
@@ -241,6 +249,11 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTags();
 });
 
+/**
+ * Calculates and updates the visual watering progress bar.
+ * Updates bar width, color, and tooltip text based on days since last watered.
+ * * @param {HTMLElement} plant - The plant container element with data-attributes.
+ */
 function updatePlantBar(plant) {
     const lastWateredStr = plant.dataset.lastWatered;
     const wateringDays = parseInt(plant.dataset.wateringDays, 10);

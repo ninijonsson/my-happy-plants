@@ -8,11 +8,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
-
 /**
- * Entity connecting User + AccountUserPlant + tag(?)
- * JPA entity representing a plant owned by a user ("My Plants").
+ * The AccountUserPlant class represents a plant that is associated with a user account.
+ * It contains information about the plant such as its name, scientific name, description,
+ * watering schedule, and other attributes. The class is annotated as an entity for persistence
+ * in a database table named "user_plants".
  *
+ * This class supports automatic tracking of creation and update timestamps, along with
+ * calculations related to watering schedules.
+ *
+ * An AccountUserPlant is associated with an AccountUser and may optionally be tagged with a Tag
+ * to provide categorization or additional metadata.
  */
 @Entity
 @Table(name = "user_plants")
@@ -21,7 +27,7 @@ public class AccountUserPlant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    //TODO: Ändra till snt istället?
+    //TODO: Ändra till int istället?
     @Column(name = "perenual_id")
     private String perenualId;
 
@@ -183,12 +189,30 @@ public class AccountUserPlant {
         this.nextWateringDate = nextWateringDate;
     }
 
+    /**
+     * Calculates and updates the next watering date for the plant based on the last watered date
+     * and the watering frequency in days.
+     *
+     * If both the `lastWatered` and `wateringFrequencyDays` fields are non-null and
+     * `wateringFrequencyDays` is greater than zero, the `nextWateringDate` is calculated
+     * by adding the watering frequency (in days) to the `lastWatered` date.
+     *
+     * If any required field is null or `wateringFrequencyDays` is not positive,
+     * the method does not calculate or update the `nextWateringDate`.
+     */
     public void calculateNextWateringDate() {
         if (lastWatered != null && wateringFrequencyDays != null && wateringFrequencyDays > 0) {
             this.nextWateringDate = lastWatered.toLocalDate().plusDays(wateringFrequencyDays);
         }
     }
 
+    /**
+     * Calculates the number of days that have elapsed since the plant was last watered.
+     *
+     * If the field `lastWatered` is null, it returns 0.
+     *
+     * @return the number of days since the plant was last watered, or 0 if no watering date is available
+     */
     public long getDaysSinceLastWatered() {
         if (lastWatered == null)
             return 0;

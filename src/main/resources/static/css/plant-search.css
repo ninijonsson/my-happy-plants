@@ -1,4 +1,4 @@
-
+/* --- Plant Search Window --- */
 :root {
     --primary-color: #005F02;    /* Buttons and titles color */
     --secondary-color: #427A43;  /* Hover-effect */
@@ -19,6 +19,7 @@ body {
     line-height: 1.6;
 }
 
+/* --- Layout containers --- */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -46,6 +47,7 @@ header p {
     margin: 0 auto 60px;
 }
 
+/* --- Search bar container with "pill" shape --- */
 #plantSearch {
     width: 100%;
     padding: 16px 28px;
@@ -62,13 +64,15 @@ header p {
     box-shadow: 0 0 0 4px rgba(45, 90, 39, 0.1);
 }
 
-
+/* --- Responsive Plant Grid --- */
+/* --- Automatically calculates how many cards fit per row --- */
 .plant-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 32px;
 }
 
+/* --- Plant Card & Animations --- */
 
 .plant-card {
     background: var(--card-bg);
@@ -90,6 +94,7 @@ header p {
     transition: transform 0.5s ease;
 }
 
+/* Slight zoom-in on the image when card is hovered */
 .plant-card:hover .plant-image {
     transform: scale(1.05);
 }
@@ -143,6 +148,10 @@ header p {
     color: var(--text-muted);
     font-style: italic;
 }
+
+/* --- Feedback UI (Toasts & Notices) --- */
+
+/* --- Appears at the top right when adding plants or encountering errors --- */
 .toast{
     position: fixed;
     top: 30px;

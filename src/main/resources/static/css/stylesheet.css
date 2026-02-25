@@ -1,3 +1,5 @@
+/* --- Library Page Styles (Main Dashboard) --- */
+
 body {
     background-color: #F2E3BB;
     color: #333;
@@ -138,7 +140,7 @@ body {
     color: #777;
 }
 
-/* Progress bar */
+/* --- Interactive Watering Progress Bar --- */
 .progress-bar {
     position: relative;
     width: 100%;
@@ -150,6 +152,7 @@ body {
     cursor: pointer;
 }
 
+/* --- Tooltip text that will appear on hover ---*/
 .water-status-text {
     position: absolute;
     bottom: 100%;
