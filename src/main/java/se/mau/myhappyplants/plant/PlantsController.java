@@ -122,8 +122,8 @@ public class PlantsController {
      * @return A redirection string to the appropriate view, either the plant search page or the login page.
      */
     @PostMapping("/add")
-    public String addPlant(@RequestParam String plantName, @RequestParam String perenualPlantId,
-                           RedirectAttributes redirectAttributes, Principal principal, HttpSession session) {
+    public String addPlant(@RequestParam String perenualPlantId,
+                           RedirectAttributes redirectAttributes, HttpSession session) {
 
         AccountUser user = (AccountUser) session.getAttribute("user");
         if (user == null) {

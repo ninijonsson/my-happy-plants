@@ -3,13 +3,15 @@ package se.mau.myhappyplants.library;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import se.mau.myhappyplants.library.dto.PlantWateringData;
 import se.mau.myhappyplants.plant.dto.PlantDetailsView;
 import se.mau.myhappyplants.user.AccountUser;
 import se.mau.myhappyplants.user.AccountUserRepository;
 import se.mau.myhappyplants.util.WateringFrequencyParser;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Add plant to the library, update watering of the plant, filter by tag remove etc.
@@ -26,6 +28,9 @@ public class LibraryService {
 
     @Autowired
     private AccountUserRepository accountUserRepository;
+
+    @Autowired
+    private WateringHistoryRepository wateringHistoryRepository;
 
     public LibraryService(AccountUserPlantRepository accountUserPlantRepository) {
         this.accountUserPlantRepository = accountUserPlantRepository;
@@ -190,6 +195,7 @@ public class LibraryService {
         return accountUserPlantRepository.findByUserIdOrderByPlantNameDesc(userId);
     }
 
+    public void waterPlant(int userId, int plantId, LocalDateTime wateringdate) {
     /**
      * Updates the last watered time for a specific plant in the user's library to the current time.
      * Ensures the plant exists and belongs to the specified user before updating.
@@ -198,15 +204,19 @@ public class LibraryService {
      * @param plantId The ID of the plant to be updated.
      * @throws RuntimeException If the plant does not exist or does not belong to the specified user.
      */
-    public void waterPlant(int userId, int plantId) {
         AccountUserPlant plant = accountUserPlantRepository
                 .findByIdAndUserId(plantId, userId)
                 .orElseThrow(() ->
                         new RuntimeException("Plant not found for this user"));
 
-        plant.setLastWatered(LocalDateTime.now());
-
+        //LocalDateTime now = LocalDateTime.now();
+        plant.setLastWatered(wateringdate);
         accountUserPlantRepository.save(plant);
+
+        //Save in history
+        AccountUser user = plant.getUser();
+        WateringHistory history = new WateringHistory(user, plant, wateringdate);
+        wateringHistoryRepository.save(history);
     }
 
     /**
@@ -234,5 +244,24 @@ public class LibraryService {
             }
         }
         return count;
+    }
+
+    public List<Map<String, Object>> getUserWateringSummary(int userId) {
+        List<WateringHistory> history = wateringHistoryRepository.findByUserIdOrderByWateredAtDesc(userId);
+        Map<LocalDate, Long> waterCountPerDay = history.stream()
+                .collect(Collectors.groupingBy(
+                        h -> h.getWateredAt().toLocalDate(),
+                        TreeMap::new,
+                        Collectors.counting()
+                ));
+
+        return waterCountPerDay.entrySet().stream()
+                .map(e -> {
+                    Map<String, Object> m = new HashMap<>();
+                    m.put("date", e.getKey().toString());
+                    m.put("count", e.getValue());
+                    return m;
+                })
+                .collect(Collectors.toList());
     }
 }
