@@ -29,14 +29,6 @@ class AccountUserPlantRepositoryTest {
     }
 
     @Test
-    @Disabled("Awaiting LIB.04F implementation")
-    @DisplayName("LIB.04F - Successfully remove plant from library")
-    void testSuccessfullyRemovePlantFromUserLibrary() {
-        //TODO: get a plantID from userID
-        // remove the libraryItem (the plant based on the ID)
-    }
-
-    @Test
     @Disabled("Awaiting LIB.04.1F implementation")
     @DisplayName("LIB.04.1F - Deletion requires confirmation logic check")
     void testRemovePlantRequiresConfirmation() {
