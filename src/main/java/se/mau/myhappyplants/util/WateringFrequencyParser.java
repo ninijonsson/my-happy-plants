@@ -1,5 +1,13 @@
 package se.mau.myhappyplants.util;
 
+/**
+ * Utility class for parsing watering frequency strings into integer values.
+ * The input string can represent a single number or a range expressed in
+ * the form "min-max". If a range is provided, the method calculates the average.
+ *
+ * Invalid or malformed inputs will return a default value of 0.
+ * This class is intended to help standardize and simplify frequency calculations.
+ */
 public class WateringFrequencyParser {
     public static Integer parseWateringFrequency(String frequency) {
         if (frequency == null || frequency.isBlank()) {

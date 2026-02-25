@@ -1,3 +1,8 @@
+/**
+ * External Plant Search Controller
+ * Handles live DOM filtering and AJAX requests to the Perenual API.
+ */
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const plantGrid = document.getElementById('plantGrid');
@@ -37,6 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Enter press on search bar
+    /**
+     * Trigger API Search
+     * Listens for 'Enter' key. If query >= 3 chars, fetches new HTML from server.
+     */
     searchInput.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
             const query = e.target.value.trim();
@@ -72,6 +81,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+/**
+ * Communicates with the Backend to fetch Perenual API results.
+ * Parses the returned HTML and replaces the current grid content.
+ * * @param {string} query - The search term.
+ */
 async function fetchPlants(query) {
     const grid = document.getElementById('plantGrid');
 
