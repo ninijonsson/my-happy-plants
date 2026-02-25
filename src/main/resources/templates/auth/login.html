@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -196,13 +196,7 @@
 </div>
 
 <!--Loading animation-->
-<div id="loading" class="loader-container fixed top-0 left-0 w-full h-full flex items-center justify-center bg-green-900/70 z-50">
-    <div class="bouncing-dots">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-    </div>
-</div>
+<div th:replace="~{/fragments/fragment :: loading}"></div>
 
 <script>
     // Get elements
@@ -217,7 +211,6 @@
     const loginErrorMsg = document.getElementById('loginErrorMessage');
     
     const loading = document.getElementById('loading');
-    loading.classList.add('hidden');
     
     //Hide the error when the user clicks on input.
     document.querySelectorAll('input').forEach(input => {
@@ -249,6 +242,7 @@
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         loading.classList.remove('hidden');
+        loading.classList.add('flex');
         const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
         
@@ -262,6 +256,7 @@
        });
         
         loading.classList.add('hidden');
+        loading.classList.remove('flex');
         
        if(response.url.includes('/login?error')) {
            loginErrorMsg.querySelector('span').innerHTML = 'Username or password is incorrect.';
@@ -286,6 +281,7 @@
         }
         
         loading.classList.remove('hidden');
+        loading.classList.add('flex');
         
         const params = new URLSearchParams({ username, password });
         const response = await fetch('/register', { 
@@ -294,6 +290,7 @@
         });
         
         loading.classList.add('hidden');
+        loading.classList.remove('flex');
         
         if(!response.ok) {
             return response.json().then(data => {

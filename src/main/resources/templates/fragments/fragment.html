@@ -38,6 +38,28 @@
         </li>
     </ul>
 </nav>
+<!-- asd 
+<nav th:fragment="loading" >
+    <div id="loading" class="loader-container fixed top-0 left-0 w-full h-full items-center justify-center bg-green-900/70 z-50 hidden">
+        <div class="bouncing-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+</nav>
+-->
+
+<nav th:fragment="loading">
+    <div id="loading" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-green-900/70">
+        <div class="bouncing-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+</nav>
+
 
 </body>
 </html>
