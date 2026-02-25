@@ -13,6 +13,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!searchInput) return;
 
+    //Instant frontend filtering when searching (happens when the user types)
+    searchInput.addEventListener('input', async (e) => {
+        const term = e.target.value.toLowerCase().trim();
+        const plantCards = plantGrid.querySelectorAll('.plant-card');
+        let visibleCount = 0; // keep track of how many plants are currently showing
+
+        plantCards.forEach(card => {
+            const name = card.querySelector('.plant-name')?.textContent.toLowerCase() || "";
+            const sciName = card.querySelector('.scientific-name')?.textContent.toLowerCase() || "";
+
+            if (term === '' || name.includes(term) || sciName.includes(term)) {
+                card.style.display = "";
+                visibleCount++;
+            } else {
+                card.style.display = "none";
+            }
+        });
+
+        const notice = document.getElementById("searchNotice");
+        if (visibleCount === 0) {
+            notice.textContent = "Not found on this page, press enter to search through the entire database!";
+            notice.style.display = "block";
+            notice.className = "search-notice text-blue-800 bg-blue-100 p-3 rounded-lg mt-2";
+        } else {
+            notice.style.display = "none";
+        }
+    });
+
+    // Enter press on search bar
     /**
      * Trigger API Search
      * Listens for 'Enter' key. If query >= 3 chars, fetches new HTML from server.
