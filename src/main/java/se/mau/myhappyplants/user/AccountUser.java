@@ -7,11 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.jspecify.annotations.Nullable;
 import se.mau.myhappyplants.library.AccountUserPlant;
-
 import java.util.ArrayList;
 import java.util.List;
-
-
 
 /**
  * JPA entity representing an application user.

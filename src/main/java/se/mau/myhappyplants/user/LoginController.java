@@ -9,9 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import se.mau.myhappyplants.config.PasswordValidatorConfig;
-
 import java.util.Map;
 
+/**
+ * The LoginController class is a Spring controller that handles
+ * user login and registration operations.
+ * It provides endpoints for login and user registration while ensuring
+ * the password's validity through a validation configuration and encoding passwords.
+ */
 @Controller
 public class LoginController {
     
@@ -29,8 +34,17 @@ public class LoginController {
     public String login() {
         return "/auth/login";
     }
-    
-    
+
+    /**
+     * Endpoint to register a new user in the system. The method validates the provided password
+     * and creates a user account if the username is not already taken.
+     *
+     * @param username the desired username for the new user
+     * @param password the password for the new user, which must meet validation criteria
+     * @return a ResponseEntity containing a success message and HTTP status code
+     *         if user creation is successful, or an error message and HTTP status code
+     *         if validation fails or the username already exists
+     */
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@RequestParam String username, @RequestParam String password) {
         

@@ -1,10 +1,13 @@
-/* Loader */
+/* --- Global loading animation (Bouncing dots) --- */
+
+/* --- Wrapper for the three dots  --- */
 .bouncing-dots {
     display: flex;
     justify-content: space-between;
     width: 160px;
 }
 
+/* --- Individual dot styling --- */
 .dot {
     width: 30px;
     height: 30px;
@@ -13,18 +16,24 @@
     animation: bounce 1s infinite;
 }
 
+/* --- Delays to create a wave effect --- */
 .dot:nth-child(1) {
     animation-delay: 0.3s;
 }
 
+/* --- -||- --- */
 .dot:nth-child(2) {
     animation-delay: 0.6s;
 }
 
+/* --- -||- --- */
 .dot:nth-child(3) {
     animation-delay: 0.9s;
 }
 
+
+/* --- Animation logic  --- */
+/* --- Starts at the original position, peaks at 20px up, returns to start --- */
 @keyframes bounce {
     0%, 100% {
         transform: translateY(0);

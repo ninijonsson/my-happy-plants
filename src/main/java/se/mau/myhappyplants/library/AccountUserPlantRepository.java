@@ -47,7 +47,22 @@ public interface AccountUserPlantRepository extends JpaRepository<AccountUserPla
      */
     List<AccountUserPlant> findByPerenualId(String perenualId);
 
+    /**
+     * Retrieves a list of AccountUserPlant objects associated with a specific user,
+     * sorted according to the provided sorting criteria.
+     *
+     * @param userId the unique identifier of the user whose plants are being retrieved
+     * @param sort the sorting parameters to apply to the retrieved list
+     * @return a list of AccountUserPlant objects associated with the provided user ID, sorted as specified
+     */
     List<AccountUserPlant> findByUserId(int userId, Sort sort);
 
+    /**
+     * Retrieves a list of AccountUserPlant objects associated with a specific user,
+     * ordered in descending order by the plant name.
+     *
+     * @param userId the unique identifier of the user whose plants are being retrieved
+     * @return a list of AccountUserPlant objects sorted by plant name in descending order, associated with the specified user
+     */
     List<AccountUserPlant> findByUserIdOrderByPlantNameDesc(int userId);
 }
