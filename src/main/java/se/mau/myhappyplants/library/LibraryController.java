@@ -10,11 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import se.mau.myhappyplants.user.AccountUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
-
-
 
 @Controller
 @RequestMapping("/library")
@@ -64,8 +62,9 @@ public class LibraryController {
 
     @PutMapping("/{userId}/plants/{plantId}/water")
     @ResponseBody
-    public ResponseEntity<Void> waterPlant(@PathVariable int userId, @PathVariable int plantId) {
-        libraryService.waterPlant(userId, plantId);
+    public ResponseEntity<Void> waterPlant(@PathVariable int userId, @PathVariable int plantId,
+                                           @RequestParam LocalDateTime wateringDate) {
+        libraryService.waterPlant(userId, plantId, wateringDate);
         return ResponseEntity.ok().build();
     }
     
@@ -87,5 +86,17 @@ public class LibraryController {
         } else {
             return ResponseEntity.status(400).body("Tag update failed");
         }
+    }
+
+    @GetMapping("/graph")
+    public String getGraph(Model model, HttpSession session) {
+        AccountUser user = (AccountUser) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        List<Map<String, Object>> chartData = libraryService.getUserWateringSummary(user.getId());
+        model.addAttribute("wateringData", chartData);
+        return "/watering-graph";
     }
 }

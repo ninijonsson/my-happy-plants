@@ -19,6 +19,14 @@
                 <img src="/images/magnifying-glass.png" alt="Search" class="w-8 h-8 object-contain">
             </a>
         </li>
+        <li style="float: left;">
+            <a th:href="@{library/graph}"
+                onmouseover="this.style.backgroundColor='#005F02'"
+                onmouseout="this.style.backgroundColor='transparent'"
+                style="display: block; text-align: center; text-decoration: none; padding: 0.6rem 0.9rem;">
+                <img th:src="@{/images/graph_icon.png}" class="w-10 h-9 transparent" alt="Graph" >
+            </a>
+        </li>
         <li style="float:right;">
             <a th:href="@{/logout}"
                onmouseover="this.style.color='#EA7B7B'; this.style.backgroundColor='#005F02'"

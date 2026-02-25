@@ -145,9 +145,20 @@ document.addEventListener("DOMContentLoaded", () => {
             const percent = (diffDays / wateringDays) * 100;
             const wasNeedingWater = percent >= 100;
 
+            const date = new Date();
+            const wateringDate = date.getFullYear() + '-' +
+                String(date.getMonth()+1).padStart(2,'0') + '-' +
+                String(date.getDate()).padStart(2,'0') + 'T' +
+                String(date.getHours()).padStart(2,'0') + ':' +
+                String(date.getMinutes()).padStart(2,'0') + ':' +
+                String(date.getSeconds()).padStart(2,'0');
+
+            const params = new URLSearchParams();
+            params.append('wateringDate', wateringDate);
+
             try {
                 const response = await fetch(
-                    `/library/${userId}/plants/${plantId}/water`,
+                    `/library/${userId}/plants/${plantId}/water?${params.toString()}`,
                     {
                         method: 'PUT'
                     }

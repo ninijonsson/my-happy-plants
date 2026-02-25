@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Watering History Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+    <script th:inline="javascript">
+        const rawData = /*[[${wateringData}]]*/ [];
+    </script>
+    <script th:src="@{/js/watering-graph.js}" defer></script>
+</head>
+<body style="background-color: #fbf8eb;">
+<div id="container">
+    <h1 style="color: #005F02;">💧🌱 Total watering</h1>
+    <canvas id="wateringChart" width="800" height="400"></canvas>
+</div>
+</body>
+</html>
