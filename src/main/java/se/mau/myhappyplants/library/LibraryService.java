@@ -20,8 +20,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class LibraryService {
+    
     @Autowired
-    private final AccountUserPlantRepository accountUserPlantRepository;
+    private AccountUserPlantRepository accountUserPlantRepository;
 
     @Autowired
     private TagRepository tagRepository;
@@ -31,9 +32,17 @@ public class LibraryService {
 
     @Autowired
     private WateringHistoryRepository wateringHistoryRepository;
+    
+    public LibraryService() {}
 
     public LibraryService(AccountUserPlantRepository accountUserPlantRepository) {
         this.accountUserPlantRepository = accountUserPlantRepository;
+    }
+    
+    // For test purposes only
+    public LibraryService(AccountUserPlantRepository plantRepository, TagRepository tagRepository) {
+        this.accountUserPlantRepository = plantRepository;
+        this.tagRepository = tagRepository;
     }
 
     /**
@@ -110,6 +119,11 @@ public class LibraryService {
      * Add or change tag on a plant
      */
     public boolean setTagOnPlant(int plantId, int tagId) {
+        
+        if(tagId == -1) {
+            removeTagFromPlant(plantId);
+            return true;
+        }
 
         // Find the plant
         AccountUserPlant plant = accountUserPlantRepository.findById(plantId)
