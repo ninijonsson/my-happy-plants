@@ -66,6 +66,29 @@ class TagTest {
     }
     
     @Test
+    @DisplayName("Remove Tag")
+    void removeTagTest() {
+        int plantId = 1;
+        int tagId = 1;
+        int removeTagId = -1;
+        
+        plant.setId(plantId);
+        tag.setId(tagId);
+        
+        plant.setTag(tag);
+        
+        when(plantRepository.findById(plantId)).thenReturn(Optional.of(plant));
+        
+        libraryService.setTagOnPlant(plantId, removeTagId);
+
+        assertNull(plant.getTag());
+
+        verify(plantRepository).findById(plantId);
+        verify(plantRepository).save(plant);
+        verifyNoMoreInteractions(plantRepository);
+    }
+    
+    @Test
     @DisplayName("Throw RuntimeExp when plant is not found")
     void expWhenPlantNotFound() {
         when(plantRepository.findById(anyInt())).thenReturn(Optional.empty());
