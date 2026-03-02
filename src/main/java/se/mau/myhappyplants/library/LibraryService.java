@@ -121,36 +121,34 @@ public class LibraryService {
     public boolean setTagOnPlant(int plantId, int tagId) {
         
         if(tagId == -1) {
-            removeTagFromPlant(plantId);
-            return true;
+            return removeTagFromPlant(plantId);
         }
-
-        // Find the plant
+        
         AccountUserPlant plant = accountUserPlantRepository.findById(plantId)
                 .orElseThrow(() -> new RuntimeException("Plant not found with id: " + plantId));
 
-        // Verify the tag exists (optional but recommended)
         Tag tag = tagRepository.findById(tagId)
                 .orElseThrow(() -> new RuntimeException("Tag not found with id: " + tagId));
 
-        // Set the tag ID on the plant (not the Tag object)
         plant.setTag(tag);
-
-        // Save the plant with the new tag
-        accountUserPlantRepository.save(plant);
         
-        return accountUserPlantRepository.existsById(plantId);
+        AccountUserPlant newPlant = accountUserPlantRepository.save(plant);
+        
+        return newPlant.equals(plant);
     }
 
     /**
      * Remove tag from a plant
      */
-    public AccountUserPlant removeTagFromPlant(int plantId) {
+    public boolean removeTagFromPlant(int plantId) {
         AccountUserPlant plant = accountUserPlantRepository.findById(plantId)
                 .orElseThrow(() -> new RuntimeException("Plant not found with id: " + plantId));
 
         plant.setTag(null);
-        return accountUserPlantRepository.save(plant);
+        
+        AccountUserPlant newPlant = accountUserPlantRepository.save(plant);
+
+        return newPlant.equals(plant);
     }
 
     /**

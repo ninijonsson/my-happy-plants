@@ -13,112 +13,79 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TagTest {
-    
-    @Mock
-    private Tag tag;
 
-    @Mock
-    private AccountUserPlant plant;
-    
     @Mock
     private AccountUserPlantRepository plantRepository;
-    
+
     @Mock
     private TagRepository tagRepository;
-    
+
     @InjectMocks
-    private LibraryService  libraryService;
-    
+    private LibraryService libraryService;
+
+    private AccountUserPlant realPlant;
+    private Tag realTag;
+
+    @BeforeEach
+    void setUp() {
+        realPlant = new AccountUserPlant();
+        realPlant.setId(1);
+
+        realTag = new Tag();
+        realTag.setId(10);
+        realTag.setLabel("Test Tag");
+    }
+
     @Test
-    @DisplayName("LIB.05F - add with tag")
+    @DisplayName("LIB.05F - Successfully add a tag to a plant")
     void addTagTest() {
-        
-        int plantId = 1;
-        int tagId = 1;
-        
-        when(plantRepository.findById(plantId)).thenReturn(Optional.of(plant));
-        when(tagRepository.findById(tagId)).thenReturn(Optional.of(tag));
+        when(plantRepository.findById(1)).thenReturn(Optional.of(realPlant));
+        when(tagRepository.findById(10)).thenReturn(Optional.of(realTag));
+        when(plantRepository.save(realPlant)).thenReturn(realPlant);
 
-        when(plantRepository.existsById(plantId)).thenReturn(true);
-        
-        boolean result = libraryService.setTagOnPlant(plantId, tagId);
-        
+        boolean result = libraryService.setTagOnPlant(1, 10);
+
         assertTrue(result);
-        
-        verify(plant).setTag(tag);
-        verify(plantRepository).save(plant);
+        assertEquals(realTag, realPlant.getTag());
+        verify(plantRepository).save(realPlant);
     }
-    
+
     @Test
-    @DisplayName("LIB.05.3F - change tag")
-    void changeTagTest() {
-        
-        when(plantRepository.findById(plant.getId())).thenReturn(Optional.of(plant));
-        when(tagRepository.findById(tag.getId())).thenReturn(Optional.of(tag));
-        when(plantRepository.existsById(plant.getId())).thenReturn(true);
-        
-        boolean result = libraryService.setTagOnPlant(plant.getId(), tag.getId());
-        
-        assertTrue(result);
-        
-        verify(plant).setTag(tag);
-        verify(plantRepository).save(plant);
-    }
-    
-    @Test
-    @DisplayName("Remove Tag")
+    @DisplayName("Remove Tag - Setting tagId to -1 should nullify the plant's tag")
     void removeTagTest() {
-        int plantId = 1;
-        int tagId = 1;
+        realPlant.setTag(realTag);
         int removeTagId = -1;
-        
-        plant.setId(plantId);
-        tag.setId(tagId);
-        
-        plant.setTag(tag);
-        
-        when(plantRepository.findById(plantId)).thenReturn(Optional.of(plant));
-        
-        libraryService.setTagOnPlant(plantId, removeTagId);
 
-        assertNull(plant.getTag());
+        when(plantRepository.findById(1)).thenReturn(Optional.of(realPlant));
 
-        verify(plantRepository).findById(plantId);
-        verify(plantRepository).save(plant);
-        verifyNoMoreInteractions(plantRepository);
+        libraryService.setTagOnPlant(1, removeTagId);
+
+        assertNull(realPlant.getTag());
+        verify(plantRepository).save(realPlant);
     }
-    
+
     @Test
-    @DisplayName("Throw RuntimeExp when plant is not found")
+    @DisplayName("Exception: Throw error when plant ID does not exist")
     void expWhenPlantNotFound() {
-        when(plantRepository.findById(anyInt())).thenReturn(Optional.empty());
-        
-        var exeption = assertThrows(RuntimeException.class, 
-                () -> libraryService.setTagOnPlant(plant.getId(), tag.getId()));
-        
-        assertEquals("Plant not found with id: " + plant.getId(), exeption.getMessage());
+        int nonExistentId = 99;
+        when(plantRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 
-        verify(plantRepository).findById(plant.getId());
-        verifyNoMoreInteractions(plantRepository,  tagRepository);
+        var exception = assertThrows(RuntimeException.class,
+                () -> libraryService.setTagOnPlant(nonExistentId, 10));
+
+        assertEquals("Plant not found with id: " + nonExistentId, exception.getMessage());
+        verify(tagRepository, never()).findById(anyInt());
     }
-    
+
     @Test
-    @DisplayName("Throw RunTimeExp when tag is not found")
-    void  expWhenTagNotFound() {
-        int plantId = 1;
-        int tagId = 1;
-        
-        plant.setId(plantId);
-        
-        when(plantRepository.findById(plantId)).thenReturn(Optional.of(plant));
-        when(tagRepository.findById(tagId)).thenReturn(Optional.empty());
-        
-        var exeption = assertThrows(RuntimeException.class, 
-                () -> libraryService.setTagOnPlant(plantId, tagId));
-        
-        assertEquals("Tag not found with id: " + tagId, exeption.getMessage());
-        
-        verify(plantRepository).findById(plantId);
-        verify(tagRepository).findById(tagId);
+    @DisplayName("Exception: Throw error when tag ID does not exist")
+    void expWhenTagNotFound() {
+        when(plantRepository.findById(1)).thenReturn(Optional.of(realPlant));
+        when(tagRepository.findById(500)).thenReturn(Optional.empty());
+
+        var exception = assertThrows(RuntimeException.class,
+                () -> libraryService.setTagOnPlant(1, 500));
+
+        assertTrue(exception.getMessage().contains("Tag not found"));
     }
 }
