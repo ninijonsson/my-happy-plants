@@ -57,6 +57,7 @@ class TagTest {
         int removeTagId = -1;
 
         when(plantRepository.findById(1)).thenReturn(Optional.of(realPlant));
+        when(plantRepository.save(realPlant)).thenReturn(realPlant);
 
         libraryService.setTagOnPlant(1, removeTagId);
 
