@@ -33,6 +33,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         AccountUser user = accountUserService.getUserByUsername(authentication.getName());
+        //TODO: Lägga till felhantering för när en session är null
         request.getSession().setAttribute("user", user);
         response.sendRedirect("/library");
     }

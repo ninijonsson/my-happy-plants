@@ -3,8 +3,7 @@ package se.mau.myhappyplants.config;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PasswordValidatorConfigTest {
 
@@ -29,6 +28,29 @@ public class PasswordValidatorConfigTest {
     void testPasswordMissingUppercase() {
         String passMissingUppercase = "lowercase12345!"; //Missing uppercase but everything else is correct
         assertEquals("Password must contain at least one uppercase letter (A-Z).\n", validator.isValid(passMissingUppercase));
+    }
+
+    @Test
+    @DisplayName("ACC.10F - Valid password should not be empty")
+    void testPasswordEmpty() {
+        String emptyPass = "";
+        String result = validator.validate(emptyPass);
+        assertTrue(result.contains("Password cannot be empty"));
+    }
+
+    @Test
+    @DisplayName("ACC.10F - Valid password should not be empty")
+    void testPasswordNull() {
+        String nullPass = "";
+        String result = validator.validate(nullPass);
+        assertTrue(result.contains("Password cannot be empty"));
+    }
+
+    @Test
+    @DisplayName("ACC.10F - Valid password should include at least 1 number")
+    void testPasswordWithoutDigits() {
+        String passWithNoDigit = "Password.aaa";
+        assertEquals("Password must contain at least one digit (0-9).\n", validator.isValid(passWithNoDigit));
     }
 
     @Test

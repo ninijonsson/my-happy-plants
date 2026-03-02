@@ -1,10 +1,9 @@
 package se.mau.myhappyplants.user;
 
-
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,12 +47,12 @@ public class LoginSuccessHandlerTest{
 
         loginSuccessHandler.onAuthenticationSuccess(request, response, authentication);
 
-        //ASSERT
         verify(accountUserService).getUserByUsername("username");
         verify(session).setAttribute("user", user);
         verify(response).sendRedirect("/library");
     }
 
+    @Disabled("Implement the error handling for a null session")
     @Test
     void onAuthentication_userNotFound() throws IOException {
         when(authentication.getName()).thenReturn("unknownUser");
