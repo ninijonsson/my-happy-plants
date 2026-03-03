@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
+import se.mau.myhappyplants.user.AccountUser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -190,7 +191,50 @@ class LibraryServiceTest {
         return sortCaptor.getValue();
     }
 
-    @AfterEach
-    void tearDown() {
+    // Tests that the function works correctly and nothing is disturbing the flow of data
+    @Test
+    @DisplayName("LIB.03F - Search in Library - Correct Flow")
+    void testSearchInLibrary() {
+        String searchTerm = "sun";
+        userId = 1;
+        List<AccountUserPlant> expectedPlants = List.of(new AccountUserPlant("Sunflower", "1"), 
+                                                    new AccountUserPlant("Summer Lilly", "2"));
+        
+        when(plantRepo.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm)).thenReturn(expectedPlants);
+        
+        List<AccountUserPlant> result = libraryService.searchPlantsByName(userId, searchTerm);
+        
+        assertEquals(expectedPlants, result);
+        verify(plantRepo).findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);
+    }
+    
+    // Tests that the function works correctly when nothing is supposed to be sent back
+    @Test
+    @DisplayName("LIB.03F - Search in Library - Empty List")
+    void testSearchInLibraryEmptyList() {
+        String searchTerm = "nonexistent";
+        userId = 1;
+        List<AccountUserPlant> expectedPlants = List.of();
+        
+        when(plantRepo.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm)).thenReturn(expectedPlants);
+        
+        List<AccountUserPlant> result = libraryService.searchPlantsByName(userId, searchTerm);
+        
+        assertEquals(expectedPlants, result);
+        verify(plantRepo).findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);       
+    }
+    
+    // Tests that the function is not meddling with the parameters
+    @Test
+    @DisplayName("LIB.03F - Search in Library - Pass Argument Correctly")
+    void testSearchInLibraryArgument() {
+        String searchTerm = "cactus";
+        userId = 42;
+        
+        when(plantRepo.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm)).thenReturn(List.of());
+        
+        libraryService.searchPlantsByName(userId, searchTerm);
+        
+        verify(plantRepo).findByUserIdAndPlantNameContainingIgnoreCase(42, "cactus");      
     }
 }

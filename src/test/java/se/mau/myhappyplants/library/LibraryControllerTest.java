@@ -1,6 +1,7 @@
 package se.mau.myhappyplants.library;
 
 import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +26,12 @@ class LibraryControllerTest {
 
     @Mock
     private TagService tagService;
+    
+    @Mock
+    private HttpSession session;
+    
+    @Mock
+    private Model model;
 
     @InjectMocks
     private LibraryController libraryController;
@@ -94,5 +101,60 @@ class LibraryControllerTest {
         verify(libraryService).removePlant(plantId, userId);
         verifyNoMoreInteractions(libraryService);
         verifyNoInteractions(tagService);
+    }
+    
+    @Test
+    @DisplayName("LIB.03F - Search in Library")
+    void testSearchInLibrary() {
+        String searchTerm = "sun";
+        String sort = "asc";
+        long needsWatering = 1;
+        List<AccountUserPlant> plantsMock = List.of(new AccountUserPlant("Sunflower", "1"), 
+                                                    new AccountUserPlant("Summer Lilly", "2"), 
+                                                    new AccountUserPlant("Rose", "3"),
+                                                    new AccountUserPlant("Marigold", "4"));
+
+        AccountUser userMock = mock(AccountUser.class);
+
+        when(session.getAttribute("user")).thenReturn(userMock);
+        when(libraryService.searchPlantsByName(userMock.getId(), searchTerm)).thenReturn(plantsMock);
+        when(libraryService.countPlantsNeedingWater(userMock.getId())).thenReturn(needsWatering);
+
+        String viewName = libraryController.showLibrary(sort, searchTerm, model, session);
+
+        assertEquals("/library/my-plants", viewName);
+
+        verify(model).addAttribute("plants", plantsMock);
+        verify(model).addAttribute("user", userMock);
+        verify(model).addAttribute("needsWatering", needsWatering);
+        verify(model).addAttribute("currentSort", sort);
+
+        verifyNoMoreInteractions(model);
+    }
+    
+
+    @Test
+    @DisplayName("LIB.06F - Sort Library")
+    void testSortLibrary() {
+        String sort = "asc";
+        long needsWatering = 1;
+        List<AccountUserPlant> plantsMock = List.of(new AccountUserPlant("Sunflower", "1"), new AccountUserPlant("Summer Lilly", "2"));
+
+        AccountUser userMock = mock(AccountUser.class);
+
+        when(session.getAttribute("user")).thenReturn(userMock);
+        when(libraryService.getUserLibrary(userMock.getId(), sort)).thenReturn(plantsMock);
+        when(libraryService.countPlantsNeedingWater(userMock.getId())).thenReturn(needsWatering);
+
+        String viewName = libraryController.showLibrary(sort, null, model, session);
+
+        assertEquals("/library/my-plants", viewName);
+
+        verify(model).addAttribute("plants", plantsMock);
+        verify(model).addAttribute("user", userMock);
+        verify(model).addAttribute("needsWatering", needsWatering);
+        verify(model).addAttribute("currentSort", sort);
+
+        verifyNoMoreInteractions(model);
     }
 }
