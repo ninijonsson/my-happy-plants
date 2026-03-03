@@ -114,10 +114,8 @@ public class PlantsController {
     /**
      * Handles HTTP POST requests to add a plant to the user's library.
      *
-     * @param plantName          The name of the plant to add.
      * @param perenualPlantId    The unique identifier of the plant in the Perenual API.
      * @param redirectAttributes Redirect attributes to hold success or error messages after the operation.
-     * @param principal          The security principal representing the current authenticated user.
      * @param session            The HTTP session to access user-specific data, such as the logged-in user.
      * @return A redirection string to the appropriate view, either the plant search page or the login page.
      */
