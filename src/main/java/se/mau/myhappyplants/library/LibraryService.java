@@ -33,18 +33,6 @@ public class LibraryService {
     @Autowired
     private WateringHistoryRepository wateringHistoryRepository;
     
-    public LibraryService() {}
-
-    public LibraryService(AccountUserPlantRepository accountUserPlantRepository) {
-        this.accountUserPlantRepository = accountUserPlantRepository;
-    }
-    
-    // For test purposes only
-    public LibraryService(AccountUserPlantRepository plantRepository, TagRepository tagRepository) {
-        this.accountUserPlantRepository = plantRepository;
-        this.tagRepository = tagRepository;
-    }
-
     /**
      * Retrieves a list of plants from the user's library based on the specified sorting criteria.
      * The sorting criteria can include alphabetical (asc, desc), most recently added (recent),
