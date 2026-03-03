@@ -77,7 +77,7 @@ public class PlantSearchServiceTest {
         plantsController.showPlants("Monstera", model, session);
 
         verify(perenualClient, times(1)).fetchPlants("Monstera");
-        verifyNoInteractions(perenualClient);
+       
     }
 
     // SEA.01.1F — Inform the user if no valid results exists
