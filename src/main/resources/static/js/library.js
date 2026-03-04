@@ -69,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tagModal = document.getElementById('tag-selection-modal');
     const tagCancelBtn = document.getElementById('tag-cancel-btn');
     const tagConfirmBtn = document.getElementById('tag-confirm-btn');
+    const customTagInput = document.getElementById('custom-tag-input');
 
     let currentPlantForTag = null; // Reference to plant-container for tagging
 
@@ -204,28 +205,43 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Update tag
+    // Update tag & create tag
     tagConfirmBtn.addEventListener('click', async () => {
         if (!currentPlantForTag) return;
 
         const selectedTag = document.querySelector('input[name="tag-selection"]:checked');
+        const customLabel = (customTagInput?.value || '').trim();
 
-        if (!selectedTag) {
-            alert("Please select a tag.");
+        if (customLabel.length === 0 && !selectedTag) {
+            alert("Please select a tag or write a new one.");
+            return;
+        }
+
+        if (customLabel.length > 0 && selectedTag) {
+            alert("Please select either a tag or write a new one, not both.");
             return;
         }
 
         const plantId = currentPlantForTag.dataset.plantid;
-        const tagId = selectedTag.value;
 
         try {
-            const response = await fetch(`/library/plants/${plantId}/tags/${tagId}`, {
-                method: 'PUT'
-            });
+            let response;
+
+            if (customLabel.length > 0) {
+                response = await fetch(`/library/plants/${plantId}/tag`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ label: customLabel })
+                });
+            } else {
+                const tagId = selectedTag.value;
+                response = await fetch(`/library/plants/${plantId}/tags/${tagId}`, {
+                    method: 'PUT'
+                });
+            }
 
             if (response.ok) {
-                tagModal.classList.add('hidden');
-                currentPlantForTag = null;
+                closeTagModal();
                 window.location.reload();
             } else {
                 alert("Failed to update tag.");
@@ -235,6 +251,8 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Failed to update tag.");
         }
     });
+
+    tagCancelBtn.addEventListener('click', closeTagModal);
 
     // Getting Tags
     const loadTags = async () => {
@@ -258,6 +276,20 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     loadTags();
+
+    function closeTagModal() {
+        tagModal.classList.add('hidden');
+        currentPlantForTag = null;
+
+        if (customTagInput) {
+            customTagInput.value = '';
+        }
+
+        const selected = document.querySelector('input[name="tag-selection"]:checked');
+        if (selected) selected.checked = false;
+    }
+
+
 });
 
 /**
@@ -312,3 +344,5 @@ function updatePlantBar(plant) {
     const daysText = plant.querySelector('.days-since-watered');
     daysText.textContent = `Days since last watered: ${daysSinceWatered} days`;
 }
+
+

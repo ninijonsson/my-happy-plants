@@ -134,6 +134,20 @@ public class LibraryController {
         }
     }
 
+    @PutMapping("/plants/{plantId}/tag")
+    public ResponseEntity<?> updateTagByLabel(@PathVariable int plantId, @RequestBody java.util.Map<String, String> body) {
+        String label = body.get("label");
+        boolean isUpdated = libraryService.setTagOnPlantByLabel(plantId, label);
+
+        if (isUpdated) {
+            return ResponseEntity.ok("Tag updated successfully");
+        } else {
+            return ResponseEntity.status(400).body("Tag update failed");
+        }
+    }
+
+
+
     @GetMapping("/graph")
     public String getGraph(Model model, HttpSession session) {
         AccountUser user = (AccountUser) session.getAttribute("user");

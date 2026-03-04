@@ -126,6 +126,29 @@ public class LibraryService {
     }
 
     /**
+     * Add or change custom tag on a plant
+     */
+    public boolean setTagOnPlantByLabel(int plantId, String label) {
+        if (label == null || label.trim().isEmpty()) {
+            return false;
+        }
+
+        String cleaned = label.trim();
+
+        AccountUserPlant plant = accountUserPlantRepository.findById(plantId)
+                .orElseThrow(() -> new RuntimeException("Plant not found with id: " + plantId));
+
+        Tag tag = tagRepository.findByLabel(cleaned)
+                .orElseGet(() -> tagRepository.save(new Tag(cleaned)));
+
+        plant.setTag(tag);
+
+        accountUserPlantRepository.save(plant);
+
+        return true;
+    }
+
+    /**
      * Remove tag from a plant
      */
     public boolean removeTagFromPlant(int plantId) {
