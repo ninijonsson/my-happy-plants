@@ -52,7 +52,6 @@
     </ul>
 
     <!--Dropdown menu for settings-->
-    <!--Dropdown menu for settings-->
     <div id="settingsDropdown" class="hidden fixed w-48 bg-white rounded-md shadow-lg z-50"
          style="right: 10px; top: 60px; border: 2px solid #427A43;">
         <div class="py-1">
@@ -68,7 +67,7 @@
 
             <hr class="my-1" style="border-color: #427A43;">
 
-            <a href="#" class="block px-4 py-2 transition-all duration-200"
+            <a th:href="@{/account/delete}" class="block px-4 py-2 transition-all duration-200"
                style="color: #005F02;"
                onmouseover="this.style.backgroundColor='#C0B87A'; this.style.color='white';"
                onmouseout="this.style.backgroundColor='transparent'; this.style.color='#005F02';">Delete Account</a>
