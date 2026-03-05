@@ -53,7 +53,7 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", passwordValidation));
         }
         
-        boolean isCreated = accountUserService.createUser(username, passwordEncoder.encode(password), "USER");
+        boolean isCreated = accountUserService.createUser(username, passwordEncoder.encode(password));
         if(isCreated) {
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "User created successfully"));
         }else {
