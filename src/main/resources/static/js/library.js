@@ -55,6 +55,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     plants.forEach(plant => {
+        const tagLabel = plant.dataset.taglabel;
+
+        if (tagLabel === "Wishlist") {
+            return;
+        }
+
         updatePlantBar(plant);
     });
 

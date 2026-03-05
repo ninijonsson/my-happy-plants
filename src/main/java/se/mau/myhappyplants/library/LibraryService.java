@@ -258,6 +258,8 @@ public class LibraryService {
 
             if (plant.getLastWatered() == null)
                 continue;
+            if (plant.getTag() != null && plant.getTag().getLabel().equals("Wishlist"))
+                continue;
             if (plant.getWateringFrequencyDays() == null)
                 continue;
             LocalDate nextWateringDate = plant.getLastWatered().toLocalDate().plusDays(plant.getWateringFrequencyDays());
