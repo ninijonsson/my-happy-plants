@@ -1,4 +1,4 @@
-package se.mau.myhappyplants.config;
+package se.mau.myhappyplants.error;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
