@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete Account - Warning</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script th:src="@{/js/loader.js}"></script>
+  <link rel="stylesheet" href="/css/loading.css">
+  <style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes pulse-warning {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+    .warning-pulse {
+      animation: pulse-warning 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-r from-[#fef08a] via-[#84cc16] to-[#16a34a] flex items-center justify-center p-4">
+<div th:replace="~{/fragments/fragment :: loader}"></div>
+
+<!-- First Step: Warning -->
+<div style="box-shadow: 0 25px 50px -5px rgba(0,0,0,0.6)" class="p-8 w-full max-w-md bg-white/95 backdrop-blur-sm rounded-2xl border-2 border-yellow-400 transform transition-all duration-300 hover:scale-105">
+  <div class="flex flex-col items-center mt-2 mb-4">
+    <svg viewBox="0 0 400 80" width="320" height="70" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-lg">
+      <path id="arch" d="M 30,70 Q 200,5 370,70" fill="none"/>
+      <text font-size="44" font-weight="800" fill="#b45309" font-family="sans-serif" letter-spacing="3">
+        <textPath href="#arch" startOffset="50%" text-anchor="middle">⚠️ WARNING ⚠️</textPath>
+      </text>
+    </svg>
+
+    <div class="flex justify-center gap-4 mb-2 float-animation">
+      <img th:src="@{/images/Crying_Plant.png}" alt="Crying plant" class="w-66 h-66 object-contain drop-shadow-2xl" />
+    </div>
+  </div>
+
+  <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-500 p-5 mb-6 rounded-xl shadow-lg warning-pulse">
+    <div class="flex items-start gap-3">
+      <div class="text-3xl">🌱</div>
+      <div>
+        <h3 class="text-lg font-bold text-yellow-800 mb-1 flex items-center gap-2">
+          <span class="text-2xl">📢</span> Read carefully!
+        </h3>
+        <p class="text-yellow-700 text-sm leading-relaxed">
+          You are about to delete your account. This action cannot be undone.
+          <span class="font-bold block mt-2 text-yellow-800">All your plants and data will be permanently deleted.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="space-y-3">
+    <a href="/account/delete/confirm"
+       class="group block w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 rounded-xl font-bold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl text-center transform hover:-translate-y-1">
+            <span class="flex items-center justify-center gap-2">
+                I Understand, Continue
+                <span class="group-hover:translate-x-2 transition-transform duration-300">→</span>
+            </span>
+    </a>
+    <a href="/library"
+       class="block w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all duration-300 text-center border border-gray-300 hover:border-gray-400">
+      ← Cancel
+    </a>
+  </div>
+
+  <div class="mt-6 text-center text-xs text-gray-500 flex items-center justify-center gap-2">
+    <span class="w-1 h-1 bg-gray-400 rounded-full"></span>
+    Take a deep breath. We'll miss you 💚
+    <span class="w-1 h-1 bg-gray-400 rounded-full"></span>
+  </div>
+</div>
+</body>
+</html>
