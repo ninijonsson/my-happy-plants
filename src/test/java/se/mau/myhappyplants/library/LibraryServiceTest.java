@@ -1,5 +1,7 @@
 package se.mau.myhappyplants.library;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,8 +15,11 @@ import se.mau.myhappyplants.user.AccountUser;
 import se.mau.myhappyplants.user.AccountUserRepository;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,11 +33,30 @@ class LibraryServiceTest {
     
     @Mock
     private AccountUserPlantRepository accountUserPlantRepository;
+
+    @Mock
+    private TagRepository tagRepository;
+
+    @Mock
+    private WateringHistoryRepository wateringHistoryRepository;
     
     @InjectMocks
     private LibraryService libraryService;
     
     private int userId = 1;
+    private AccountUserPlant plant;
+    private AccountUser user;
+
+    @BeforeEach
+    void setUp() {
+        user = new AccountUser();
+        user.setId(1);
+
+        plant = new AccountUserPlant("Monstera", "123");
+        plant.setId(1);
+        plant.setUser(user);
+        plant.setWateringFrequencyDays(7);
+    }
     
 
     @Test
@@ -267,5 +291,217 @@ class LibraryServiceTest {
         libraryService.searchPlantsByName(userId, searchTerm);
         
         verify(accountUserPlantRepository).findByUserIdAndPlantNameContainingIgnoreCase(42, "cactus");      
+    }
+
+    
+    @Test
+    @DisplayName("CAR.01F - countPlantsNeedingWater() returns correct count when plants are overdue")
+    void testCountPlantsNeedingWaterWhenOverdue() {
+        AccountUserPlant overduePlant1 = new AccountUserPlant("Monstera", "1");
+        overduePlant1.setWateringFrequencyDays(7);
+        overduePlant1.setLastWatered(LocalDateTime.now().minusDays(8)); // overdue
+
+        AccountUserPlant overduePlant2 = new AccountUserPlant("Cactus", "2");
+        overduePlant2.setWateringFrequencyDays(14);
+        overduePlant2.setLastWatered(LocalDateTime.now().minusDays(15)); // overdue
+
+        AccountUserPlant okPlant = new AccountUserPlant("Pothos", "3");
+        okPlant.setWateringFrequencyDays(7);
+        okPlant.setLastWatered(LocalDateTime.now().minusDays(2)); // not overdue
+
+        when(accountUserPlantRepository.findByUserId(1))
+                .thenReturn(List.of(overduePlant1, overduePlant2, okPlant));
+
+        long count = libraryService.countPlantsNeedingWater(1);
+
+        assertEquals(2, count,
+                "Should return 2 since only two plants are overdue");
+    }
+
+    @Test
+    @DisplayName("CAR.01F - countPlantsNeedingWater() returns 0 when no plants are overdue")
+    void testCountPlantsNeedingWaterNoneOverdue() {
+        AccountUserPlant plant1 = new AccountUserPlant("Monstera", "1");
+        plant1.setWateringFrequencyDays(7);
+        plant1.setLastWatered(LocalDateTime.now().minusDays(2));
+
+        AccountUserPlant plant2 = new AccountUserPlant("Cactus", "2");
+        plant2.setWateringFrequencyDays(14);
+        plant2.setLastWatered(LocalDateTime.now().minusDays(1));
+
+        when(accountUserPlantRepository.findByUserId(1))
+                .thenReturn(List.of(plant1, plant2));
+
+        long count = libraryService.countPlantsNeedingWater(1);
+
+        assertEquals(0, count,
+                "Should return 0 when no plants are overdue");
+    }
+
+    @Test
+    @DisplayName("CAR.01F - countPlantsNeedingWater() returns 0 when user has no plants")
+    void testCountPlantsNeedingWaterWhenNoPlants() {
+        when(accountUserPlantRepository.findByUserId(1)).thenReturn(List.of());
+
+        long count = libraryService.countPlantsNeedingWater(1);
+
+        assertEquals(0, count,
+                "Should return 0 when user has no plants");
+    }
+
+    @Test
+    @DisplayName("CAR.01F - countPlantsNeedingWater() skips plants without lastWatered")
+    void testCountPlantsNeedingWaterWhenLastWateredNull(){
+        AccountUserPlant plantWithoutDate = new AccountUserPlant("Monstera", "1");
+        plantWithoutDate.setWateringFrequencyDays(7);
+        // lastWatered is not set
+
+        when(accountUserPlantRepository.findByUserId(1))
+                .thenReturn(List.of(plantWithoutDate));
+
+        long count = libraryService.countPlantsNeedingWater(1);
+
+        assertEquals(0,count, "Should skip plants without a lastWatered date");
+    }
+
+
+    @Test
+    @DisplayName("CAR.02F - Watering a plant updates lastWatered to the given date")
+    void testWaterPlantUpdatesLastWatered() {
+        LocalDateTime wateringDate = LocalDateTime.now();
+        when(accountUserPlantRepository.findByIdAndUserId(1, 1))
+                .thenReturn(Optional.of(plant));
+        when(accountUserPlantRepository.save(any(AccountUserPlant.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(wateringHistoryRepository.save(any(WateringHistory.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        libraryService.waterPlant(1, 1, wateringDate);
+
+        assertEquals(wateringDate, plant.getLastWatered(),
+                "lastWatered should be updated to the given watering date");
+    }
+
+    @Test
+    @DisplayName("CAR.02F - Watering a plant saves the plant to the repository")
+    void testWaterPlantSavesPlantToRepository() {
+        LocalDateTime wateringDate = LocalDateTime.now();
+        when(accountUserPlantRepository.findByIdAndUserId(1, 1))
+                .thenReturn(Optional.of(plant));
+        when(accountUserPlantRepository.save(any(AccountUserPlant.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(wateringHistoryRepository.save(any(WateringHistory.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        libraryService.waterPlant(1, 1, wateringDate);
+
+        verify(accountUserPlantRepository, times(1)).save(plant);
+    }
+
+    @Test
+    @DisplayName("CAR.02F - Watering a plant saves a record to watering history")
+    void testWaterPlantSavesWateringHistory() {
+        LocalDateTime wateringDate = LocalDateTime.now();
+        when(accountUserPlantRepository.findByIdAndUserId(1, 1))
+                .thenReturn(Optional.of(plant));
+        when(accountUserPlantRepository.save(any(AccountUserPlant.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(wateringHistoryRepository.save(any(WateringHistory.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        libraryService.waterPlant(1, 1, wateringDate);
+
+        verify(wateringHistoryRepository, times(1)).save(any(WateringHistory.class));
+    }
+
+    @Test
+    @DisplayName("CAR.02F - Watering history record contains correct date")
+    void testWaterPlantHistoryRecordHasCorrectDate() {
+        LocalDateTime wateringDate = LocalDateTime.of(2025, 3, 1, 12, 0);
+        when(accountUserPlantRepository.findByIdAndUserId(1, 1))
+                .thenReturn(Optional.of(plant));
+        when(accountUserPlantRepository.save(any(AccountUserPlant.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(wateringHistoryRepository.save(any(WateringHistory.class)))
+                .thenAnswer(invocation -> {
+                    WateringHistory saved = invocation.getArgument(0);
+                    assertEquals(wateringDate, saved.getWateredAt(),
+                            "WateringHistory should contain the correct watering date");
+                    return saved;
+                });
+
+        libraryService.waterPlant(1, 1, wateringDate);
+    }
+
+    @Test
+    @DisplayName("CAR.02F - Throws exception if plant does not belong to user")
+    void testWaterPlantWhenPlantNotFound() {
+        when(accountUserPlantRepository.findByIdAndUserId(1, 1))
+                .thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class,
+                () -> libraryService.waterPlant(1, 1, LocalDateTime.now()),
+                "Should throw RuntimeException if plant is not found for this user");
+    }
+
+    @Test
+    @DisplayName("CAR.04F - getUserWateringSummary() groups watering events correctly by date")
+    void testGetUserWateringSummaryDate(){
+        LocalDateTime day1 = LocalDateTime.of(2025,3,1,10,0);
+        LocalDateTime day2 = LocalDateTime.of(2025,2,1,10,0);
+
+        WateringHistory h1 = new WateringHistory(user,plant,day1);
+        WateringHistory h2 = new WateringHistory(user,plant,day1); //same day as h1
+        WateringHistory h3 = new WateringHistory(user,plant,day2);
+
+        when(wateringHistoryRepository.findByUserIdOrderByWateredAtDesc(1))
+                .thenReturn(List.of(h1,h2,h3));
+
+        List<Map<String, Object>> summary = libraryService.getUserWateringSummary(1);
+
+        assertEquals(2, summary.size(), "Should have 2 entries, one per unique date");
+
+        Map<String, Object> entryDay1 = summary.stream()
+                .filter(e -> e.get("date").equals(LocalDate.of(2025, 3, 1).toString()))
+                .findFirst()
+                .orElseThrow();
+
+        assertEquals(2L, entryDay1.get("count"), "Day 1 should have a count of 2");
+    }
+
+    @Test
+    @DisplayName("CAR.04F - getUserWateringSummary() returns empty list when no history exists")
+    void testGetUserWateringSummaryEmpty() {
+        when(wateringHistoryRepository.findByUserIdOrderByWateredAtDesc(1))
+                .thenReturn(List.of());
+
+        List<Map<String, Object>> summary = libraryService.getUserWateringSummary(1);
+
+        assertTrue(summary.isEmpty(), "Should return empty list when user has no watering history");
+    }
+
+    @Test
+    @DisplayName("CAR.04F - getUserWateringSummary() returns one entry per unique date")
+    void testGetUserWateringSummaryUnique() {
+        LocalDateTime day1 = LocalDateTime.of(2025, 1, 1, 9, 0);
+        LocalDateTime day2 = LocalDateTime.of(2025, 2, 1, 9, 0);
+        LocalDateTime day3 = LocalDateTime.of(2025, 3, 1, 9, 0);
+
+        when(wateringHistoryRepository.findByUserIdOrderByWateredAtDesc(1))
+                .thenReturn(List.of(
+                        new WateringHistory(user, plant, day1),
+                        new WateringHistory(user, plant, day2),
+                        new WateringHistory(user, plant, day3)
+                ));
+
+        List<Map<String, Object>> summary = libraryService.getUserWateringSummary(1);
+
+        assertEquals(3, summary.size(), "Should return one entry per unique date");
+    }
+
+    @AfterEach
+    void tearDown() {
+        plant = null;
+        user = null;
     }
 }
