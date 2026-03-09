@@ -87,13 +87,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-// Cancel button closes modal
+    // Cancel button closes modal
     cancelBtn.addEventListener('click', () => {
         modal.style.display = 'none';
         plantToDelete = null;
     });
 
-// Confirm button deletes plant
+     // Confirm button deletes plant
     confirmBtn.addEventListener('click', async () => {
         if (!plantToDelete) return;
 
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-// Close modal by clicking outside content
+     // Close modal by clicking outside content
     window.addEventListener('click', (e) => {
         if (e.target === modal) {
             modal.style.display = 'none';
@@ -293,6 +293,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const selected = document.querySelector('input[name="tag-selection"]:checked');
         if (selected) selected.checked = false;
+    }
+
+    // drop down sort elements
+    const sortBtn = document.getElementById("sort-dropdown-btn");
+    const sortMenu = document.getElementById("sort-dropdown-menu");
+
+    if (sortBtn) {
+        sortBtn.addEventListener("click", () => {
+            sortMenu.classList.toggle("hidden");
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!sortBtn.contains(e.target) && !sortMenu.contains(e.target)) {
+                sortMenu.classList.add("hidden");
+            }
+        });
     }
 
 

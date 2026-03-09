@@ -92,6 +92,7 @@ public class PlantsController {
         model.addAttribute("query", q == null ? "" : q);
         model.addAttribute("plants", perenualClient.fetchPlants(q));
         model.addAttribute("user", user);
+        model.addAttribute("currentPage", "search");
         return "plant/plant-search";
     }
 

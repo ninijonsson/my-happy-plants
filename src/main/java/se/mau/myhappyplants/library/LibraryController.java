@@ -67,6 +67,7 @@ public class LibraryController {
         model.addAttribute("user", user);
         model.addAttribute("needsWatering", needsWatering);
         model.addAttribute("currentSort", sort);
+        model.addAttribute("currentPage", "library");
         return "/library/my-plants";
     }
 

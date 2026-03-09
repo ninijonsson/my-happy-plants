@@ -46,29 +46,43 @@
         </div>
 
         <!-- Sorting buttons -->
-        <div class="flex gap-3 my-6">
-            <a th:href="@{/library(sort='water')}"
-               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02] no-loader"
-               th:classappend="${currentSort == 'water' || currentSort == null ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
-                Water Status 💧
-            </a>
-            <a th:href="@{/library(sort='asc')}"
-               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02] no-loader"
-               th:classappend="${currentSort == 'asc' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
-                A-Z
-            </a>
+        <div class="relative inline-block my-6">
 
-            <a th:href="@{/library(sort='desc')}"
-               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02] no-loader"
-               th:classappend="${currentSort == 'desc' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
-                Z-A
-            </a>
+            <button id="sort-dropdown-btn"
+                    class="bg-[#427A43] text-white font-medium py-2 px-4 rounded-lg shadow-sm hover:bg-[#005F02]">
+                 <span th:text="${
+                 currentSort == 'asc' ? 'Sort: A-Z ▾' :
+                 currentSort == 'desc' ? 'Sort: Z-A ▾' :
+                 currentSort == 'recent' ? 'Sort: Recently added ▾' :
+                 'Sort: Water Status 💧 ▾'
+                 }">Sort plants ▾</span>
+            </button>
 
-            <a th:href="@{/library(sort='recent')}"
-               class="select-none cursor-pointer text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-all bg-[#427A43] hover:bg-[#005F02] no-loader"
-               th:classappend="${currentSort == 'recent' ? '!bg-emerald-900 ring-2 ring-emerald-300' : ''}">
-                Recently added
-            </a>
+            <!-- Dropdown menu -->
+            <div id="sort-dropdown-menu"
+                 class="hidden absolute mt-2 w-48 bg-white border rounded-lg shadow-lg z-50">
+
+                <a th:href="@{/library(sort='water')}"
+                   class="block px-4 py-2 hover:bg-gray-100">
+                    Water Status 💧
+                </a>
+
+                <a th:href="@{/library(sort='asc')}"
+                   class="block px-4 py-2 hover:bg-gray-100">
+                    A-Z
+                </a>
+
+                <a th:href="@{/library(sort='desc')}"
+                   class="block px-4 py-2 hover:bg-gray-100">
+                    Z-A
+                </a>
+
+                <a th:href="@{/library(sort='recent')}"
+                   class="block px-4 py-2 hover:bg-gray-100">
+                    Recently added
+                </a>
+
+            </div>
         </div>
 
         <div id="users-plants" th:attr="data-currentsort=${currentSort}">
