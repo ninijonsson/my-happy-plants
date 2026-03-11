@@ -64,10 +64,11 @@ public class PlantsController {
      * to use it for the library plants and
      * the search plants
      */
-    private String prepareDetails(String apiId, AccountUserPlant plant, Model model, HttpSession session) {
+    public String prepareDetails(String apiId, AccountUserPlant plant, Model model, HttpSession session) {
         AccountUser user = (AccountUser) session.getAttribute("user");
         if (user == null) return "redirect:/login";
 
+        //TODO: Add error handling if the plant is null by viewing error message and redirect to the library
         PerenualPlantDetailsResponse apiDetails = perenualClient.fetchPlantDetails(apiId);
 
         model.addAttribute("user", user);
