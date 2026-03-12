@@ -54,31 +54,45 @@ public class LibraryService {
         Sort sort;
         String plantName = "plantName";
 
-        //This is a safety fallback in case sortDir is ever null
         String criteria = (sortDir == null) ? "water" : sortDir;
 
         switch(criteria) {
             case "asc":
-                //A-Z
                 sort = Sort.by(Sort.Direction.ASC, plantName);
-                break;
+                return accountUserPlantRepository.findByUserId(userId, sort);
+
             case "desc":
-                //Z-A
                 sort = Sort.by(Sort.Direction.DESC, plantName);
-                break;
+                return accountUserPlantRepository.findByUserId(userId, sort);
+
             case "recent":
-                //most recently added
                 sort = Sort.by(Sort.Direction.DESC, "createdAt");
-                break;
+                return accountUserPlantRepository.findByUserId(userId, sort);
+
             case "water":
-                //simply a safety measure in case something doesnt work
             default:
-                //Closest to needing water
-                //default mode
-                sort = Sort.by(Sort.Direction.ASC, "nextWateringDate");
-                break;
+                List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId);
+
+                plants.forEach(AccountUserPlant::calculateNextWateringDate);
+
+                plants.sort((p1, p2) -> {
+
+                    boolean p1Wishlist = p1.getTag() != null && "Wishlist".equals(p1.getTag().getLabel());
+                    boolean p2Wishlist = p2.getTag() != null && "Wishlist".equals(p2.getTag().getLabel());
+
+                    if (p1Wishlist && !p2Wishlist) return 1;
+                    if (!p1Wishlist && p2Wishlist) return -1;
+
+                    if (p1.getNextWateringDate() == null && p2.getNextWateringDate() == null) return 0;
+                    if (p1.getNextWateringDate() == null) return 1;
+                    if (p2.getNextWateringDate() == null) return -1;
+
+                    return p1.getNextWateringDate().compareTo(p2.getNextWateringDate());
+
+                });
+
+                return plants;
         }
-        return accountUserPlantRepository.findByUserId(userId, sort);
     }
 
     /**
