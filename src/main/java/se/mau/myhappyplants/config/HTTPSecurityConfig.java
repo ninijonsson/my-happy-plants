@@ -51,7 +51,7 @@ public class HTTPSecurityConfig {
      */
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        return http
+        http
                 .authorizeHttpRequests(registry-> {
                     registry.requestMatchers("/login", "/register", "/logout").permitAll();
                     registry.requestMatchers("/images/**", "/css/**", "/js/**").permitAll();
@@ -59,18 +59,20 @@ public class HTTPSecurityConfig {
                     registry.requestMatchers("/library/**").hasRole("USER");
                     registry.requestMatchers("/error/**").permitAll();
                     registry.anyRequest().hasRole("USER");//TODO: Make this more secure. Currently allow anyone to any site.
-                })
+                });
+        http
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .successHandler(loginSuccessHandler)
-                        .permitAll())
+                        .permitAll());
+        http
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .permitAll()
-                        .logoutSuccessUrl("/login?logout"))
-                .csrf(AbstractHttpConfigurer::disable) //TODO: If we want a more secure site and mimic a real website we should turn these on before deployment.
-                .cors(AbstractHttpConfigurer::disable) //TODO: If we want a more secure site and mimic a real website we should turn these on before deployment.
-                .build();
+                        .logoutSuccessUrl("/login?logout"));
+        http.csrf(AbstractHttpConfigurer::disable); //TODO: If we want a more secure site and mimic a real website we should turn these on before deployment.
+        http.cors(AbstractHttpConfigurer::disable); //TODO: If we want a more secure site and mimic a real website we should turn these on before deployment.
+        return http.build();
     }
 
     /**
