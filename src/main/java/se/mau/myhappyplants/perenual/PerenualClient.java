@@ -24,10 +24,11 @@ import java.util.List;
 public class PerenualClient {
     private final WebClient webClient;
     private final PerenualProperties props;
-
-    public PerenualClient(WebClient.Builder builder, PerenualProperties props) {
+    
+    
+    public PerenualClient(WebClient webClient, PerenualProperties props) {
         this.props = props;
-        this.webClient = builder.baseUrl(props.baseUrl()).build();
+        this.webClient = webClient;
     }
 
     /**

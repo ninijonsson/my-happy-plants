@@ -22,7 +22,7 @@ public class AccountUserService implements UserDetailsService {
     /**
      * Skapa ny användare (registrering)
      */
-    public boolean createUser(String username, String password, String role) {
+    public boolean createUser(String username, String password) {
         // Kolla om username redan finns
         if(username.isBlank()) {
             return false;
@@ -34,7 +34,7 @@ public class AccountUserService implements UserDetailsService {
         AccountUser user = new AccountUser();
         user.setUsername(username);
         user.setPasswordHash(password);
-        user.setRole(role);
+        user.setRole("USER");
         
         accountUserRepository.save(user);
         
@@ -116,14 +116,5 @@ public class AccountUserService implements UserDetailsService {
         }else {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
-    }
-
-    private String[] getRoles(AccountUser user) {
-        String role = user.getRole();
-        if(role.isBlank()) {
-            return new String[] {"USER"};
-        }
-
-        return role.split(",");
     }
 }
