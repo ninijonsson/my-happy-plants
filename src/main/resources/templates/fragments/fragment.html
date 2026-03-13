@@ -8,14 +8,17 @@
     <ul style="list-style-type: none; margin: 0; padding: 0;">
         <li style="float:left;">
             <a th:href="@{/library}"
+               th:classappend="${currentPage == 'library'} ? 'bg-[#005F02]' : ''"
                onmouseover="this.style.backgroundColor='#005F02'"
-               onmouseout="this.style.backgroundColor='transparent'"
-               style="display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; text-decoration: none;">My Plants</a>
+               onmouseout="if(!this.classList.contains('bg-[#005F02]')) this.style.backgroundColor='transparent'"
+               style="display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; text-decoration: none;">My Plants
+            </a>
         </li>
         <li style="float:left;">
             <a th:href="@{/plants/search}"
+               th:classappend="${currentPage == 'search'} ? 'bg-[#005F02]' : ''"
                onmouseover="this.style.backgroundColor='#005F02'"
-               onmouseout="this.style.backgroundColor='transparent'"
+               onmouseout="if(!this.classList.contains('bg-[#005F02]')) this.style.backgroundColor='transparent'"
                style="display: block; text-align: center; text-decoration: none; padding: 0.6rem 1rem">
                 <img src="/images/magnifying-glass.png" alt="Search" class="w-8 h-8 object-contain">
             </a>

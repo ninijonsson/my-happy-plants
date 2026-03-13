@@ -3,7 +3,6 @@ package se.mau.myhappyplants.library;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import se.mau.myhappyplants.library.dto.PlantWateringData;
 import se.mau.myhappyplants.plant.dto.PlantDetailsView;
 import se.mau.myhappyplants.user.AccountUser;
 import se.mau.myhappyplants.user.AccountUserRepository;
@@ -51,31 +50,48 @@ public class LibraryService {
         Sort sort;
         String plantName = "plantName";
 
-        //This is a safety fallback in case sortDir is ever null
         String criteria = (sortDir == null) ? "water" : sortDir;
 
         switch(criteria) {
             case "asc":
-                //A-Z
                 sort = Sort.by(Sort.Direction.ASC, plantName);
-                break;
+                return accountUserPlantRepository.findByUserId(userId, sort);
+
             case "desc":
-                //Z-A
                 sort = Sort.by(Sort.Direction.DESC, plantName);
-                break;
+                return accountUserPlantRepository.findByUserId(userId, sort);
+
             case "recent":
-                //most recently added
                 sort = Sort.by(Sort.Direction.DESC, "createdAt");
-                break;
+                return accountUserPlantRepository.findByUserId(userId, sort);
+
             case "water":
-                //simply a safety measure in case something doesnt work
+                return accountUserPlantRepository.findByUserId(userId, Sort.by(
+                        Sort.Direction.ASC,"nextWateringDate"
+                ));
             default:
-                //Closest to needing water
-                //default mode
-                sort = Sort.by(Sort.Direction.ASC, "nextWateringDate");
-                break;
+                List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
+
+                plants.forEach(AccountUserPlant::calculateNextWateringDate);
+
+                plants.sort((p1, p2) -> {
+
+                    boolean p1Wishlist = p1.getTag() != null && "Wishlist".equals(p1.getTag().getLabel());
+                    boolean p2Wishlist = p2.getTag() != null && "Wishlist".equals(p2.getTag().getLabel());
+
+                    if (p1Wishlist && !p2Wishlist) return 1;
+                    if (!p1Wishlist && p2Wishlist) return -1;
+
+                    if (p1.getNextWateringDate() == null && p2.getNextWateringDate() == null) return 0;
+                    if (p1.getNextWateringDate() == null) return 1;
+                    if (p2.getNextWateringDate() == null) return -1;
+
+                    return p1.getNextWateringDate().compareTo(p2.getNextWateringDate());
+
+                });
+
+                return plants;
         }
-        return accountUserPlantRepository.findByUserId(userId, sort);
     }
 
     /**
@@ -186,7 +202,7 @@ public class LibraryService {
      *
      */
     public List<AccountUserPlant> getAllPlantsForUser(int userId) {
-        return accountUserPlantRepository.findByUserId(userId);
+        return accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
     }
 
     /**
@@ -249,7 +265,7 @@ public class LibraryService {
      * @return the number of plants that require watering
      */
     public long countPlantsNeedingWater(int userId) {
-        List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId);
+        List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
 
         LocalDate today = LocalDate.now();
         long count = 0;
