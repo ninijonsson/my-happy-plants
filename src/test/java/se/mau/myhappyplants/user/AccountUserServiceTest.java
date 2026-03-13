@@ -12,6 +12,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -19,41 +20,23 @@ class AccountUserServiceTest {
 
     @Mock
     private AccountUserRepository accountUserRepository;
-
-
+    
     @InjectMocks
     private AccountUserService accountUserService;
-
-    private PasswordValidatorConfig passwordValidator;
-
-    /**
-     * Using a @Mock annotation allows us to use fake data
-     * to test instead of cramming useless data into the database
-     */
-
-
-    @BeforeEach
-    void setUp() {
-       passwordValidator = new PasswordValidatorConfig();
-        //accountUserService = new AccountUserService();
-    }
-
+    
+    
     @Test
-    @Disabled("Waiting for AccountUserService.register and AccountUserRepository.existsByUsername (ACC.01F)")
     @DisplayName("ACC.01F - Should return false if username is taken")
     void registerUserButUsernameIsTaken() {
-        /**
-         * This is the plan for when the logic is implemented
-         * This is a Mock test to make sure that the real database does
-         * not get impacted by our fake profile tests
-         */
+        
+        AccountUser existingUser = mock(AccountUser.class);
+        existingUser.setUsername("HussanLovesPlants");
+        String username = "HussanLovesPlants";
+        when(accountUserRepository.findByUsername(username)).thenReturn(Optional.of(existingUser));
 
-//        String username = "HussanLovesPlants";
-//        when(userRepository.existsByUsername(username)).thenReturn(true);
-//
-//        boolean result = userService.register(new User(username, "password"));
-//
-//        assertFalse(result, "Registration should fail when username exists in DB");
+        boolean result = accountUserService.createUser(username, "password");
+
+        assertFalse(result, "Registration should fail when username exists in DB");
     }
 
 
@@ -89,8 +72,7 @@ class AccountUserServiceTest {
 
         boolean result = accountUserService.createUser(
                 "RandomUser",
-                "AbitNicole2026!!!",
-                "USER"
+                "AbitNicole2026!!!"
         );
 
         assertTrue(result);
@@ -100,16 +82,8 @@ class AccountUserServiceTest {
     @Test
     @DisplayName("ACC.05F Error Message Missing Username")
     void testMissingUsernameRegistration() {
-        boolean result = accountUserService.createUser("", "123", "USER");
+        boolean result = accountUserService.createUser("", "123");
         assertEquals(false, result);
-    }
-
-    @Disabled
-    @Test
-    @DisplayName("ACC.06F Error Message Incorrect Password")
-    void testIncorrectPassword() {
-        //boolean result = userService.("test", "123", "USER");
-        //assertEquals(false, result);
     }
 
     @Test
@@ -128,11 +102,12 @@ class AccountUserServiceTest {
                 exception.getMessage()
         );
     }
-
-
+    
     @Test
     @DisplayName("ACC.10F Password Rules")
     void testValidPasswordRules() {
+        PasswordValidatorConfig passwordValidator = new PasswordValidatorConfig();
+        
         String result = passwordValidator.isValid("AbitNicole2026!");
         assertEquals("OK", result);
     }
@@ -141,6 +116,7 @@ class AccountUserServiceTest {
     @Test
     @DisplayName("ACC.10.1F Password Rules Infomration + ACC.10F Password Rules when invalid")
     void testPasswordRulesInformation() {
+        PasswordValidatorConfig passwordValidator = new PasswordValidatorConfig();
         String result = passwordValidator.validate("abit");
 
         StringBuilder response = new StringBuilder();
@@ -166,20 +142,9 @@ class AccountUserServiceTest {
 
         boolean result = accountUserService.createUser(
                 "test",
-                "password123!",
-                "USER"
+                "password123!"
         );
 
         assertFalse(result, "Username is already taken");
     }
-
-
-
-    @AfterEach
-    void tearDown() {
-    }
-
-
-
-
 }

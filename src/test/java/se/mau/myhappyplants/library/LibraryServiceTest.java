@@ -1,17 +1,25 @@
 package se.mau.myhappyplants.library;
 
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
+import se.mau.myhappyplants.plant.dto.PlantDetailsView;
+import se.mau.myhappyplants.user.AccountUser;
+import se.mau.myhappyplants.user.AccountUserRepository;
 
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,16 +27,37 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LibraryServiceTest {
-    private AccountUserPlantRepository plantRepo;
+    
+    @Mock
+    private AccountUserRepository accountUserRepository;
+    
+    @Mock
+    private AccountUserPlantRepository accountUserPlantRepository;
+
+    @Mock
+    private TagRepository tagRepository;
+
+    @Mock
+    private WateringHistoryRepository wateringHistoryRepository;
+    
+    @InjectMocks
     private LibraryService libraryService;
-    private int userId;
+    
+    private int userId = 1;
+    private AccountUserPlant plant;
+    private AccountUser user;
 
     @BeforeEach
     void setUp() {
-        plantRepo = mock(AccountUserPlantRepository.class); // Creating mock of repo
-        libraryService = new LibraryService(plantRepo);     // Service object where we send our mock repo
-        userId = 1;                                         // Default user id
+        user = new AccountUser();
+        user.setId(1);
+
+        plant = new AccountUserPlant("Monstera", "123");
+        plant.setId(1);
+        plant.setUser(user);
+        plant.setWateringFrequencyDays(7);
     }
+    
 
     @Test
     @DisplayName("LIB.02F - Library Overview - Get all user's plants")
@@ -40,7 +69,7 @@ class LibraryServiceTest {
         List<AccountUserPlant> expected = Arrays.asList(plantOne, plantTwo);
 
         // Repo should give us back the two plants initiated
-        when(plantRepo.findByUserId(userId)).thenReturn(expected);
+        when(accountUserPlantRepository.findByUserId(userId)).thenReturn(expected);
 
         // Act
         List<AccountUserPlant> result = libraryService.getAllPlantsForUser(userId);
@@ -48,40 +77,67 @@ class LibraryServiceTest {
         assertEquals(2, result.size());
         assertSame(expected, result); // Lists should be same
     }
+    
+    @Test
+    @DisplayName("LIB.01F - Add to Library - Valid")
+    void testAddPlantToLibrary() {
+    
+        AccountUser userMock = mock(AccountUser.class);
+        AccountUserPlant plantMock = mock(AccountUserPlant.class);
+        PlantDetailsView plantDetailsViewMock = mock(PlantDetailsView.class);
+        
+        when(plantDetailsViewMock.wateringFrequency()).thenReturn("Every 2 weeks");
+        when(accountUserPlantRepository.save(any(AccountUserPlant.class))).thenReturn(plantMock);
+        when(accountUserRepository.findById(userId)).thenReturn(Optional.of(userMock));
+        
+        AccountUserPlant result = libraryService.addPlantToLibrary(plantDetailsViewMock, userId);
+        
+        assertNotNull(result);
+        verify(accountUserPlantRepository).save(any(AccountUserPlant.class));
+        verify(accountUserRepository).findById(userId);
+    }
+    
+    @Test
+    @DisplayName("LIB.01F - Add to Library - Invalid")
+    void testAddPlantToLibraryInvalid() {
+        PlantDetailsView plantDetailsViewMock = mock(PlantDetailsView.class);
+        
+        when(accountUserRepository.findById(userId)).thenReturn(Optional.empty());
+        
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> libraryService.addPlantToLibrary(plantDetailsViewMock, userId));
+        
+        assertTrue(exception.getMessage().contains("User not found"));
+        assertTrue(exception.getMessage().contains(String.valueOf(userId)));
+        
+        verify(accountUserRepository).findById(userId);       
+    }
 
     @Test
     @DisplayName("LIB.04F - Remove Plant - Valid")
     void testRemoveExistingPlant() {
-        // Needs as an argument for library service
-        AccountUserPlantRepository userPlantRepo = mock(AccountUserPlantRepository.class);
-        LibraryService libraryService = new LibraryService(userPlantRepo);
-
         int plantId = 1;
         int userId = 1;
 
         AccountUserPlant plant = new AccountUserPlant("European Silver Fir", "1");
         plant.setId(plantId);
 
-        when(userPlantRepo.findByIdAndUserId(plantId, userId)).thenReturn(Optional.of(plant));
+        when(accountUserPlantRepository.findByIdAndUserId(plantId, userId)).thenReturn(Optional.of(plant));
 
         libraryService.removePlant(plantId, userId);
 
-        verify(userPlantRepo).findByIdAndUserId(plantId, userId);
-        verify(userPlantRepo).delete(plant);
-        verifyNoMoreInteractions(userPlantRepo);
+        verify(accountUserPlantRepository).findByIdAndUserId(plantId, userId);
+        verify(accountUserPlantRepository).delete(plant);
+        verifyNoMoreInteractions(accountUserPlantRepository);
     }
 
     @Test
     @DisplayName("LIB.04F - Remove Plant - Invalid")
     void testRemoveNonexistingPlant() {
-        // Needs as an argument for library service
-        AccountUserPlantRepository userPlantRepo = mock(AccountUserPlantRepository.class);
-        LibraryService libraryService = new LibraryService(userPlantRepo);
-
         int plantId = 1234567890;
         int userId = 1;
 
-        when(userPlantRepo.findByIdAndUserId(plantId, userId)).thenReturn(Optional.empty());
+        when(accountUserPlantRepository.findByIdAndUserId(plantId, userId)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> libraryService.removePlant(plantId, userId));
@@ -90,9 +146,9 @@ class LibraryServiceTest {
         assertTrue(exception.getMessage().contains(String.valueOf(plantId)));
         assertTrue(exception.getMessage().contains(String.valueOf(userId)));
 
-        verify(userPlantRepo).findByIdAndUserId(plantId, userId);
-        verify(userPlantRepo, never()).delete(any());
-        verifyNoMoreInteractions(userPlantRepo);
+        verify(accountUserPlantRepository).findByIdAndUserId(plantId, userId);
+        verify(accountUserPlantRepository, never()).delete(any());
+        verifyNoMoreInteractions(accountUserPlantRepository);
     }
 
     @Test
@@ -100,7 +156,7 @@ class LibraryServiceTest {
     void testNullSortBy() {
         // What the mock should return when called
         // When user id found, return an empty list
-        when(plantRepo.findByUserId(eq(userId), any(Sort.class)))
+        when(accountUserPlantRepository.findByUserId(eq(userId), any(Sort.class)))
                 .thenReturn(List.of());
 
         libraryService.getUserLibrary(userId, null);
@@ -118,7 +174,7 @@ class LibraryServiceTest {
     void testSortPlantsByWaterStatus() {
         // What the mock should return when called
         // When user id found, return an empty list
-        when(plantRepo.findByUserId(eq(userId), any(Sort.class)))
+        when(accountUserPlantRepository.findByUserId(eq(userId), any(Sort.class)))
                 .thenReturn(List.of());
 
         libraryService.getUserLibrary(userId, "water"); // sortDir for water sorting
@@ -135,7 +191,7 @@ class LibraryServiceTest {
     void testSortPlantsByNameAscending() {
         // What the mock should return when called
         // When user id found, return an empty list
-        when(plantRepo.findByUserId(eq(userId), any(Sort.class)))
+        when(accountUserPlantRepository.findByUserId(eq(userId), any(Sort.class)))
                 .thenReturn(List.of());
 
         libraryService.getUserLibrary(userId, "asc"); // a-z
@@ -152,7 +208,7 @@ class LibraryServiceTest {
     void testSortPlantsByNameDescending() {
         // What the mock should return when called
         // When user id found, return an empty list
-        when(plantRepo.findByUserId(eq(userId), any(Sort.class)))
+        when(accountUserPlantRepository.findByUserId(eq(userId), any(Sort.class)))
                 .thenReturn(List.of());
 
         libraryService.getUserLibrary(userId, "desc"); // z-a
@@ -169,7 +225,7 @@ class LibraryServiceTest {
     void testSortPlantsByRecentlyAdded() {
         // What the mock should return when called
         // When user id found, return an empty list
-        when(plantRepo.findByUserId(eq(userId), any(Sort.class)))
+        when(accountUserPlantRepository.findByUserId(eq(userId), any(Sort.class)))
                 .thenReturn(List.of());
 
         libraryService.getUserLibrary(userId, "recent");
@@ -185,12 +241,267 @@ class LibraryServiceTest {
         // ArgumentCaptor to check correct Sort object is returned
         ArgumentCaptor<Sort> sortCaptor = ArgumentCaptor.forClass(Sort.class);
         // Controls that the repo method is called and capturing Sort argument
-        verify(plantRepo).findByUserId(eq(userId), sortCaptor.capture());
+        verify(accountUserPlantRepository).findByUserId(eq(userId), sortCaptor.capture());
 
         return sortCaptor.getValue();
     }
 
+    // Tests that the function works correctly and nothing is disturbing the flow of data
+    @Test
+    @DisplayName("LIB.03F - Search in Library - Correct Flow")
+    void testSearchInLibrary() {
+        String searchTerm = "sun";
+        userId = 1;
+        List<AccountUserPlant> expectedPlants = List.of(new AccountUserPlant("Sunflower", "1"), 
+                                                    new AccountUserPlant("Summer Lilly", "2"));
+        
+        when(accountUserPlantRepository.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm)).thenReturn(expectedPlants);
+        
+        List<AccountUserPlant> result = libraryService.searchPlantsByName(userId, searchTerm);
+        
+        assertEquals(expectedPlants, result);
+        verify(accountUserPlantRepository).findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);
+    }
+    
+    // Tests that the function works correctly when nothing is supposed to be sent back
+    @Test
+    @DisplayName("LIB.03F - Search in Library - Empty List")
+    void testSearchInLibraryEmptyList() {
+        String searchTerm = "nonexistent";
+        userId = 1;
+        List<AccountUserPlant> expectedPlants = List.of();
+        
+        when(accountUserPlantRepository.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm)).thenReturn(expectedPlants);
+        
+        List<AccountUserPlant> result = libraryService.searchPlantsByName(userId, searchTerm);
+        
+        assertEquals(expectedPlants, result);
+        verify(accountUserPlantRepository).findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);       
+    }
+    
+    // Tests that the function is not meddling with the parameters
+    @Test
+    @DisplayName("LIB.03F - Search in Library - Pass Argument Correctly")
+    void testSearchInLibraryArgument() {
+        String searchTerm = "cactus";
+        userId = 42;
+        
+        when(accountUserPlantRepository.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm)).thenReturn(List.of());
+        
+        libraryService.searchPlantsByName(userId, searchTerm);
+        
+        verify(accountUserPlantRepository).findByUserIdAndPlantNameContainingIgnoreCase(42, "cactus");      
+    }
+
+    
+    @Test
+    @DisplayName("CAR.01F - countPlantsNeedingWater() returns correct count when plants are overdue")
+    void testCountPlantsNeedingWaterWhenOverdue() {
+        AccountUserPlant overduePlant1 = new AccountUserPlant("Monstera", "1");
+        overduePlant1.setWateringFrequencyDays(7);
+        overduePlant1.setLastWatered(LocalDateTime.now().minusDays(8)); // overdue
+
+        AccountUserPlant overduePlant2 = new AccountUserPlant("Cactus", "2");
+        overduePlant2.setWateringFrequencyDays(14);
+        overduePlant2.setLastWatered(LocalDateTime.now().minusDays(15)); // overdue
+
+        AccountUserPlant okPlant = new AccountUserPlant("Pothos", "3");
+        okPlant.setWateringFrequencyDays(7);
+        okPlant.setLastWatered(LocalDateTime.now().minusDays(2)); // not overdue
+
+        when(accountUserPlantRepository.findByUserId(1))
+                .thenReturn(List.of(overduePlant1, overduePlant2, okPlant));
+
+        long count = libraryService.countPlantsNeedingWater(1);
+
+        assertEquals(2, count,
+                "Should return 2 since only two plants are overdue");
+    }
+
+    @Test
+    @DisplayName("CAR.01F - countPlantsNeedingWater() returns 0 when no plants are overdue")
+    void testCountPlantsNeedingWaterNoneOverdue() {
+        AccountUserPlant plant1 = new AccountUserPlant("Monstera", "1");
+        plant1.setWateringFrequencyDays(7);
+        plant1.setLastWatered(LocalDateTime.now().minusDays(2));
+
+        AccountUserPlant plant2 = new AccountUserPlant("Cactus", "2");
+        plant2.setWateringFrequencyDays(14);
+        plant2.setLastWatered(LocalDateTime.now().minusDays(1));
+
+        when(accountUserPlantRepository.findByUserId(1))
+                .thenReturn(List.of(plant1, plant2));
+
+        long count = libraryService.countPlantsNeedingWater(1);
+
+        assertEquals(0, count,
+                "Should return 0 when no plants are overdue");
+    }
+
+    @Test
+    @DisplayName("CAR.01F - countPlantsNeedingWater() returns 0 when user has no plants")
+    void testCountPlantsNeedingWaterWhenNoPlants() {
+        when(accountUserPlantRepository.findByUserId(1)).thenReturn(List.of());
+
+        long count = libraryService.countPlantsNeedingWater(1);
+
+        assertEquals(0, count,
+                "Should return 0 when user has no plants");
+    }
+
+    @Test
+    @DisplayName("CAR.01F - countPlantsNeedingWater() skips plants without lastWatered")
+    void testCountPlantsNeedingWaterWhenLastWateredNull(){
+        AccountUserPlant plantWithoutDate = new AccountUserPlant("Monstera", "1");
+        plantWithoutDate.setWateringFrequencyDays(7);
+        // lastWatered is not set
+
+        when(accountUserPlantRepository.findByUserId(1))
+                .thenReturn(List.of(plantWithoutDate));
+
+        long count = libraryService.countPlantsNeedingWater(1);
+
+        assertEquals(0,count, "Should skip plants without a lastWatered date");
+    }
+
+
+    @Test
+    @DisplayName("CAR.02F - Watering a plant updates lastWatered to the given date")
+    void testWaterPlantUpdatesLastWatered() {
+        LocalDateTime wateringDate = LocalDateTime.now();
+        when(accountUserPlantRepository.findByIdAndUserId(1, 1))
+                .thenReturn(Optional.of(plant));
+        when(accountUserPlantRepository.save(any(AccountUserPlant.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(wateringHistoryRepository.save(any(WateringHistory.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        libraryService.waterPlant(1, 1, wateringDate);
+
+        assertEquals(wateringDate, plant.getLastWatered(),
+                "lastWatered should be updated to the given watering date");
+    }
+
+    @Test
+    @DisplayName("CAR.02F - Watering a plant saves the plant to the repository")
+    void testWaterPlantSavesPlantToRepository() {
+        LocalDateTime wateringDate = LocalDateTime.now();
+        when(accountUserPlantRepository.findByIdAndUserId(1, 1))
+                .thenReturn(Optional.of(plant));
+        when(accountUserPlantRepository.save(any(AccountUserPlant.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(wateringHistoryRepository.save(any(WateringHistory.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        libraryService.waterPlant(1, 1, wateringDate);
+
+        verify(accountUserPlantRepository, times(1)).save(plant);
+    }
+
+    @Test
+    @DisplayName("CAR.02F - Watering a plant saves a record to watering history")
+    void testWaterPlantSavesWateringHistory() {
+        LocalDateTime wateringDate = LocalDateTime.now();
+        when(accountUserPlantRepository.findByIdAndUserId(1, 1))
+                .thenReturn(Optional.of(plant));
+        when(accountUserPlantRepository.save(any(AccountUserPlant.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(wateringHistoryRepository.save(any(WateringHistory.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        libraryService.waterPlant(1, 1, wateringDate);
+
+        verify(wateringHistoryRepository, times(1)).save(any(WateringHistory.class));
+    }
+
+    @Test
+    @DisplayName("CAR.02F - Watering history record contains correct date")
+    void testWaterPlantHistoryRecordHasCorrectDate() {
+        LocalDateTime wateringDate = LocalDateTime.of(2025, 3, 1, 12, 0);
+        when(accountUserPlantRepository.findByIdAndUserId(1, 1))
+                .thenReturn(Optional.of(plant));
+        when(accountUserPlantRepository.save(any(AccountUserPlant.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(wateringHistoryRepository.save(any(WateringHistory.class)))
+                .thenAnswer(invocation -> {
+                    WateringHistory saved = invocation.getArgument(0);
+                    assertEquals(wateringDate, saved.getWateredAt(),
+                            "WateringHistory should contain the correct watering date");
+                    return saved;
+                });
+
+        libraryService.waterPlant(1, 1, wateringDate);
+    }
+
+    @Test
+    @DisplayName("CAR.02F - Throws exception if plant does not belong to user")
+    void testWaterPlantWhenPlantNotFound() {
+        when(accountUserPlantRepository.findByIdAndUserId(1, 1))
+                .thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class,
+                () -> libraryService.waterPlant(1, 1, LocalDateTime.now()),
+                "Should throw RuntimeException if plant is not found for this user");
+    }
+
+    @Test
+    @DisplayName("CAR.04F - getUserWateringSummary() groups watering events correctly by date")
+    void testGetUserWateringSummaryDate(){
+        LocalDateTime day1 = LocalDateTime.of(2025,3,1,10,0);
+        LocalDateTime day2 = LocalDateTime.of(2025,2,1,10,0);
+
+        WateringHistory h1 = new WateringHistory(user,plant,day1);
+        WateringHistory h2 = new WateringHistory(user,plant,day1); //same day as h1
+        WateringHistory h3 = new WateringHistory(user,plant,day2);
+
+        when(wateringHistoryRepository.findByUserIdOrderByWateredAtDesc(1))
+                .thenReturn(List.of(h1,h2,h3));
+
+        List<Map<String, Object>> summary = libraryService.getUserWateringSummary(1);
+
+        assertEquals(2, summary.size(), "Should have 2 entries, one per unique date");
+
+        Map<String, Object> entryDay1 = summary.stream()
+                .filter(e -> e.get("date").equals(LocalDate.of(2025, 3, 1).toString()))
+                .findFirst()
+                .orElseThrow();
+
+        assertEquals(2L, entryDay1.get("count"), "Day 1 should have a count of 2");
+    }
+
+    @Test
+    @DisplayName("CAR.04F - getUserWateringSummary() returns empty list when no history exists")
+    void testGetUserWateringSummaryEmpty() {
+        when(wateringHistoryRepository.findByUserIdOrderByWateredAtDesc(1))
+                .thenReturn(List.of());
+
+        List<Map<String, Object>> summary = libraryService.getUserWateringSummary(1);
+
+        assertTrue(summary.isEmpty(), "Should return empty list when user has no watering history");
+    }
+
+    @Test
+    @DisplayName("CAR.04F - getUserWateringSummary() returns one entry per unique date")
+    void testGetUserWateringSummaryUnique() {
+        LocalDateTime day1 = LocalDateTime.of(2025, 1, 1, 9, 0);
+        LocalDateTime day2 = LocalDateTime.of(2025, 2, 1, 9, 0);
+        LocalDateTime day3 = LocalDateTime.of(2025, 3, 1, 9, 0);
+
+        when(wateringHistoryRepository.findByUserIdOrderByWateredAtDesc(1))
+                .thenReturn(List.of(
+                        new WateringHistory(user, plant, day1),
+                        new WateringHistory(user, plant, day2),
+                        new WateringHistory(user, plant, day3)
+                ));
+
+        List<Map<String, Object>> summary = libraryService.getUserWateringSummary(1);
+
+        assertEquals(3, summary.size(), "Should return one entry per unique date");
+    }
+
     @AfterEach
     void tearDown() {
+        plant = null;
+        user = null;
     }
 }

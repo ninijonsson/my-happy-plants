@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Account - Final Step</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/js/loader.js}"></script>
+    <link rel="stylesheet" href="/css/loading.css">
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .shake-animation {
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        .crying-plant {
+            filter: drop-shadow(0 10px 15px rgba(220, 38, 38, 0.3));
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-r from-[#fef08a] via-[#84cc16] to-[#16a34a] flex items-center justify-center p-4">
+<div th:replace="~{/fragments/fragment :: loader}"></div>
+
+<!-- Second Step: Final Confirmation -->
+<div class="fade-in" style="box-shadow: 0 25px 50px -5px rgba(220, 38, 38, 0.3);">
+    <div class="p-8 w-full max-w-md bg-white/95 backdrop-blur-sm rounded-2xl border-2 border-red-400 transform transition-all duration-300 hover:shadow-2xl">
+
+        <!-- Dramatisk header -->
+        <div class="flex flex-col items-center mb-6">
+            <div class="text-6xl mb-2 animate-pulse">💔</div>
+            <svg viewBox="0 0 400 60" width="300" height="50" xmlns="http://www.w3.org/2000/svg">
+                <path id="arch2" d="M 30,50 Q 200,5 370,50" fill="none"/>
+                <text font-size="32" font-weight="900" fill="#dc2626" font-family="sans-serif" letter-spacing="2">
+                    <textPath href="#arch2" startOffset="50%" text-anchor="middle">FINAL STEP</textPath>
+                </text>
+            </svg>
+        </div>
+
+        <!-- Crying plant med effekt -->
+        <div class="relative flex justify-center mb-4">
+            <div class="absolute inset-0 bg-red-500/20 blur-2xl rounded-full"></div>
+            <img th:src="@{/images/Crying_Plant.png}" alt="Crying plant"
+                 class="w-70 h-70 object-contain relative z-10 crying-plant transform hover:scale-110 transition-transform duration-300" />
+        </div>
+
+        <!-- Dramatisk varning -->
+        <div class="bg-gradient-to-r from-red-50 to-red-100 border-2 border-red-300 p-5 mb-6 rounded-xl shadow-inner shake-animation">
+            <div class="flex items-start gap-3">
+                <span class="text-3xl">⚠️</span>
+                <div>
+                    <h3 class="text-xl font-black text-red-700 mb-2 flex items-center gap-2">
+                        Are you absolutely sure?
+                    </h3>
+                    <p class="text-red-600 text-sm leading-relaxed font-medium">
+                        This is your last chance. Once you delete,
+                        <span class="font-extrabold text-red-800 block mt-2 text-base">
+                            EVERYTHING IS GONE FOREVER
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knappar med starkare kontrast -->
+        <form th:action="@{/account/delete}" method="post" class="space-y-3">
+            <div class="flex flex-col gap-3">
+                <button type="submit"
+                        class="group w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 rounded-xl font-black tracking-wider hover:from-red-700 hover:to-red-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2 border-red-400">
+                    <span class="flex items-center justify-center gap-2">
+                        YES, DELETE FOREVER
+                        <span class="text-xl">💔</span>
+                    </span>
+                </button>
+                <a href="/library"
+                   class="group w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl font-bold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg text-center border-2 border-green-400">
+                    <span class="flex items-center justify-center gap-2">
+                        NO, KEEP MY ACCOUNT
+                        <span class="text-xl">💚</span>
+                    </span>
+                </a>
+            </div>
+        </form>
+
+        <!-- Footer med extra känsla -->
+        <div class="mt-6 text-center">
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="relative flex justify-center text-xs uppercase">
+                    <span class="bg-white px-4 text-gray-500 font-medium"> THIS IS PERMANENT </span>
+                </div>
+            </div>
+            <p class="text-gray-500 text-xs mt-4 italic">
+                "Every goodbye is the birth of a memory" 🌱
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

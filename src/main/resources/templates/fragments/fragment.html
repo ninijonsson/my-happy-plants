@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head></head>
+<head>
+</head>
 <body>
 
-<nav th:fragment="navbar" class="bg-[#427A43] mb-8" style="margin: 0; padding: 0; overflow: hidden; border-radius: 20px">
+<nav th:fragment="navbar" class="bg-[#427A43] mb-8" style="margin: 0; padding: 0; overflow: hidden; border-radius: 20px; position: relative;">
     <ul style="list-style-type: none; margin: 0; padding: 0;">
         <li style="float:left;">
             <a th:href="@{/library}"
@@ -27,6 +28,17 @@
                 <img th:src="@{/images/graph_icon.png}" class="w-10 h-9 transparent" alt="Graph" >
             </a>
         </li>
+
+        <li style="float: right">
+            <a href="#"
+               onclick="toggleSettingsMenu(); return false;"
+               onmouseover="this.style.backgroundColor='#005F02'"
+               onmouseout="this.style.backgroundColor='transparent'"
+               style="display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; text-decoration: none; cursor: pointer;">
+                <img th:src="@{/images/settings_button.png}" class="w-7 h-7 transparent" alt="Settings">
+            </a>
+        </li>
+
         <li style="float:right;">
             <a th:href="@{/logout}"
                onmouseover="this.style.color='#EA7B7B'; this.style.backgroundColor='#005F02'"
@@ -36,7 +48,35 @@
         <li style="float:right;">
             <a th:text="${user.username}" style="display: block; color: #e6f4f0; text-align: center; padding: 14px 16px; text-decoration: none;">User</a>
         </li>
+
     </ul>
+
+    <!--Dropdown menu for settings-->
+    <div id="settingsDropdown" class="hidden fixed w-48 bg-white rounded-md shadow-lg z-50"
+         style="right: 10px; top: 60px; border: 2px solid #427A43;">
+        <div class="py-1">
+            <a href="#" class="block px-4 py-2 transition-all duration-200"
+               style="color: #005F02;"
+               onmouseover="this.style.backgroundColor='#C0B87A'; this.style.color='white';"
+               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#005F02';">Profil</a>
+
+            <a href="#" class="block px-4 py-2 transition-all duration-200"
+               style="color: #005F02;"
+               onmouseover="this.style.backgroundColor='#C0B87A'; this.style.color='white';"
+               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#005F02';">Help</a>
+
+            <hr class="my-1" style="border-color: #427A43;">
+
+            <a th:href="@{/account/delete}" class="block px-4 py-2 transition-all duration-200"
+               style="color: #005F02;"
+               onmouseover="this.style.backgroundColor='#C0B87A'; this.style.color='white';"
+               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#005F02';">Delete Account</a>
+        </div>
+    </div>
+
+    <!-- Länka till JavaScript-filen -->
+    <script th:src="@{/js/navbar.js}"></script>
+
 </nav>
 <!-- Loading animation -->
 <div th:fragment="loader" id="loading" class="hidden fixed top-0 left-0 w-full h-full bg-green-900/70 z-50">
@@ -49,7 +89,8 @@
         </div>
     </div>
 
-</div>
+</div>v
+
 
 </body>
 </html>

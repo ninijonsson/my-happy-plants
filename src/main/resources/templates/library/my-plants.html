@@ -38,7 +38,7 @@
 
             <input type="text"
                    id="library-search"
-                   placeholder="Type 3+ letters to filter..."
+                   placeholder="Search Saved Plants..."
                    class="w-full pl-10 p-3 rounded-xl outline-none border-2 transition-all bg-white shadow-sm"
                    style="border-color: #427A43; color: #005F02;"
                    onfocus="this.style.borderColor='#C0B87A'; this.style.boxShadow='0 0 10px rgba(192, 184, 122, 0.2)';"
@@ -79,7 +79,8 @@
                  th:data-plantid="${plant.id}"
                  th:data-userid="${plant.user.id}"
                  th:data-last-watered="${plant.lastWatered}"
-                 th:data-watering-days="${plant.getWateringFrequencyDays()}">
+                 th:data-watering-days="${plant.getWateringFrequencyDays()}"
+                 th:data-taglabel="${plant.tag != null ? plant.tag.label : ''}">
 
                 <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link">
                     <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
@@ -99,21 +100,26 @@
                     </div>
                     
                     <p class="latin-name" th:text="${plant.scientificName}"></p>
-                    <p class="days-since-watered"></p>
+                    <p class="days-since-watered" th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}"></p>
 
                     <!--Watering progress bar-->
-                    <div class="progress-bar">
+                    <div class="progress-bar" th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}">
                         <div class="progress-fill"></div>
                         <span class="water-status-text"></span>
                     </div>
-                    <p>Next watering date:
+
+                    <p th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}">
+                        Next watering date:
                         <span th:text="${#temporals.format(plant.nextWateringDate, 'dd MMM yyyy')}" style="color: #005F02;"></span>
                     </p>
                 </div>
                 
                 <!-- Actions -->
                 <div class="plant-actions">
-                    <button type="button" class="water-btn">💧 Water it</button>
+                    <button type="button" class="water-btn"
+                            th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}">
+                        💧 Water it
+                    </button>
                     <button type="button" class="delete-btn">Remove</button>
                 </div>
             </div>
@@ -135,6 +141,15 @@
             <h3>Select a tag</h3>
             <div id="tag-list" class="tag-list">
                 <!-- Tags will be added here -->
+            </div>
+            <!-- Create Tag -->
+            <div class="custom-tag-container mt-4 mb-6">
+                <label for="custom-tag-input" class="block mb-1">Or create your own tag:</label>
+                <input
+                        type="text"
+                        id="custom-tag-input"
+                        class="w-full p-2 border rounded"
+                        placeholder="Enter new tag name">
             </div>
             <div class="modal-buttons">
                 <button id="tag-cancel-btn" class="modal-btn cancel-btn">Cancel</button>
