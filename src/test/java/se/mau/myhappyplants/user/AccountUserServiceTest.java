@@ -175,6 +175,7 @@ class AccountUserServiceTest {
     }
 
     @Test
+    @DisplayName("This method is called by other method (updateUsername) but with no usage")
     void testGetUserByIdValid() {
         AccountUser mockUser = new AccountUser();
         mockUser.setUsername("Mock");
@@ -187,6 +188,7 @@ class AccountUserServiceTest {
     }
 
     @Test
+    @DisplayName("This method is called by other method (updateUsername) but with no usage")
     void testGetUserByIdInvalid() {
         when(accountUserRepository.findById(1)).thenReturn(Optional.empty());
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
