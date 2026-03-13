@@ -12,7 +12,6 @@ import java.util.Optional;
  * Business logic for user-related operations (get profile, update settings, change password, etc.).
  */
 @Service
-
 public class AccountUserService implements UserDetailsService {
       
     @Autowired
@@ -20,7 +19,7 @@ public class AccountUserService implements UserDetailsService {
         
 
     /**
-     * Skapa ny användare (registrering)
+     * Create a new user (registrering)
      */
     public boolean createUser(String username, String password) {
         // Kolla om username redan finns
@@ -42,7 +41,7 @@ public class AccountUserService implements UserDetailsService {
     }
 
     /**
-     * Hitta användare baserat på ID
+     * Find user by ID
      */
     public AccountUser getUserById(int userId) {
         return accountUserRepository.findById(userId)
@@ -50,7 +49,7 @@ public class AccountUserService implements UserDetailsService {
     }
 
     /**
-     * Hitta användare baserat på username
+     * Find user by username
      */
     public AccountUser getUserByUsername(String username) {
         return accountUserRepository.findByUsername(username)

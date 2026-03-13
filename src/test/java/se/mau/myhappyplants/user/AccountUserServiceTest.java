@@ -5,6 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import se.mau.myhappyplants.config.PasswordValidatorConfig;
 
 import java.util.Optional;
@@ -12,8 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AccountUserServiceTest {
@@ -23,7 +25,6 @@ class AccountUserServiceTest {
     
     @InjectMocks
     private AccountUserService accountUserService;
-    
     
     @Test
     @DisplayName("ACC.01F - Should return false if username is taken")
@@ -39,21 +40,22 @@ class AccountUserServiceTest {
         assertFalse(result, "Registration should fail when username exists in DB");
     }
 
-
-    @Disabled("Väntar på att logiken för ACC.05F, ACC.04F ACC.07F ska implementeras")
     @Test
-    @DisplayName("ACC.04F ACC.04.1F ACC.07F - Delete Account Test")
-    void deleteAccountTest() {
-      //  User user = new User("Sven", "hashed_password123");
-      //  Userservice.deleteAccount(user);
-      //  AccountUserService.login();
+    @DisplayName("ACC.04F ACC.04.1F ACC.07F - Deleting Account with existing user")
+    void testDeleteAccountValid() {
+        when(accountUserRepository.existsById(1)).thenReturn(true);
+        accountUserService.deleteUser(1);
+        verify(accountUserRepository, times(1)).deleteById(1);
+    }
 
-        /**
-         * Test will be performed by creating an account, deleting it,
-         * then asserting the login results with a missing account result.
-         */
-
-
+    @Test
+    @DisplayName("ACC.04F ACC.04.1F ACC.07F - Deleting when User not found")
+    void testDeleteAccountTestNotFound() {
+        when(accountUserRepository.existsById(1)).thenReturn(false);
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> accountUserService.deleteUser(1));
+        assertEquals("User not found with id: 1", exception.getMessage());
+        verify(accountUserRepository, never()).deleteById(any());
     }
 
     @Test
@@ -146,5 +148,49 @@ class AccountUserServiceTest {
         );
 
         assertFalse(result, "Username is already taken");
+    }
+
+    @Test
+    void testLoadUserByUsernameValid() {
+        AccountUser mockUser = new AccountUser();
+        mockUser.setUsername("Mock");
+        mockUser.setPasswordHash("hashedPass£$");
+        mockUser.setRole("USER");
+
+        when(accountUserRepository.findByUsername("Mock")).thenReturn(Optional.of(mockUser));
+        UserDetails details = accountUserService.loadUserByUsername("Mock");
+
+        assertEquals("Mock", details.getUsername());
+        assertEquals("hashedPass£$", details.getPassword());
+        assertTrue(details.getAuthorities().stream().anyMatch(
+                a -> a.getAuthority().equals("ROLE_USER")));
+    }
+
+    @Test
+    void testLoadUserByUsernameInvalid() {
+        when(accountUserRepository.findByUsername("Mock")).thenReturn(Optional.empty());
+        UsernameNotFoundException e = assertThrows(UsernameNotFoundException.class, () ->
+            accountUserService.loadUserByUsername("Mock"));
+        assertEquals("User not found with username: Mock", e.getMessage());
+    }
+
+    @Test
+    void testGetUserByIdValid() {
+        AccountUser mockUser = new AccountUser();
+        mockUser.setUsername("Mock");
+        mockUser.setId(1);
+
+        when(accountUserRepository.findById(1)).thenReturn(Optional.of(mockUser));
+        AccountUser result = accountUserService.getUserById(1);
+        assertEquals(1, result.getId());
+        assertEquals("Mock", result.getUsername());
+    }
+
+    @Test
+    void testGetUserByIdInvalid() {
+        when(accountUserRepository.findById(1)).thenReturn(Optional.empty());
+        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+            accountUserService.getUserById(1));
+        assertEquals("User not found with id: 1", exception.getMessage());
     }
 }
