@@ -1,9 +1,12 @@
 package se.mau.myhappyplants.plant;
 
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -12,6 +15,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.ui.ExtendedModelMap;
+import org.springframework.ui.Model;
 import se.mau.myhappyplants.library.AccountUserPlant;
 import se.mau.myhappyplants.library.LibraryService;
 import se.mau.myhappyplants.perenual.PerenualClient;
@@ -23,24 +28,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
 
 @WebMvcTest(PlantsController.class)
 @ExtendWith(MockitoExtension.class)
 public class PlantControllerTest {
-    
+
     @Autowired
     private MockMvc mvc;
-    
+
     @MockitoBean
     private PerenualClient perenualClient;
-    
+
     @MockitoBean
     private LibraryService libraryService;
 
     @MockitoBean // or @MockBean depending on your import status
     private org.springframework.cache.CacheManager cacheManager;
+    @InjectMocks
+    PlantsController plantsController;
 
     @Test
     @DisplayName("LIB.01F - Add to Library - Valid")
@@ -48,9 +56,9 @@ public class PlantControllerTest {
         String perenualPlantId = String.valueOf('1');
         PlantDetailsView plantDetailsViewMock = mock(PlantDetailsView.class);
         AccountUser userMock = mock(AccountUser.class);
-        
+
         when(perenualClient.fetchPlantById(perenualPlantId)).thenReturn(plantDetailsViewMock);
-        
+
         mvc.perform(MockMvcRequestBuilders
                 .post("/plants/add")
                 .accept(MediaType.APPLICATION_FORM_URLENCODED)
@@ -58,13 +66,13 @@ public class PlantControllerTest {
                 .sessionAttr("user", userMock))
             .andExpect(MockMvcResultMatchers.redirectedUrl("/plants/search"));
     }
-    
+
     @Test
     @DisplayName("LIB.01F - Add to Library - Invalid")
     void testAddPlantToLibraryInvalid() throws Exception {
         String perenualPlantId = String.valueOf('1');
         PlantDetailsView plantDetailsViewMock = mock(PlantDetailsView.class);
-        
+
 
         when(perenualClient.fetchPlantById(perenualPlantId)).thenReturn(plantDetailsViewMock);
 
@@ -147,6 +155,32 @@ public class PlantControllerTest {
                     assertEquals("3", details.getWatering());
                     assertFalse(details.getSunlight().isEmpty());
                 });
+    }
+    @Test
+    @DisplayName("INF.02F-Plant Information Page")
+    void showLibraryPlantDetailsTestValid(){
+        int id = 1;
+        AccountUserPlant plant = mock(AccountUserPlant.class);
+        HttpSession session = mock(HttpSession.class);
+        Model model = new ExtendedModelMap();
+        when(libraryService.getPlantById(id)).thenReturn(plant);
+        when(plant.getPerenualId()).thenReturn("1249");
+
+        plantsController.showLibraryPlantDetails(id, model, session);
+
+        verify(libraryService).getPlantById(id);
+    }
+
+    @Test
+    @DisplayName("INF.02F-Plant Information Page - Error with retrieving the plant data")
+    void showLibraryPlantDetailsTestInvalid_nullPlant(){
+        int id = 1;
+        HttpSession session = mock(HttpSession.class);
+        Model model = new ExtendedModelMap();
+
+        when(libraryService.getPlantById(id)).thenReturn(null);
+        assertThrows(NullPointerException.class, () -> plantsController.showLibraryPlantDetails(id, model, session));
+        verify(libraryService).getPlantById(id);
     }
 
 }
