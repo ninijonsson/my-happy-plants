@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
 import org.springframework.test.context.TestPropertySource;
@@ -15,6 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -56,6 +61,21 @@ class SecurityConfigTest {
     @Test
     @DisplayName("ACC.01F Login")
     void testLoginConfiguration() {
+
+    }
+
+    @Test
+    @DisplayName("ACC.06F-Error Message Incorrect Password - " +
+            "User receives error message when incorrect password is entered")
+    void testLogInWithInvalidPassword() throws Exception {
+        UserDetails mockUser = User.withUsername("username")
+                        .password("hashedCorrectPassword").roles("USER").build();
+        when(accountUserService.loadUserByUsername("username")).thenReturn(mockUser);
+        mock.perform(MockMvcRequestBuilders.post("/login")
+                .param("username", "username")
+                .param("password", "WrongPassword0!"))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/login?error"));
 
     }
 
