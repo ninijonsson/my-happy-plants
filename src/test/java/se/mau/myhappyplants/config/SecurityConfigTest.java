@@ -6,7 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
 import org.springframework.test.context.TestPropertySource;
@@ -15,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -48,18 +48,13 @@ class SecurityConfigTest {
 
 
     private HTTPSecurityConfig config;
+    @Autowired
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
     @BeforeEach
     void setUp() {
         config = new HTTPSecurityConfig();
-    }
-
-    @Test
-    @Disabled
-    @DisplayName("ACC.01F Login")
-    void testLoginConfiguration() {
-
     }
 
     @Test
@@ -95,13 +90,47 @@ class SecurityConfigTest {
                 .andExpect(MockMvcResultMatchers.redirectedUrl("/login"));
     }
 
-
-@Test
+    @Test
     @DisplayName("ACC.02F Logout")
     void testLogoutConfiguration() {
         assertNotNull(config, "Configuration should not be null");
     }
 
+    @Test
+    @DisplayName("SEC.02Q-Encryption - Password is encoded and not stored as plaintext")
+    void testPasswordIsEncoded(){
+        String rawPassword = "MySecretPassword123";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        assertNotEquals(rawPassword, encodedPassword, "Encoded password should not match raw password");
+    }
+
+    @Test
+    @DisplayName("SEC.02Q-Encryption - Correct password matches encoded password")
+    void testCorrectPasswordMatches(){
+        String rawPassword = "MySecretPassword123";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        assertTrue(passwordEncoder.matches(rawPassword, encodedPassword),
+                "Correct password should match the encoded version");
+    }
+
+    @Test
+    @DisplayName("SEC.02Q-Encryption - Same password encoded twice produces different hashes (salting)")
+    void testEncodingIsSalted(){
+        String rawPassword = "MySecretPassword123";
+        String encodedPassword1 = passwordEncoder.encode(rawPassword);
+        String encodedPassword2 = passwordEncoder.encode(rawPassword);
+        assertNotEquals(encodedPassword1, encodedPassword2,
+                "BCrypt should produce different hashes each time due to salting");
+    }
+
+    @Test
+    @DisplayName("SEC.02Q-Encryption - Encoded password starts with BCrypt identifier")
+    void testEncodedPasswordUsesBCrypt(){
+        String rawPassword = "MySecretPassword123";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        assertTrue(encodedPassword.startsWith("$2a$") || encodedPassword.startsWith("$2b$"),
+                "Encoded password should use BCrypt format");
+    }
 
     @AfterEach
     void tearDown() {
