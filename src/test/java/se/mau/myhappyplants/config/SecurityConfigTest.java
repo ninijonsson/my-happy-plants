@@ -83,7 +83,7 @@ class SecurityConfigTest {
 
 
     @Test
-    @DisplayName("ACC.02.2F - Unauthenticated user is redirected to login page")
+    @DisplayName("ACC.01.1F - Unauthenticated user is redirected to login page")
     void testRedirectToLoginPageInvalid() throws Exception {
         mock.perform(MockMvcRequestBuilders.get("/plants/search"))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
