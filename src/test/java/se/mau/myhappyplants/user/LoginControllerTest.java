@@ -51,7 +51,7 @@ public class LoginControllerTest {
     void testCreateNewUserSuccess(){
         when(passwordValidatorConfig.isValid("123456789Aa.")).thenReturn("OK");
         when(passwordEncoder.encode("123456789Aa.")).thenReturn("hashedPassword");
-        when(accountUserService.createUser("newUser", "hashedPassword", "USER")).thenReturn(true);
+        when(accountUserService.createUser("newUser", "hashedPassword")).thenReturn(true);
 
         ResponseEntity<?> response = loginController.createUser("newUser", "123456789Aa.");
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -62,7 +62,7 @@ public class LoginControllerTest {
     void createExistingUser(){
         when(passwordValidatorConfig.isValid("123456789Aa.")).thenReturn("OK");
         when(passwordEncoder.encode("123456789Aa.")).thenReturn("hashedPassword");
-        when(accountUserService.createUser("newUser", "hashedPassword", "USER")).thenReturn(false);
+        when(accountUserService.createUser("newUser", "hashedPassword")).thenReturn(false);
 
         ResponseEntity<?> response = loginController.createUser("newUser", "123456789Aa.");
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
