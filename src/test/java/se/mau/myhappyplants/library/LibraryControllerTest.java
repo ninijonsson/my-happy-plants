@@ -113,6 +113,9 @@ class LibraryControllerTest {
                                                     new AccountUserPlant("Summer Lilly", "2"), 
                                                     new AccountUserPlant("Rose", "3"),
                                                     new AccountUserPlant("Marigold", "4"));
+        
+        List<AccountUserPlant> mockRegularPlants = List.of();
+        List<AccountUserPlant> mockWishlistPlants = List.of();
 
         AccountUser userMock = mock(AccountUser.class);
 
@@ -125,9 +128,12 @@ class LibraryControllerTest {
         assertEquals("/library/my-plants", viewName);
 
         verify(model).addAttribute("plants", plantsMock);
+        verify(model).addAttribute("regularPlants", mockRegularPlants);
+        verify(model).addAttribute("wishlistPlants", mockWishlistPlants);
         verify(model).addAttribute("user", userMock);
         verify(model).addAttribute("needsWatering", needsWatering);
         verify(model).addAttribute("currentSort", sort);
+        verify(model).addAttribute("currentPage", "library");
 
         verifyNoMoreInteractions(model);
     }
@@ -138,8 +144,13 @@ class LibraryControllerTest {
     void testSortLibrary() {
         String sort = "asc";
         long needsWatering = 1;
-        List<AccountUserPlant> plantsMock = List.of(new AccountUserPlant("Sunflower", "1"), new AccountUserPlant("Summer Lilly", "2"));
+        List<AccountUserPlant> plantsMock = List.of(new AccountUserPlant("Sunflower", "1"), 
+                                                    new AccountUserPlant("Summer Lilly", "2"));
 
+        List<AccountUserPlant> mockRegularPlants = List.of();
+        List<AccountUserPlant> mockWishlistPlants = List.of();
+        
+        
         AccountUser userMock = mock(AccountUser.class);
 
         when(session.getAttribute("user")).thenReturn(userMock);
@@ -151,9 +162,12 @@ class LibraryControllerTest {
         assertEquals("/library/my-plants", viewName);
 
         verify(model).addAttribute("plants", plantsMock);
+        verify(model).addAttribute("regularPlants", mockRegularPlants);
+        verify(model).addAttribute("wishlistPlants", mockWishlistPlants);
         verify(model).addAttribute("user", userMock);
         verify(model).addAttribute("needsWatering", needsWatering);
         verify(model).addAttribute("currentSort", sort);
+        verify(model).addAttribute("currentPage", "library");
 
         verifyNoMoreInteractions(model);
     }

@@ -11,6 +11,7 @@ import se.mau.myhappyplants.user.AccountUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -62,11 +63,28 @@ public class LibraryController {
         }
 
         long needsWatering = libraryService.countPlantsNeedingWater(user.getId());
+
+        List<AccountUserPlant> regularPlants = new ArrayList<>();
+        List<AccountUserPlant> wishlistPlants = new ArrayList<>();
+
+        if ("water".equals(sort)) {
+            for (AccountUserPlant plant : plants) {
+                if (plant.getTag() != null && "Wishlist".equals(plant.getTag().getLabel())) {
+                    wishlistPlants.add(plant);
+                } else {
+                    regularPlants.add(plant);
+                }
+            }
+        }
+
         plants.forEach(AccountUserPlant::calculateNextWateringDate);
         model.addAttribute("plants", plants);
+        model.addAttribute("regularPlants", regularPlants);
+        model.addAttribute("wishlistPlants", wishlistPlants);
         model.addAttribute("user", user);
         model.addAttribute("needsWatering", needsWatering);
         model.addAttribute("currentSort", sort);
+        model.addAttribute("currentPage", "library");
         return "/library/my-plants";
     }
 
