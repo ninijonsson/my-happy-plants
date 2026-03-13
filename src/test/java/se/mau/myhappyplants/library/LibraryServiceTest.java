@@ -69,7 +69,7 @@ class LibraryServiceTest {
         List<AccountUserPlant> expected = Arrays.asList(plantOne, plantTwo);
 
         // Repo should give us back the two plants initiated
-        when(accountUserPlantRepository.findByUserId(userId)).thenReturn(expected);
+        when(accountUserPlantRepository.findByUserId(userId, Sort.unsorted())).thenReturn(expected);
 
         // Act
         List<AccountUserPlant> result = libraryService.getAllPlantsForUser(userId);
@@ -156,8 +156,8 @@ class LibraryServiceTest {
     void testNullSortBy() {
         // What the mock should return when called
         // When user id found, return an empty list
-        when(accountUserPlantRepository.findByUserId(eq(userId), any(Sort.class)))
-                .thenReturn(List.of());
+//        when(accountUserPlantRepository.findByUserId(eq(userId), any(Sort.class)))
+//                .thenReturn(List.of());
 
         libraryService.getUserLibrary(userId, null);
         // null should sort to "water"
@@ -309,7 +309,7 @@ class LibraryServiceTest {
         okPlant.setWateringFrequencyDays(7);
         okPlant.setLastWatered(LocalDateTime.now().minusDays(2)); // not overdue
 
-        when(accountUserPlantRepository.findByUserId(1))
+        when(accountUserPlantRepository.findByUserId(1, Sort.unsorted()))
                 .thenReturn(List.of(overduePlant1, overduePlant2, okPlant));
 
         long count = libraryService.countPlantsNeedingWater(1);
@@ -329,7 +329,7 @@ class LibraryServiceTest {
         plant2.setWateringFrequencyDays(14);
         plant2.setLastWatered(LocalDateTime.now().minusDays(1));
 
-        when(accountUserPlantRepository.findByUserId(1))
+        when(accountUserPlantRepository.findByUserId(1, Sort.unsorted()))
                 .thenReturn(List.of(plant1, plant2));
 
         long count = libraryService.countPlantsNeedingWater(1);
@@ -341,7 +341,7 @@ class LibraryServiceTest {
     @Test
     @DisplayName("CAR.01F - countPlantsNeedingWater() returns 0 when user has no plants")
     void testCountPlantsNeedingWaterWhenNoPlants() {
-        when(accountUserPlantRepository.findByUserId(1)).thenReturn(List.of());
+        when(accountUserPlantRepository.findByUserId(1, Sort.unsorted())).thenReturn(List.of());
 
         long count = libraryService.countPlantsNeedingWater(1);
 
@@ -356,7 +356,7 @@ class LibraryServiceTest {
         plantWithoutDate.setWateringFrequencyDays(7);
         // lastWatered is not set
 
-        when(accountUserPlantRepository.findByUserId(1))
+        when(accountUserPlantRepository.findByUserId(1, Sort.unsorted()))
                 .thenReturn(List.of(plantWithoutDate));
 
         long count = libraryService.countPlantsNeedingWater(1);

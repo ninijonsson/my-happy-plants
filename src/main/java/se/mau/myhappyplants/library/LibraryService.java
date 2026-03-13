@@ -3,7 +3,6 @@ package se.mau.myhappyplants.library;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import se.mau.myhappyplants.library.dto.PlantWateringData;
 import se.mau.myhappyplants.plant.dto.PlantDetailsView;
 import se.mau.myhappyplants.user.AccountUser;
 import se.mau.myhappyplants.user.AccountUserRepository;
@@ -67,8 +66,11 @@ public class LibraryService {
                 return accountUserPlantRepository.findByUserId(userId, sort);
 
             case "water":
+                return accountUserPlantRepository.findByUserId(userId, Sort.by(
+                        Sort.Direction.ASC,"nextWateringDate"
+                ));
             default:
-                List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId);
+                List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
 
                 plants.forEach(AccountUserPlant::calculateNextWateringDate);
 
@@ -200,7 +202,7 @@ public class LibraryService {
      *
      */
     public List<AccountUserPlant> getAllPlantsForUser(int userId) {
-        return accountUserPlantRepository.findByUserId(userId);
+        return accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
     }
 
     /**
@@ -263,7 +265,7 @@ public class LibraryService {
      * @return the number of plants that require watering
      */
     public long countPlantsNeedingWater(int userId) {
-        List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId);
+        List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
 
         LocalDate today = LocalDate.now();
         long count = 0;
