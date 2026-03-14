@@ -8,12 +8,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import se.mau.myhappyplants.user.AccountUser;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -170,5 +173,127 @@ class LibraryControllerTest {
         verify(model).addAttribute("currentPage", "library");
 
         verifyNoMoreInteractions(model);
+    }
+    
+    @Test
+    @DisplayName(" - waterPlantTest")
+    void waterPlantTest() {
+        int userId = 1;
+        int plantId = 10;
+        LocalDateTime wateringDate = LocalDateTime.now();
+        
+        ResponseEntity<?> response = libraryController.waterPlant(userId, plantId, wateringDate);
+        
+        assertEquals(new ResponseEntity<>(HttpStatus.OK), response);
+        
+        verify(libraryService).waterPlant(userId, plantId, wateringDate);
+    }
+    
+    @Test
+    @DisplayName(" - getTagsTest")
+    void getTagsTest() {
+        List<Tag> mockTags = List.of(new Tag("tag1"), new Tag("tag2"));
+        
+        when(tagService.getAllTags()).thenReturn(mockTags);
+        
+        ResponseEntity<?> response = libraryController.getTags();
+        
+        assertEquals(new ResponseEntity<>(mockTags, HttpStatus.OK), response);
+        
+        verify(tagService).getAllTags();       
+        verifyNoMoreInteractions(tagService);
+    }
+    
+    @Test
+    @DisplayName(" - updateTagTest")
+    void updateTagTest() {
+        int plantId = 1;
+        int tagId = 3;
+        
+        when(libraryService.setTagOnPlant(plantId, tagId)).thenReturn(true);
+        
+        ResponseEntity<?> response = libraryController.updateTag(plantId, tagId);
+        
+        assertEquals(ResponseEntity.ok().body("Tag updated successfully"), response);
+        
+        verify(libraryService).setTagOnPlant(plantId, tagId);      
+        verifyNoMoreInteractions(libraryService);
+    }   
+    
+    @Test
+    @DisplayName(" - updateTagFailedTest")
+    void updateTagFailedTest() {
+        int plantId = 1;
+        int tagId = -1;
+        
+        when(libraryService.setTagOnPlant(plantId, tagId)).thenReturn(false);
+        
+        ResponseEntity<?> response = libraryController.updateTag(plantId, tagId);
+        
+        assertEquals(ResponseEntity.badRequest().body("Tag update failed"), response);
+        
+        verify(libraryService).setTagOnPlant(plantId, tagId);     
+        verifyNoMoreInteractions(libraryService);
+        verifyNoMoreInteractions(tagService);      
+    }
+    
+    @Test
+    @DisplayName(" - updateTagByLabel")
+    void updateTagByLabelTest() {
+        String label = "tag1";
+        int plantId = 1;
+        Map<String, String> body = Map.of("label", label);
+        
+        when(libraryService.setTagOnPlantByLabel(plantId, label)).thenReturn(true);
+        
+        ResponseEntity<?> response = libraryController.updateTagByLabel(plantId, body);
+        
+        assertEquals(ResponseEntity.ok().body("Tag updated successfully"), response);
+        
+        verify(libraryService).setTagOnPlantByLabel(plantId, label);      
+        verifyNoMoreInteractions(libraryService);      
+    }
+
+    @Test
+    @DisplayName(" - updateTagByLabelFailed")
+    void updateTagByLabelFailedTest() {
+        String label = "tag1";
+        int plantId = 1;
+        Map<String, String> body = Map.of("label", label);
+
+        when(libraryService.setTagOnPlantByLabel(plantId, label)).thenReturn(false);
+
+        ResponseEntity<?> response = libraryController.updateTagByLabel(plantId, body);
+
+        assertEquals(ResponseEntity.badRequest().body("Tag update failed"), response);
+
+        verify(libraryService).setTagOnPlantByLabel(plantId, label);
+        verifyNoMoreInteractions(libraryService);
+    }
+    
+    @Test
+    @DisplayName(" - getGraph")
+    void getGraphTest() {
+        
+        AccountUser mockUser = mock(AccountUser.class);
+        
+        when(session.getAttribute("user")).thenReturn(mockUser);
+        
+        String viewName = libraryController.getGraph(model, session);
+        
+        assertEquals("/watering-graph", viewName);
+    }
+    
+    @Test
+    @DisplayName(" - getGraphUserIsNull")
+    void getGraphUserIsNullTest() {
+        HttpSession session = mock(HttpSession.class);
+        Model model = new ExtendedModelMap();
+        
+        when(session.getAttribute("user")).thenReturn(null);
+        
+        String viewName = libraryController.getGraph(model, session);
+        
+        assertEquals("redirect:/login", viewName);
     }
 }
