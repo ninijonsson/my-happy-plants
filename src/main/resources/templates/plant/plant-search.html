@@ -9,55 +9,59 @@
     <link rel="stylesheet" th:href="@{/css/loading.css}">
 </head>
 <body>
-    <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-3"></div>
-    <div class="container">
-        <div th:replace="~{/fragments/fragment :: navbar}"></div>
-        <div th:replace="~{/fragments/fragment :: loader}"></div>
-        <header class="mb-6">
-            <h1 class="text-3xl font-extrabold text-[#005F02] tracking-tight">Search Plants</h1>
-            <p class="text-gray-600 mt-3">Find inspiration for your library.</p>
-            <p class="text-sm text-[#005F02] font-medium">
-                Type to filter and press <strong>Enter</strong> to search the entire database!
-            </p>
-        </header>
+<div id="toast-container" class="fixed top-5 right-5 z-50 space-y-3"></div>
+<div class="container">
+    <div th:replace="~{/fragments/fragment :: navbar}"></div>
+    <div th:replace="~{/fragments/fragment :: loader}"></div>
+    <header class="mb-6">
+        <h1 class="text-3xl font-extrabold text-[#005F02] tracking-tight">Search Plants</h1>
+        <p class="text-gray-600 mt-3">Find inspiration for your library.</p>
+        <p class="text-sm text-[#005F02] font-medium">
+            Type to filter and press <strong>Enter</strong> to search the entire database!
+        </p>
+    </header>
 
-        <div class="search-container">
-            <input type="text" id="plantSearch" placeholder="Search plants...">
-            <div id="searchNotice" class="search-notice" style="display:none;"></div>
-        </div>
+    <div class="search-container">
+        <input type="text" id="plantSearch" placeholder="Search plants...">
+        <div id="searchNotice" class="search-notice" style="display:none;"></div>
+    </div>
 
-        <!--Toast message-->
-        <div
+    <!--Toast message-->
+    <div
             th:if = "${successMessage}" class="toast success"
             th:text = "${successMessage}">
-        </div>
-        <div th:if="${errorMessage}" class="toast error"
-        th:text = "${errorMessage}">
-        </div>
+    </div>
+    <div th:if="${errorMessage}" class="toast error"
+         th:text = "${errorMessage}">
+    </div>
 
-        <main class="plant-grid" id="plantGrid">
-            <article class="plant-card" th:each="plant : ${plants}">
-                <a th:href="@{/plants/preview/{id}(id=${plant.id})}" class="plant-link">
-                    <img th:src="${plant.imageUrl != null ? plant.imageUrl : '/images/plant.jpg'}"
-                         th:alt="${plant.name}"
-                         class="plant-image">
+    <main class="plant-grid" id="plantGrid">
+        <article class="plant-card" th:each="plant : ${plants}">
+            <a th:href="@{/plants/preview/{id}(id=${plant.id})}" class="plant-link">
+                <img th:src="${plant.imageUrl != null ? plant.imageUrl : '/images/plant.jpg'}"
+                     th:alt="${plant.name}"
+                     class="plant-image">
+            </a>
+
+            <div class="plant-info">
+                <a th:href="@{/plants/preview/{id}(id=${plant.id})}" class="plant-link" style="text-decoration: none;">
+                    <div class="plant-name" th:text="${plant.name}">Plant name</div>
                 </a>
 
-                <div class="plant-info">
-                    <a th:href="@{/plants/preview/{id}(id=${plant.id})}" class="plant-link" style="text-decoration: none;">
-                        <div class="plant-name" th:text="${plant.name}">Plant name</div>
-                    </a>
+                <div class="scientific-name" th:text="${plant.scientificName}">Scientific namn</div>
 
-                    <div class="scientific-name" th:text="${plant.scientificName}">Scientific namn</div>
+                <!-- ÄNDRING: la till target="hidden-frame" -->
+                <form th:action="@{/plants/add}" method="post" target="hidden-frame">
+                    <input type="hidden" name="perenualPlantId" th:value="${plant.id}"/>
+                    <button type="submit" class="add-btn">+ Add to your library</button>
+                </form>
+            </div>
+        </article>
+    </main>
+</div>
 
-                    <form th:action="@{/plants/add}" method="post">
-                        <input type="hidden" name="perenualPlantId" th:value="${plant.id}"/>
-                        <button type="submit" class="add-btn">+ Add to your library</button>
-                    </form>
-                </div>
-            </article>
-        </main>
-    </div>
+
+<iframe name="hidden-frame" style="display: none;"></iframe>
 
 </body>
 </html>
