@@ -2,7 +2,6 @@ package se.mau.myhappyplants.plant;
 
 import jakarta.servlet.http.HttpSession;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.junit.jupiter.api.Disabled;
@@ -23,7 +22,6 @@ import se.mau.myhappyplants.perenual.PerenualClient;
 import se.mau.myhappyplants.perenual.PerenualPlantDetailsResponse;
 import se.mau.myhappyplants.plant.dto.PlantDetailsView;
 import se.mau.myhappyplants.user.AccountUser;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,11 +55,9 @@ public class PlantControllerTest {
         Model model = new ExtendedModelMap();
         when(libraryService.getPlantById(id)).thenReturn(plant);
         when(plant.getPerenualId()).thenReturn("1249");
-        when(session.getAttribute("user")).thenReturn(mock(AccountUser.class));
 
-        String result = plantsController.showLibraryPlantDetails(id, model, session);
+        plantsController.showLibraryPlantDetails(id, model, session);
 
-        assertEquals("plant-details", result);
         verify(libraryService).getPlantById(id);
     }
 

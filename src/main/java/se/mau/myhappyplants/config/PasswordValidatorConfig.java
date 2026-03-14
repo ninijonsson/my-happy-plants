@@ -39,6 +39,7 @@ public class PasswordValidatorConfig {
         
         if (password == null || password.isEmpty()) {
             response.append("Password cannot be empty.\n");
+            return response.toString();
         }
 
         if (password.length() < MIN_LENGTH) {

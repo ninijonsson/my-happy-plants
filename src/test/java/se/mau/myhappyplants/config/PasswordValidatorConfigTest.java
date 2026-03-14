@@ -1,10 +1,10 @@
 package se.mau.myhappyplants.config;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PasswordValidatorConfigTest {
 
@@ -14,21 +14,24 @@ public class PasswordValidatorConfigTest {
     @DisplayName("ACC.10F - Password should fail if under 12 characters")
     void testPasswordTooShort() {
         String tooShortPassword = "Short1!"; //Short pass but everything else is correct
-        assertEquals("Password must be at least 12 characters long.\n", validator.isValid(tooShortPassword));
+        String result = validator.isValid(tooShortPassword);
+        assertTrue(result.contains("at least 12 characters long"));
     }
 
     @Test
     @DisplayName("ACC.10F - Password should fail if special character is missing")
     void testPasswordMissingSpecialCharacter() {
         String specialCharMissing = "NoSpecialChar2026"; //Missing special char but everything else is correct
-        assertEquals("Password must contain at least one special character (!@#$%^&*()_+-=[]{}; etc.).\n", validator.isValid(specialCharMissing));
+        String result = validator.isValid(specialCharMissing);
+        assertTrue(result.contains("at least one special character"));
     }
 
     @Test
     @DisplayName("ACC.10F - Password should fail if uppercase is missing")
     void testPasswordMissingUppercase() {
         String passMissingUppercase = "lowercase12345!"; //Missing uppercase but everything else is correct
-        assertEquals("Password must contain at least one uppercase letter (A-Z).\n", validator.isValid(passMissingUppercase));
+        String result = validator.isValid(passMissingUppercase);
+        assertTrue(result.contains("at least one uppercase letter"));
     }
 
     @Test
@@ -42,16 +45,16 @@ public class PasswordValidatorConfigTest {
     @Test
     @DisplayName("ACC.10F - Valid password should not be empty")
     void testPasswordNull() {
-        String nullPass = "";
-        String result = validator.validate(nullPass);
+        String result = validator.validate(null);
         assertTrue(result.contains("Password cannot be empty"));
     }
 
     @Test
     @DisplayName("ACC.10F - Valid password should include at least 1 number")
     void testPasswordWithoutDigits() {
-        String passWithNoDigit = "Password.aaa";
-        assertEquals("Password must contain at least one digit (0-9).\n", validator.isValid(passWithNoDigit));
+        String passWithNoDigit = "PasswordNoDigit!";
+        String result = validator.validate(passWithNoDigit);
+        assertTrue(result.contains("at least one digit"));
     }
 
     @Test

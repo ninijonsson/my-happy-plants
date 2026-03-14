@@ -30,6 +30,11 @@ public class AccountController {
     @PostMapping("/delete")
     public String deleteAccount(HttpSession session) {
         AccountUser sessionUser = (AccountUser) session.getAttribute("user");
+
+        if (sessionUser == null) {
+            return "redirect:/login";
+        }
+
         accountUserService.deleteUser(sessionUser.getId());
         session.invalidate();
         return "redirect:/login?deleted";

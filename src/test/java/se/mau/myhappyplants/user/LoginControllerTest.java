@@ -14,6 +14,7 @@ import se.mau.myhappyplants.config.PasswordValidatorConfig;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,7 +60,7 @@ public class LoginControllerTest {
     }
 
     @Test
-    void createExistingUser(){
+    void testCreateExistingUser(){
         when(passwordValidatorConfig.isValid("123456789Aa.")).thenReturn("OK");
         when(passwordEncoder.encode("123456789Aa.")).thenReturn("hashedPassword");
         when(accountUserService.createUser("newUser", "hashedPassword")).thenReturn(false);
