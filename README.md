@@ -70,3 +70,9 @@ Example (macOS/Linux):
 ```bash
 export DB_PASSWORD="your_password"
 export PERENUAL_API_KEY="your_perenual_api_key"
+```
+
+---
+
+## Kanban Board
+- https://da489-grupp1.youtrack.cloud/agiles/195-1/current
