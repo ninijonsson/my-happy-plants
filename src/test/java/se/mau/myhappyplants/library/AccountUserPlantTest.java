@@ -17,10 +17,6 @@ class AccountUserPlantTest {
         plant.setWateringFrequencyDays(7);
     }
 
-    // ----------------------------------------------------------------
-    // getDaysUntilNextWatering()
-    // ----------------------------------------------------------------
-
     @Test
     @DisplayName("INF.03F - Watering status is 100% when interval passes")
     void testWateringStatusWhenOverdue(){
@@ -52,10 +48,6 @@ class AccountUserPlantTest {
 
         assertEquals(0.0, status, 0.01);
     }
-
-    // ----------------------------------------------------------------
-    // calculateNextWateringDate()
-    // ----------------------------------------------------------------
 
     @Test
     @DisplayName("INF.03F - Next Watering date is lastWatered plus frequency in days")
