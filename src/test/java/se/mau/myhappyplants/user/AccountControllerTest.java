@@ -25,9 +25,6 @@ public class AccountControllerTest {
     @MockitoBean
     private CacheManager cacheManager;
 
-    @InjectMocks
-    private AccountController accountController;
-
     @MockitoBean
     private AccountUserService accountUserService;
 
