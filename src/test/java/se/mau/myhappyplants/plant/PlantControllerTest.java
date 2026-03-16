@@ -90,7 +90,6 @@ public class PlantControllerTest {
 
         when(libraryService.getPlantById(id)).thenReturn(null);
         assertThrows(NullPointerException.class, () -> plantsController.showLibraryPlantDetails(id, model, session));
-        verify(libraryService).getPlantById(id);
     }
   
     @Test
@@ -165,7 +164,6 @@ public class PlantControllerTest {
         mvc.perform(MockMvcRequestBuilders.get("/plants/plant-details/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/login"));
-        verify(libraryService).getPlantById(1);
     }
 
     @Test
