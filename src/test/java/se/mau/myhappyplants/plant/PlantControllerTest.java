@@ -1,7 +1,6 @@
 package se.mau.myhappyplants.plant;
 
 import jakarta.servlet.http.HttpSession;
-import org.mockito.InjectMocks;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;

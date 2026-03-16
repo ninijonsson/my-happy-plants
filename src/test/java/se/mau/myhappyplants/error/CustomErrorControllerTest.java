@@ -4,80 +4,84 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.webmvc.error.ErrorController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.cache.CacheManager;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(CustomErrorController.class)
 @ExtendWith(MockitoExtension.class)
 public class CustomErrorControllerTest {
+    
+    @Autowired
+    private MockMvc mvc;
+    
+    @MockitoBean
+    private CacheManager cacheManager;
+    
+    @MockitoBean
+    private HttpServletRequest httpServletRequest;
 
-    @InjectMocks
-    private CustomErrorController customErrorController;
-
-    @Mock
-    private HttpServletRequest request;
-
-    @Mock
+    @MockitoBean
     private Model model;
 
+    private CustomErrorController customErrorController;
+
     @Test
-    void testHandleErrorReturnsCorrectView() {
-        when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
-                .thenReturn("404");
-        when(request.getAttribute(RequestDispatcher.ERROR_MESSAGE))
-                .thenReturn("Not Found");
-        String view = customErrorController.handleError(request, model);
-        assertEquals("/error/error", view);
+    void testHandleErrorReturnsCorrectView() throws Exception {
+        mvc.perform(get("/error")
+                        .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, "404")
+                        .requestAttr(RequestDispatcher.ERROR_MESSAGE, "Not Found"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/error/error"))
+                .andExpect(model().attribute("status", "404"))
+                .andExpect(model().attribute("message", "Not Found"));    }
+
+    @Test
+    void testHandleErrorWithStatusAndMessage() throws Exception {
+        mvc.perform(get("/error")
+                    .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, "500")
+                    .requestAttr(RequestDispatcher.ERROR_MESSAGE, "Internal Server Error"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/error/error"))
+                .andExpect(model().attribute("status", "500"))
+                .andExpect(model().attribute("message", "Internal Server Error"));
     }
 
     @Test
-    void testHandleErrorWithStatusAndMessage(){
-        when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
-                .thenReturn("500");
-        when(request.getAttribute(RequestDispatcher.ERROR_MESSAGE))
-                .thenReturn("Internal Server Error");
-        customErrorController.handleError(request, model);
-        verify(model).addAttribute("status", "500");
-        verify(model).addAttribute("message", "Internal Server Error");
+    void testHandleErrorWithStatusNull() throws Exception {
+        mvc.perform(get("/error")
+                        .requestAttr(RequestDispatcher.ERROR_MESSAGE, "Something went wrong."))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/error/error"))
+                .andExpect(model().attribute("status", "Unknown"))
+                .andExpect(model().attribute("message", "Something went wrong."));
     }
 
     @Test
-    void testHandleErrorWithStatusNull(){
-        when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
-                .thenReturn(null);
-        when(request.getAttribute(RequestDispatcher.ERROR_MESSAGE))
-                .thenReturn("Something went wrong");
-        customErrorController.handleError(request, model);
-        verify(model).addAttribute("status", "Unknown");
-        verify(model).addAttribute("message", "Something went wrong");
+    void testHandleErrorWithMessageNull() throws Exception {
+        mvc.perform(get("/error")
+                    .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, "403"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/error/error"))
+                .andExpect(model().attribute("status", "403"))
+                .andExpect(model().attribute("message", "Mysterious spores found."));
     }
 
     @Test
-    void testHandleErrorWithMessageNull(){
-        when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
-                .thenReturn("403");
-        when(request.getAttribute(RequestDispatcher.ERROR_MESSAGE))
-                .thenReturn(null);
-        customErrorController.handleError(request, model);
-        verify(model).addAttribute("status", "403");
-        verify(model).addAttribute("message", "Mysterious spores found.");
-    }
-
-    @Test
-    void testHandleErrorStatusAndMessageNull(){
-        when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
-                .thenReturn(null);
-        when(request.getAttribute(RequestDispatcher.ERROR_MESSAGE))
-                .thenReturn(null);
-        customErrorController.handleError(request, model);
-        verify(model).addAttribute("status", "Unknown");
-        verify(model).addAttribute("message", "Mysterious spores found.");
+    void testHandleErrorStatusAndMessageNull() throws Exception {
+        mvc.perform(get("/error"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/error/error"))
+                .andExpect(model().attribute("status", "Unknown"))
+                .andExpect(model().attribute("message", "Mysterious spores found."));
     }
 
 }
