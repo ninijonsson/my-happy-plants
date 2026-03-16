@@ -2,6 +2,7 @@ package se.mau.myhappyplants.plant;
 
 import jakarta.servlet.http.HttpSession;
 import org.mockito.InjectMocks;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.junit.jupiter.api.Disabled;
@@ -24,8 +25,10 @@ import se.mau.myhappyplants.plant.dto.PlantDetailsView;
 import se.mau.myhappyplants.user.AccountUser;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PlantsController.class)
 @ExtendWith(MockitoExtension.class)
@@ -42,25 +45,42 @@ public class PlantControllerTest {
 
     @MockitoBean // or @MockBean depending on your import status
     private org.springframework.cache.CacheManager cacheManager;
-  
-    @InjectMocks
-    PlantsController plantsController;
+    
+    private PlantsController plantsController;
 
     @Test
     @DisplayName("INF.02F-Plant Information Page")
-    void showLibraryPlantDetailsTestValid(){
-        int id = 1;
-        AccountUserPlant plant = mock(AccountUserPlant.class);
-        HttpSession session = mock(HttpSession.class);
-        Model model = new ExtendedModelMap();
-        when(libraryService.getPlantById(id)).thenReturn(plant);
-        when(plant.getPerenualId()).thenReturn("1249");
+    void showLibraryPlantDetailsTestValid() throws Exception {
+        AccountUserPlant mockPlant = new AccountUserPlant();
+        mockPlant.setPerenualId("42");
+        AccountUser mockUser = new AccountUser();
+        PerenualPlantDetailsResponse mockDetails = new PerenualPlantDetailsResponse();
 
-        plantsController.showLibraryPlantDetails(id, model, session);
+        when(libraryService.getPlantById(1)).thenReturn(mockPlant);
+        when(perenualClient.fetchPlantDetails(any())).thenReturn(mockDetails);
 
-        verify(libraryService).getPlantById(id);
+        mvc.perform(get("/plants/plant-details/1")
+                        .sessionAttr("user", mockUser))
+                .andExpect(status().isOk())
+                .andExpect(view().name("plant-details"))
+                .andExpect(model().attributeExists("user", "details", "plant"));
+        
     }
 
+    @Test
+    @WithMockUser
+    @DisplayName("INF.02F-Plant Information Page - Error with retrieving the plant data")
+    void showPlantDetailsRedirectsWhenUserNotInSession() throws Exception {
+        AccountUserPlant mockPlant = new AccountUserPlant();
+        mockPlant.setPerenualId("42");
+
+        when(libraryService.getPlantById(1)).thenReturn(mockPlant);
+
+        mvc.perform(get("/plants/plant-details/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
+    }
+    
     @Test
     @DisplayName("INF.02F-Plant Information Page - Error with retrieving the plant data")
     void showLibraryPlantDetailsTestInvalid_nullPlant(){
@@ -119,9 +139,9 @@ public class PlantControllerTest {
         when(perenualClient.fetchPlantDetails("100")).thenReturn(detailsResponseMock);
 
         mvc.perform(MockMvcRequestBuilders.get("/plants/plant-details/1").sessionAttr("user", userMock))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andExpect(MockMvcResultMatchers.view().name("plant-details"))
-                        .andExpect(MockMvcResultMatchers.model().attributeExists("details", "plant"));
+                        .andExpect(status().isOk())
+                        .andExpect(view().name("plant-details"))
+                        .andExpect(model().attributeExists("details", "plant"));
     }
 
     @Test
@@ -131,7 +151,7 @@ public class PlantControllerTest {
         when(libraryService.getPlantById(100)).thenReturn(null);
 
         mvc.perform(MockMvcRequestBuilders.get("/plants/plant-details/100"))
-                        .andExpect(MockMvcResultMatchers.status().is5xxServerError());
+                        .andExpect(status().is5xxServerError());
         verify(libraryService).getPlantById(100);
     }
 
@@ -143,8 +163,8 @@ public class PlantControllerTest {
         when(libraryService.getPlantById(1)).thenReturn(plant);
 
         mvc.perform(MockMvcRequestBuilders.get("/plants/plant-details/1"))
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.view().name("redirect:/login"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/login"));
         verify(libraryService).getPlantById(1);
     }
 
@@ -165,9 +185,9 @@ public class PlantControllerTest {
         when(perenualClient.fetchPlantDetails("200")).thenReturn(detailsMock);
 
         mvc.perform(MockMvcRequestBuilders.get("/plants/plant-details/1").sessionAttr("user", userMock))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().attribute("details", detailsMock))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("details"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("details", detailsMock))
+                .andExpect(model().attributeExists("details"))
 
                 .andExpect(result -> {
                     PerenualPlantDetailsResponse details = (PerenualPlantDetailsResponse)
