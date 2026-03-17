@@ -71,9 +71,12 @@ public class PlantsController {
      * the search plants
      */
     public String prepareDetails(String apiId, AccountUserPlant plant, Model model, AccountUser user) {
-      
-        //TODO: Add error handling if the plant is null by viewing error message and redirect to the library
+
         PerenualPlantDetailsResponse apiDetails = perenualClient.fetchPlantDetails(apiId);
+
+        if (apiDetails == null) {
+            return "redirect:/library";
+        }
 
         model.addAttribute("user", user);
         model.addAttribute("details", apiDetails);
