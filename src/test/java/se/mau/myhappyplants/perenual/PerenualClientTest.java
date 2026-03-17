@@ -54,7 +54,7 @@ class PerenualClientTest {
 
     //Tests for fetchPlants
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F – Plant Information Page - valid correct results")
     void fetchPlants_returnsCorrectlyMappedResults() {
         given(responseSpec.bodyToMono(PerenualSpeciesListResponse.class))
                 .willReturn(Mono.just(responseWithPlant("Rose", "Rosa", "https://img.jpg",
@@ -71,7 +71,7 @@ class PerenualClientTest {
     }
     
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F – Plant Information Page - no common name")
     void fetchPlants_nameNull_useDefaultLable() {
         given(responseSpec.bodyToMono(PerenualSpeciesListResponse.class))
                 .willReturn(Mono.just(responseWithPlant(null, null, null, null, null, null)));
@@ -80,7 +80,7 @@ class PerenualClientTest {
     }
     
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F – Plant Information Page - no plants image")
     void fetchPlants_nullImage_useDefaultImage() {
         given(responseSpec.bodyToMono(PerenualSpeciesListResponse.class))
                 .willReturn(Mono.just(responseWithPlant("Rose", "Rosa", null, null, null, null)));
@@ -89,7 +89,7 @@ class PerenualClientTest {
     }
     
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Null watering frequency")
     void fetchPlants_nullWateringFrequency_defaultToZero() {
         given(responseSpec.bodyToMono(PerenualSpeciesListResponse.class))
                 .willReturn(Mono.just(responseWithPlant("Rose", "Rosa", "https://img.jpg", "https://thumbnail.jpg", null, null)));
@@ -98,7 +98,7 @@ class PerenualClientTest {
     }
     
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("SEA.01.1F- No valid result - empty list of plants because null response")
     void fetchPlants_nullResponse_returnsEmptyList() {
         given(responseSpec.bodyToMono(PerenualSpeciesListResponse.class))
                 .willReturn(Mono.empty());
@@ -107,7 +107,7 @@ class PerenualClientTest {
     }
     
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("SEA.01.1F-No Valid Search Results - empty list of plants")
     void fetchPlants_apiThrows_returnsEmptyList() {
         given(responseSpec.bodyToMono(PerenualSpeciesListResponse.class))
                 .willReturn(Mono.error(new RuntimeException("API down")));
@@ -116,7 +116,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("SEA.01.5F-Third Party API- empty list of plants because of too many API calls")
     void fetchPlants_tooManyRequests_returnsEmptyList() {
         given(responseSpec.bodyToMono(PerenualSpeciesListResponse.class))
                 .willReturn(Mono.error(WebClientResponseException.create(429, "Too Many Requests", null, null, null)));
@@ -125,7 +125,7 @@ class PerenualClientTest {
     }
     
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("SEA.01.5F-Third Party API- limit plants fetched from the API is 100")
     void fetchPlants_limitIs100() {
         var bigList = IntStream.range(0, 150)
                 .mapToObj(i -> makePerenualPlant(i, "Name " + i, "Scientific Name " + i, null, null, null, null))
@@ -137,7 +137,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("SEA.01.1F- No Valid Search Results- Null query")
     void fetchPlants_nullQuery(){
         given(responseSpec.bodyToMono(PerenualSpeciesListResponse.class))
                 .willReturn(Mono.just(new PerenualSpeciesListResponse(null)));
@@ -145,7 +145,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("SEA.01.1F-No Valid Search Results - blank query")
     void fetchPlants_blankQuery(){
         given(responseSpec.bodyToMono(PerenualSpeciesListResponse.class))
                 .willReturn(Mono.just(new PerenualSpeciesListResponse(List.of())));
@@ -153,7 +153,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page- blank common name")
     void fetchPlants_blankCommonName(){
         given(responseSpec.bodyToMono(PerenualSpeciesListResponse.class))
                 .willReturn(Mono.just(responseWithPlant("  ", "Rosa", "https://imge.jpg",
@@ -162,7 +162,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Blank watering frequency")
     void fetchPlants_blankWateringFrequency() {
         given(responseSpec.bodyToMono(PerenualSpeciesListResponse.class))
                 .willReturn(Mono.just(responseWithPlant("Rose", "Rosa", "https://img.jpg",
@@ -172,7 +172,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Blank description")
     void fetchPlants_blankDescription() {
         given(responseSpec.bodyToMono(PerenualSpeciesListResponse.class))
                 .willReturn(Mono.just(responseWithPlant("Rose", "Rosa", "https://img.jpg",
@@ -182,7 +182,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Null scientific name")
     void fetchPlants_nullScientificNameList() {
         PerenualPlant plant = new PerenualPlant(
                 1, "Rose", null,
@@ -195,7 +195,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Null watering frequency days")
     void fetchPlants_nullWateringFrequencyDays() {
         PerenualPlant plant = new PerenualPlant(1, "Rose", List.of("Rosa"),
                 new PerenualPlant.DefaultImage("thumb.jpg", "https://imge.jpg"),
@@ -210,7 +210,7 @@ class PerenualClientTest {
     
     //Tests for fetchPlantById
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - valid plant info")
     void fetchPlantById_returnsCorrectlyMappedResult() {
         given(responseSpec.bodyToMono(PerenualPlant.class))
                 .willReturn(Mono.just(makePerenualPlant(1, "Rose", "Rosa", "https://img.jpg", "https://thumbnail.jpg", "7", "A flower.")));
@@ -226,7 +226,7 @@ class PerenualClientTest {
     }
     
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Null plant because of null response")
     void fetchPlantById_nullResponse_returnsNull() {
         given(responseSpec.bodyToMono(PerenualPlant.class))
                 .willReturn(Mono.empty());
@@ -235,7 +235,7 @@ class PerenualClientTest {
     }
     
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Null common/scientific name")
     void fetchPlantById_nameNull() {
         given(responseSpec.bodyToMono(PerenualPlant.class))
                 .willReturn(Mono.just(makePerenualPlant(1, null, null, null, null, null, null)));
@@ -244,7 +244,7 @@ class PerenualClientTest {
     }
     
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Null image")
     void fetchPlantById_nullImage() {
         given(responseSpec.bodyToMono(PerenualPlant.class))
                 .willReturn(Mono.just(makePerenualPlant(1, "Rose", "Rosa", null, null, null, null)));
@@ -252,7 +252,7 @@ class PerenualClientTest {
     }
     
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Null watering frequency")
     void fetchPlantById_nullWateringFrequency() {
         given(responseSpec.bodyToMono(PerenualPlant.class))
                 .willReturn(Mono.just(makePerenualPlant(1, "Rose", "Rosa", "https://img.jpg", null, null, null)));
@@ -260,7 +260,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Null watering frequency days")
     void fetchPlantById_wateringFrequencyDaysNull() {
         PerenualPlant plant = new PerenualPlant(1, "Rose", List.of("Rosa"),
                 new PerenualPlant.DefaultImage("thumb.jpg", "https://imge.jpg"),
@@ -270,7 +270,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Empty scientific name")
     void fetchPlantById_emptyScientificNameList() {
         PerenualPlant plant = new PerenualPlant(1, "Rose", List.of(),
                 new PerenualPlant.DefaultImage("thumb.jpg", "https://imge.jpg"),
@@ -280,7 +280,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Null scientific name")
     void fetchPlantById_nullScientificNameList() {
         PerenualPlant plant = new PerenualPlant(1, "Rose", null,
                 new PerenualPlant.DefaultImage("thumb.jpg", "https://img.jpg"),
@@ -294,7 +294,7 @@ class PerenualClientTest {
     
     //Tests for fetchPlantDetails
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Valid correct plant details")
     void fetchPlantDetails_ReturnsCorrectlyMappedResult() {
         given(responseSpec.bodyToMono(PerenualPlantDetailsResponse.class))
                 .willReturn(Mono.just(makePerenualPlantDetailsResponse(1, "Rose", "Rosa", 
@@ -320,7 +320,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - Response is null")
     void fetchPlantDetailsNullResponse(){
         given(responseSpec.bodyToMono(PerenualPlantDetailsResponse.class))
                 .willReturn(Mono.empty());
@@ -328,7 +328,7 @@ class PerenualClientTest {
     }
 
     @Test
-    @DisplayName("SEA.01.5F-Third Party API-")
+    @DisplayName("INF.02F-Plant Information Page - No plant details")
     void fetchPlantDetails_ThrowingPropagatesException(){
         given(responseSpec.bodyToMono(PerenualPlantDetailsResponse.class))
                 .willReturn(Mono.error(new Exception("API down")));
