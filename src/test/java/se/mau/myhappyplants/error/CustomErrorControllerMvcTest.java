@@ -1,6 +1,7 @@
 package se.mau.myhappyplants.error;
 
 import jakarta.servlet.RequestDispatcher;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -22,6 +23,7 @@ public class CustomErrorControllerMvcTest {
     private CacheManager cacheManager;
     
     @Test
+    @DisplayName("INF.08F - Error Page returns the correct view")
     void testMvcHandleErrorReturnsCorrectView() throws Exception {
         mvc.perform(get("/error")
                         .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, "404")
@@ -33,6 +35,7 @@ public class CustomErrorControllerMvcTest {
     }
     
     @Test
+    @DisplayName("INF.08F - Error Page returns the correct view with correct status and message")
     void testMvcHandleErrorWithStatusAndMessage() throws Exception {
         mvc.perform(get("/error")
                         .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, "500")
@@ -44,6 +47,7 @@ public class CustomErrorControllerMvcTest {
     }
     
     @Test
+    @DisplayName("INF.08F - Error Page returns correctly when status is null")
     void testMvcHandleErrorWithStatusNull() throws Exception {
         mvc.perform(get("/error")
                         .requestAttr(RequestDispatcher.ERROR_MESSAGE, "Something went wrong."))
@@ -54,6 +58,7 @@ public class CustomErrorControllerMvcTest {
     }
     
     @Test
+    @DisplayName("INF.08F - Error Page returns correctly when message is null")
     void testMvcHandleErrorWithMessageNull() throws Exception {
         mvc.perform(get("/error")
                         .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, "403"))
@@ -64,6 +69,7 @@ public class CustomErrorControllerMvcTest {
     }
     
     @Test
+    @DisplayName("INF.08F - Error Page returns correctly when status and message are null")
     void testMvcHandleErrorStatusAndMessageNull() throws Exception {
         mvc.perform(get("/error"))
                 .andExpect(status().isOk())

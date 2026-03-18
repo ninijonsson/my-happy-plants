@@ -51,7 +51,7 @@ class TagTest {
     }
 
     @Test
-    @DisplayName("Remove Tag - Setting tagId to -1 should nullify the plant's tag")
+    @DisplayName("LIB.05F - Remove Tag - Setting tagId to -1 should nullify the plant's tag")
     void removeTagTest() {
         realPlant.setTag(realTag);
         int removeTagId = -1;
@@ -66,7 +66,7 @@ class TagTest {
     }
 
     @Test
-    @DisplayName("Exception: Throw error when plant ID does not exist")
+    @DisplayName("LIB.05F - Exception: Throw error when plant ID does not exist")
     void expWhenPlantNotFound() {
         int nonExistentId = 99;
         when(plantRepository.findById(nonExistentId)).thenReturn(Optional.empty());
@@ -79,7 +79,7 @@ class TagTest {
     }
 
     @Test
-    @DisplayName("Exception: Throw error when tag ID does not exist")
+    @DisplayName("LIB.05F - Exception: Throw error when tag ID does not exist")
     void expWhenTagNotFound() {
         when(plantRepository.findById(1)).thenReturn(Optional.of(realPlant));
         when(tagRepository.findById(500)).thenReturn(Optional.empty());

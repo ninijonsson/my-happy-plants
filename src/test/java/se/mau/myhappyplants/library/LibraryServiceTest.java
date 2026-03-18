@@ -577,8 +577,7 @@ class LibraryServiceTest {
     }
     
     @Test
-    @DisplayName(" - setTagOnPlantByLabel")
-    //TODO: Fix requirement
+    @DisplayName("LIB.05.1F - setTagOnPlantByLabel")
     void testSetTagOnPlantByLabel() {
         String label = "tag1";  
         int plantId = 1;
@@ -600,8 +599,7 @@ class LibraryServiceTest {
     }
     
     @Test
-    @DisplayName(" - setTagOnPlantByLabel - label is null")
-        //TODO: Fix requirement
+    @DisplayName("LIB.05.1F - setTagOnPlantByLabel - label is null")
     void testSetTagOnPlantByLabelPlantNotFound() {
         String label = null;  
         int plantId = 1;
