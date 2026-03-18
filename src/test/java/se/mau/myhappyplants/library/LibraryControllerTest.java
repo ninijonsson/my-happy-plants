@@ -190,7 +190,7 @@ class LibraryControllerTest {
     }
     
     @Test
-    @DisplayName(" - getTagsTest")
+    @DisplayName("LIB.05F - getTagsTest")
     void getTagsTest() {
         List<Tag> mockTags = List.of(new Tag("tag1"), new Tag("tag2"));
         
@@ -205,7 +205,7 @@ class LibraryControllerTest {
     }
     
     @Test
-    @DisplayName(" - updateTagTest")
+    @DisplayName("LIB.05F - updateTagTest")
     void updateTagTest() {
         int plantId = 1;
         int tagId = 3;
@@ -221,7 +221,7 @@ class LibraryControllerTest {
     }   
     
     @Test
-    @DisplayName(" - updateTagFailedTest")
+    @DisplayName("LIB.05F - updateTagFailedTest")
     void updateTagFailedTest() {
         int plantId = 1;
         int tagId = -1;
@@ -238,7 +238,7 @@ class LibraryControllerTest {
     }
     
     @Test
-    @DisplayName(" - updateTagByLabel")
+    @DisplayName("LIB.05.1F - updateTagByLabel")
     void updateTagByLabelTest() {
         String label = "tag1";
         int plantId = 1;
@@ -255,7 +255,7 @@ class LibraryControllerTest {
     }
 
     @Test
-    @DisplayName(" - updateTagByLabelFailed")
+    @DisplayName("LIB.05.1F - updateTagByLabelFailed")
     void updateTagByLabelFailedTest() {
         String label = "tag1";
         int plantId = 1;
@@ -273,6 +273,7 @@ class LibraryControllerTest {
     
     @Test
     @DisplayName(" - getGraph")
+    //TODO: FIX REQUIREMENT
     void getGraphTest() {
         
         AccountUser mockUser = mock(AccountUser.class);
@@ -286,6 +287,7 @@ class LibraryControllerTest {
     
     @Test
     @DisplayName(" - getGraphUserIsNull")
+        //TODO: FIX REQUIREMENT
     void getGraphUserIsNullTest() {
         HttpSession session = mock(HttpSession.class);
         Model model = new ExtendedModelMap();
