@@ -175,6 +175,8 @@ public class LibraryController {
 
         List<Map<String, Object>> chartData = libraryService.getUserWateringSummary(user.getId());
         model.addAttribute("wateringData", chartData);
+        model.addAttribute("user", user);
+        model.addAttribute("currentPage", "graph");
         return "/watering-graph";
     }
 }

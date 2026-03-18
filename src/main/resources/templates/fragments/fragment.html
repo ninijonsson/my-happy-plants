@@ -24,7 +24,8 @@
             </a>
         </li>
         <li style="float: left;">
-            <a th:href="@{library/graph}"
+            <a th:href="@{/library/graph}"
+                th:classappend="${currentPage == 'graph'} ? 'bg-[#005F02] text-white' : ''"
                 onmouseover="this.style.backgroundColor='#005F02'"
                 onmouseout="this.style.backgroundColor='transparent'"
                 style="display: block; text-align: center; text-decoration: none; padding: 0.6rem 0.9rem;">
