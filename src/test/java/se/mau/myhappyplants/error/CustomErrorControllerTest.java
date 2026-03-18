@@ -2,6 +2,7 @@ package se.mau.myhappyplants.error;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +27,7 @@ public class CustomErrorControllerTest {
     private CustomErrorController customErrorController;
 
     @Test
+    @DisplayName("INF.08F - Error Page returns the correct view")
     void testHandleErrorReturnsCorrectView() {
         when(httpServletRequest.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
                 .thenReturn("404");
@@ -36,6 +38,7 @@ public class CustomErrorControllerTest {
     }
     
     @Test
+    @DisplayName("INF.08F - Error Page returns the correct view with correct status and message")
     void testHandleErrorWithStatusAndMessage() {
         when(httpServletRequest.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
                 .thenReturn("500");
@@ -47,6 +50,7 @@ public class CustomErrorControllerTest {
     }
     
     @Test
+    @DisplayName("INF.08F - Error Page returns correctly when status is null")
     void testHandleErrorWithStatusNull() {
         when(httpServletRequest.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
                 .thenReturn(null);
@@ -58,6 +62,7 @@ public class CustomErrorControllerTest {
     }
     
     @Test
+    @DisplayName("INF.08F - Error Page returns correctly when message is null")
     void testHandleErrorWithMessageNull() {
         when(httpServletRequest.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
                 .thenReturn("403");
@@ -69,6 +74,7 @@ public class CustomErrorControllerTest {
     }
     
     @Test
+    @DisplayName("INF.08F - Error Page returns correctly when status and message are null")
     void testHandleErrorStatusAndMessageNull() {
         when(httpServletRequest.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
                 .thenReturn(null);
