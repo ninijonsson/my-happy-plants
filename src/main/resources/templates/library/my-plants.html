@@ -53,6 +53,8 @@
                  <span th:text="${
                  currentSort == 'asc' ? 'Sort: A-Z ▾' :
                  currentSort == 'desc' ? 'Sort: Z-A ▾' :
+                 currentSort == 'asctag' ? 'Sort: Tag A-Z ▾' :
+                 currentSort == 'desctag' ? 'Sort: Tag Z-A ▾' :
                  currentSort == 'recent' ? 'Sort: Recently added ▾' :
                  'Sort: Water Status 💧 ▾'
                  }">Sort plants ▾</span>
@@ -67,6 +69,11 @@
                     Water Status 💧
                 </a>
 
+                <a th:href="@{/library(sort='recent')}"
+                   class="block px-4 py-2 hover:bg-gray-100">
+                    Recently added
+                </a>
+
                 <a th:href="@{/library(sort='asc')}"
                    class="block px-4 py-2 hover:bg-gray-100">
                     A-Z
@@ -77,9 +84,14 @@
                     Z-A
                 </a>
 
-                <a th:href="@{/library(sort='recent')}"
+                <a th:href="@{/library(sort='asctag')}"
                    class="block px-4 py-2 hover:bg-gray-100">
-                    Recently added
+                    Tag A-Z
+                </a>
+
+                <a th:href="@{/library(sort='desctag')}"
+                   class="block px-4 py-2 hover:bg-gray-100">
+                    Tag Z-A
                 </a>
 
             </div>

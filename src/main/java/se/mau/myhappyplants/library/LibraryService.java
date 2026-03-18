@@ -67,8 +67,14 @@ public class LibraryService {
 
             case "water":
                 return accountUserPlantRepository.findByUserId(userId, Sort.by(
-                        Sort.Direction.ASC,"nextWateringDate"
-                ));
+                        Sort.Direction.ASC,"nextWateringDate"));
+
+            case "asctag":
+                return getPlantsSortedByTag(userId,false);
+
+            case "desctag":
+                return getPlantsSortedByTag(userId,true);
+
             default:
                 List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
 
@@ -92,6 +98,26 @@ public class LibraryService {
 
                 return plants;
         }
+    }
+
+    private List<AccountUserPlant> getPlantsSortedByTag(int userId,boolean way) {
+        List<AccountUserPlant> TagPlants = accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
+
+        TagPlants.sort((p1, p2) -> {
+            String tag1 = p1.getTag() != null ? p1.getTag().getLabel() : null;
+            String tag2 = p2.getTag() != null ? p2.getTag().getLabel() : null;
+
+            if (tag1 == null && tag2 == null) return 0;
+            if (tag1 == null) return 1;
+            if (tag2 == null) return -1;
+
+            if(way){
+                return tag2.compareToIgnoreCase(tag1);
+            }else {
+                return tag1.compareToIgnoreCase(tag2);
+            }
+        });
+        return TagPlants;
     }
 
     /**
