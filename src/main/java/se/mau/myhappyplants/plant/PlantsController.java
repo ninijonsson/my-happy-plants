@@ -70,7 +70,7 @@ public class PlantsController {
      * to use it for the library plants and
      * the search plants
      */
-    private String prepareDetails(String apiId, AccountUserPlant plant, Model model, AccountUser user) {
+    public String prepareDetails(String apiId, AccountUserPlant plant, Model model, AccountUser user) {
       
         //TODO: Add error handling if the plant is null by viewing error message and redirect to the library
 
