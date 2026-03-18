@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import se.mau.myhappyplants.perenual.PerenualPlantDetailsResponse;
 import se.mau.myhappyplants.plant.dto.PlantDetailsView;
 import se.mau.myhappyplants.user.AccountUser;
-import java.security.Principal;
+
 
 /**
  * Controller responsible for handling requests related to plants.
@@ -70,7 +70,9 @@ public class PlantsController {
      * to use it for the library plants and
      * the search plants
      */
-    public String prepareDetails(String apiId, AccountUserPlant plant, Model model, AccountUser user) {
+    private String prepareDetails(String apiId, AccountUserPlant plant, Model model, AccountUser user) {
+      
+        //TODO: Add error handling if the plant is null by viewing error message and redirect to the library
 
         PerenualPlantDetailsResponse apiDetails = perenualClient.fetchPlantDetails(apiId);
 

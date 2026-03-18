@@ -3,7 +3,6 @@ package se.mau.myhappyplants.plant;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -45,9 +44,6 @@ public class PlantControllerMvcTest {
     @MockitoBean // or @MockBean depending on your import status
     private org.springframework.cache.CacheManager cacheManager;
 
-    @InjectMocks
-    private PlantsController plantsController;
-
     @Test
     @DisplayName("INF.02F-Plant Information Page")
     void showLibraryPlantDetailsTestMvcValid() throws Exception {
@@ -69,7 +65,7 @@ public class PlantControllerMvcTest {
 
     @Test
     @WithMockUser
-    @DisplayName("INF.02F-Plant Information Page - Error with retrieving the plant data")
+    @DisplayName("INF.02F-Plant Information Page - Redirects to login when user not in session")   
     void showPlantDetailsRedirectsWhenUserNotInSession() throws Exception {
         AccountUserPlant mockPlant = new AccountUserPlant();
         mockPlant.setPerenualId("42");

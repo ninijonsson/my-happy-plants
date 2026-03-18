@@ -16,6 +16,40 @@ This school project and is a rework of an older school project also called My Ha
 
 ---
 
+## Installation & Setup
+### 1. Clone the repo 
+```bash
+git clone https://github.com/ninijonsson/my-happy-plants.git
+cd my-happy-plants
+```
+
+### 2. Environmental variables 
+#### macOS/Linux:
+```bash
+export DB_PASSWORD="your_password"
+export PERENUAL_API_KEY="your_api_key"
+```
+
+#### Windows (PowerShell):
+```bash
+$env:DB_PASSWORD="your_password"
+$env:PERENUAL_API_KEY="your_api_key"
+```
+
+### 3. Build and Run the Application
+```bash
+# macOS/Linux
+./mvnw spring-boot:run
+
+# Windows
+.\mvnw.cmd spring-boot:run
+```
+
+### 4. Open in Web Browser
+Go to: http://localhost:8080
+
+---
+
 ## Tech Stack
 
 **Backend**

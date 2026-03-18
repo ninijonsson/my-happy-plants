@@ -1,15 +1,12 @@
 package se.mau.myhappyplants.error;
 
 import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.cache.CacheManager;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.ui.Model;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -23,15 +20,6 @@ public class CustomErrorControllerMvcTest {
 
     @MockitoBean
     private CacheManager cacheManager;
-
-    @MockitoBean
-    private HttpServletRequest httpServletRequest;
-
-    @MockitoBean
-    private Model model;
-
-    @InjectMocks
-    private CustomErrorController customErrorController;
     
     @Test
     void testMvcHandleErrorReturnsCorrectView() throws Exception {
