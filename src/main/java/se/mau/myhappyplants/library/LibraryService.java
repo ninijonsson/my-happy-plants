@@ -70,10 +70,10 @@ public class LibraryService {
                         Sort.Direction.ASC,"nextWateringDate"));
 
             case "asctag":
-                return getPlantsSortedByTag(userId,false);
+                return getPlantsSortedByTag(userId,"asc");
 
             case "desctag":
-                return getPlantsSortedByTag(userId,true);
+                return getPlantsSortedByTag(userId,"desc");
 
             default:
                 List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
@@ -100,7 +100,7 @@ public class LibraryService {
         }
     }
 
-    private List<AccountUserPlant> getPlantsSortedByTag(int userId,boolean way) {
+    private List<AccountUserPlant> getPlantsSortedByTag(int userId, String way) {
         List<AccountUserPlant> TagPlants = accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
 
         TagPlants.sort((p1, p2) -> {
@@ -111,7 +111,7 @@ public class LibraryService {
             if (tag1 == null) return 1;
             if (tag2 == null) return -1;
 
-            if(way){
+            if(way.equals("desc")){
                 return tag2.compareToIgnoreCase(tag1);
             }else {
                 return tag1.compareToIgnoreCase(tag2);

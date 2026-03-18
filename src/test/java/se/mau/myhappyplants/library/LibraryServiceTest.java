@@ -237,6 +237,55 @@ class LibraryServiceTest {
         assertEquals(Sort.Direction.DESC, expectedOrder.getDirection()); // TODO: Change from direction?
     }
 
+    @Test
+    @DisplayName("LIB.06.4F - getPlantsSortedByTag asc correctly orders plants by tag label")
+    void testGetPlantsSortedByTagAscOrder() {
+        Tag tagA = mock(Tag.class);
+        when(tagA.getLabel()).thenReturn("Aloe");
+        Tag tagZ = mock(Tag.class);
+        when(tagZ.getLabel()).thenReturn("Zebra");
+
+        AccountUserPlant plantZ = new AccountUserPlant("ZebraPlant", "30");
+        plantZ.setTag(tagZ);
+        AccountUserPlant plantA = new AccountUserPlant("AloePlant", "31");
+        plantA.setTag(tagA);
+        AccountUserPlant plantNoTag = new AccountUserPlant("NoTagPlant", "32");
+
+        when(accountUserPlantRepository.findByUserId(eq(userId), eq(Sort.unsorted())))
+                .thenReturn(new java.util.ArrayList<>(List.of(plantZ, plantNoTag, plantA)));
+
+        List<AccountUserPlant> result = libraryService.getUserLibrary(userId, "asctag");
+
+        assertEquals("AloePlant", result.get(0).getPlantName());
+        assertEquals("ZebraPlant", result.get(1).getPlantName());
+        assertEquals("NoTagPlant", result.get(2).getPlantName(), "Plant with no tag should be last");
+    }
+
+
+    @Test
+    @DisplayName("LIB.06.4F - getPlantsSortedByTag desc correctly orders plants by tag label")
+    void testGetPlantsSortedByTagDescOrder() {
+        Tag tagA = mock(Tag.class);
+        when(tagA.getLabel()).thenReturn("Aloe");
+        Tag tagZ = mock(Tag.class);
+        when(tagZ.getLabel()).thenReturn("Zebra");
+
+        AccountUserPlant plantA = new AccountUserPlant("AloePlant", "40");
+        plantA.setTag(tagA);
+        AccountUserPlant plantZ = new AccountUserPlant("ZebraPlant", "41");
+        plantZ.setTag(tagZ);
+        AccountUserPlant plantNoTag = new AccountUserPlant("NoTagPlant", "42");
+
+        when(accountUserPlantRepository.findByUserId(eq(userId), eq(Sort.unsorted())))
+                .thenReturn(new java.util.ArrayList<>(List.of(plantA, plantNoTag, plantZ)));
+
+        List<AccountUserPlant> result = libraryService.getUserLibrary(userId, "desctag");
+
+        assertEquals("ZebraPlant", result.get(0).getPlantName());
+        assertEquals("AloePlant", result.get(1).getPlantName());
+        assertEquals("NoTagPlant", result.get(2).getPlantName(), "Plant with no tag should be last");
+    }
+
     public Sort captureSort() {
         // ArgumentCaptor to check correct Sort object is returned
         ArgumentCaptor<Sort> sortCaptor = ArgumentCaptor.forClass(Sort.class);
@@ -498,9 +547,38 @@ class LibraryServiceTest {
 
         assertEquals(3, summary.size(), "Should return one entry per unique date");
     }
+
+    @Test
+    @DisplayName("LIB.06.4F - Default case returns plants sorted by nextWateringDate, wishlist last")
+    void testDefaultCaseSortsCorrectly() {
+        AccountUserPlant wishlistPlant = new AccountUserPlant("Orchid", "10");
+        Tag wishlistTag = mock(Tag.class);
+        when(wishlistTag.getLabel()).thenReturn("Wishlist");
+        wishlistPlant.setTag(wishlistTag);
+        wishlistPlant.setWateringFrequencyDays(7);
+        wishlistPlant.setLastWatered(LocalDateTime.now().minusDays(1));
+
+        AccountUserPlant urgentPlant = new AccountUserPlant("Monstera", "11");
+        urgentPlant.setWateringFrequencyDays(7);
+        urgentPlant.setLastWatered(LocalDateTime.now().minusDays(10)); // very overdue
+
+        AccountUserPlant normalPlant = new AccountUserPlant("Pothos", "12");
+        normalPlant.setWateringFrequencyDays(7);
+        normalPlant.setLastWatered(LocalDateTime.now().minusDays(3));
+
+        when(accountUserPlantRepository.findByUserId(eq(userId), eq(Sort.unsorted())))
+                .thenReturn(new java.util.ArrayList<>(List.of(wishlistPlant, normalPlant, urgentPlant)));
+
+        List<AccountUserPlant> result = libraryService.getUserLibrary(userId, "unknownvalue");
+
+        assertEquals("Monstera", result.get(0).getPlantName(), "Most overdue plant should be first");
+        assertEquals("Pothos", result.get(1).getPlantName(), "Less overdue plant should be second");
+        assertEquals("Orchid", result.get(2).getPlantName(), "Wishlist plant should always be last");
+    }
     
     @Test
     @DisplayName(" - setTagOnPlantByLabel")
+    //TODO: Fix requirement
     void testSetTagOnPlantByLabel() {
         String label = "tag1";  
         int plantId = 1;
@@ -523,6 +601,7 @@ class LibraryServiceTest {
     
     @Test
     @DisplayName(" - setTagOnPlantByLabel - label is null")
+        //TODO: Fix requirement
     void testSetTagOnPlantByLabelPlantNotFound() {
         String label = null;  
         int plantId = 1;
