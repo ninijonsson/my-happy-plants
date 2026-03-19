@@ -81,7 +81,7 @@ public class AccountUser {
         this.accountUserPlants = accountUserPlants;
     }
 
-    // Helper methods för att hantera relationer
+    // Helper methods for relations
     public void addUserPlant(AccountUserPlant accountUserPlant) {
         accountUserPlants.add(accountUserPlant);
         accountUserPlant.setUser(this);

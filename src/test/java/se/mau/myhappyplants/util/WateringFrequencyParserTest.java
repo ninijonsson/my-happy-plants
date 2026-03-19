@@ -5,7 +5,7 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-@DisplayName("CAR.07F - Watering Frequency Parser, Watering logic for calculation")
+
 public class WateringFrequencyParserTest {
 
 

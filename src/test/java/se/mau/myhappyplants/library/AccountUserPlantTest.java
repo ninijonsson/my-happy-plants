@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("INF.03F - Water Status Calculation")
+
 class AccountUserPlantTest {
 
     private AccountUserPlant plant;
@@ -17,9 +17,6 @@ class AccountUserPlantTest {
         plant.setWateringFrequencyDays(7);
     }
 
-    // ----------------------------------------------------------------
-    // getDaysUntilNextWatering()
-    // ----------------------------------------------------------------
 
     @Test
     @DisplayName("INF.03F - Watering status is 100% when interval passes")
@@ -53,9 +50,6 @@ class AccountUserPlantTest {
         assertEquals(0.0, status, 0.01);
     }
 
-    // ----------------------------------------------------------------
-    // calculateNextWateringDate()
-    // ----------------------------------------------------------------
 
     @Test
     @DisplayName("INF.03F - Next Watering date is lastWatered plus frequency in days")
@@ -76,7 +70,7 @@ class AccountUserPlantTest {
     }
 
     @Test
-    @DisplayName("INF.03F - calculateNextWateringDate() does nothing frequency is not set")
+    @DisplayName("INF.03F - calculateNextWateringDate() does nothing if frequency is not set")
     void testCalculateNextWateringDateWhenFrequencyNull(){
         plant.setLastWatered(LocalDateTime.now());
         plant.setWateringFrequencyDays(null);

@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface AccountUserRepository extends JpaRepository<AccountUser, Integer> {
     /**
-     * Hitta användare baserat på username
+     * Find User based on Username
      */
     Optional<AccountUser> findByUsername(String username);
     
