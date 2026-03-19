@@ -82,6 +82,22 @@ public class PlantsController {
     }
 
     /**
+     * Helper method for fetching plant details
+     * to use it for the library plants and
+     * the search plants
+     */
+    public String prepareDetails(String apiId, AccountUserPlant plant, Model model, AccountUser user) {
+        //TODO: Add error handling if the plant is null by viewing error message and redirect to the library
+        PerenualPlantDetailsResponse apiDetails = perenualClient.fetchPlantDetails(apiId);
+
+        model.addAttribute("user", user);
+        model.addAttribute("details", apiDetails);
+        model.addAttribute("plant", plant);
+
+        return "plant-details";
+    }
+
+    /**
      * Handles the request to display a plant search page.
      * DENNA METOD RÖRS INTE - exakt som testerna vill ha den!
      */
