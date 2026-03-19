@@ -63,6 +63,8 @@ public class PasswordValidatorConfig {
 
     /**
      * Check if the password is valid without throwing an exception
+     * @param password sent for validation.
+     * @return a String of the given fault or OK.
      */
     public String isValid(String password) {
         String response = validate(password);

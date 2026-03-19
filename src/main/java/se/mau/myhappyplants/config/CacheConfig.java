@@ -15,6 +15,12 @@ import java.util.concurrent.TimeUnit;
  * - Expiration time after write: 24 hours.
  * - Maximum cache size: 100 entries.
  * - Statistics recording enabled to monitor cache performance.
+ * Custom cache management for plantsearch.
+ * - Expiration time after write: 5 minutes.
+ * - Maximum cache size: 90 entries. 30 per page will be used
+ * - Makes the app make a new api calls for the plants found at the search page
+ *  when a search has not been performed.
+ *
  */
 
 @Configuration
@@ -30,17 +36,9 @@ public class CacheConfig {
         cacheManager.registerCustomCache("plantSearch",
                 Caffeine.newBuilder()
                         .expireAfterWrite(5, TimeUnit.MINUTES)
-                        .maximumSize(100)
+                        .maximumSize(90)
                         .recordStats()
                         .build());
-
-        cacheManager.registerCustomCache("plantDetails",
-                Caffeine.newBuilder()
-                        .expireAfterWrite(24, TimeUnit.HOURS)
-                        .maximumSize(100)
-                        .recordStats()
-                        .build());
-
         return cacheManager;
     }
 }

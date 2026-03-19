@@ -152,6 +152,16 @@ public class LibraryController {
         }
     }
 
+    /**
+     * Updates the tag associated with a specific plant to a label of the users choosing.
+     * This method assigns a tag to a plant by their respective IDs.
+     *
+     * @param plantId the ID of the plant to which the tag will be updated
+     * @param body a JSON request body mapped to a key-value from the front end (textbox).
+     * @return a ResponseEntity containing a success message if the update is successful,
+     *         or an error message with a 400 status code if the update fails
+     */
+
     @PutMapping("/plants/{plantId}/tag")
     public ResponseEntity<?> updateTagByLabel(@PathVariable int plantId, @RequestBody java.util.Map<String, String> body) {
         String label = body.get("label");
@@ -164,7 +174,19 @@ public class LibraryController {
         }
     }
 
-
+    /**
+     * Handles requests for the watering history graph page.
+     *
+     * Retrieves the currently logged-in user from the session. If no user is found,
+     * the request is redirected to the login page.
+     *
+     * Fetches aggregated watering data for the user and adds it to the model
+     * Sets current page to graph for frontend page indicator.
+     *
+     * @param model the Spring MVC model used to pass data to the view
+     * @param session the HTTP session containing the logged-in user
+     * @return the name of the graph view template, or a redirect to login if no user is found
+     */
 
     @GetMapping("/graph")
     public String getGraph(Model model, HttpSession session) {

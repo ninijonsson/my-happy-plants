@@ -81,11 +81,22 @@ public class AccountUser {
         this.accountUserPlants = accountUserPlants;
     }
 
-    // Helper methods för att hantera relationer
+    /**
+     * Adds a plant to the user's collection and establishes the relationship.
+     *
+     * @param accountUserPlant the plant to associate with this user
+     */
+
     public void addUserPlant(AccountUserPlant accountUserPlant) {
         accountUserPlants.add(accountUserPlant);
         accountUserPlant.setUser(this);
     }
+
+    /**
+     * Removes a plant from the user's collection and breaks the relationship.
+     *
+     * @param accountUserPlant the plant to remove from this user
+     */
 
     public void removeUserPlant(AccountUserPlant accountUserPlant) {
         accountUserPlants.remove(accountUserPlant);
