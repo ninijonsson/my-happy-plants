@@ -88,6 +88,21 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 2000);
         }
     });
+
+    // Läs query-parametern från URL och sätt i sökfältet
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryParam = urlParams.get('q');
+    if (queryParam) {
+        searchInput.value = queryParam;
+        // Triggera sökningen automatiskt
+        setTimeout(() => {
+            // Simulera Enter-tryck för att söka i databasen
+            const event = new KeyboardEvent('keydown', { key: 'Enter' });
+            searchInput.dispatchEvent(event);
+        }, 100);
+    }
+
+
 });
 
 async function fetchPlants(query) {

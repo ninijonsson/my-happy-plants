@@ -7,59 +7,94 @@
     <link rel="stylesheet" th:href="@{/css/plant-details.css}"  href="/css/loading.css">
 </head>
 <body class="p-4 md:p-10" style="background-color: #C0B87A;">
-    <div class="max-w-4xl mx-auto">
-        <div th:replace="~{/fragments/fragment :: navbar}"></div>
-        <div th:replace="~{/fragments/fragment :: loader}"></div>
+<div class="max-w-4xl mx-auto">
+    <div th:replace="~{/fragments/fragment :: navbar}"></div>
+    <div th:replace="~{/fragments/fragment :: loader}"></div>
 
-        <article class="details-wrapper">
-            <div class="details-hero flex flex-wrap gap-8">
-                <div class="flex-1 min-w-[300px]">
-                    <img th:src="${plant?.imageUrl != null ? plant.imageUrl : (details?.defaultImage?.regularUrl ?: '/images/plant.jpg')}"
-                         class="details-img shadow-lg w-full rounded-2xl object-cover">
-                </div>
+    <article class="details-wrapper">
+        <div class="mt-3 pb-2 pl-6">
+            <!-- OPTION 1: Om vi har en sparad sökfråga -->
+            <a th:if="${lastSearchQuery != null}"
+               th:href="@{/plants/search(q=${lastSearchQuery})}"
+               class="inline-flex items-center text-[#005F02] hover:text-[#004502] transition-colors">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <span class="text-sm font-medium">Back to "<span th:text="${lastSearchQuery}"></span>"</span>
+            </a>
 
-                <div class="details-content flex-1 min-w-[300px]">
-                    <h1 th:text="${plant?.plantName ?: details?.commonName}">Plant Name</h1>
-                    <p class="scientific"
-                       th:text="${details.scientificName != null and !details.scientificName.isEmpty() ? #strings.listJoin(details.scientificName, ', ') : 'N/A'}">
-                    </p>
+            <!-- OPTION 2: Om vi kommer från library -->
+            <a th:if="${lastSearchQuery == null and fromLibrary != null and fromLibrary}"
+               th:href="@{/library}"
+               class="inline-flex items-center text-[#005F02] hover:text-[#004502] transition-colors">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <span class="text-sm font-medium">Back to Library</span>
+            </a>
 
-                    <p class="text-sm font-bold uppercase tracking-widest text-[#427A43] mt-1"
-                       th:text="${details.family != null ? 'Family: ' + details.family : 'Family: Unknown'}">
-                        Family: Rosaceae
-                    </p>
+            <!-- OPTION 3: Fallback -->
+            <a th:if="${lastSearchQuery == null and (fromLibrary == null or !fromLibrary)}"
+               th:href="@{/plants/search}"
+               class="inline-flex items-center text-[#005F02] hover:text-[#004502] transition-colors">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <span class="text-sm font-medium">Back to Search</span>
+            </a>
+        </div>
 
-                    <hr class="my-4 border-emerald-100">
+        <!-- Växtinformation-->
+        <div class="details-hero flex flex-wrap gap-8">
+            <div class="flex-1 min-w-[300px]">
+                <img th:src="${plant?.imageUrl != null ? plant.imageUrl : (details?.defaultImage?.regularUrl ?: '/images/plant.jpg')}"
+                     class="details-img shadow-lg w-full rounded-2xl object-cover">
+            </div>
 
-                    <p class="text-gray-700 leading-relaxed mb-6"
-                       th:text="${details?.description ?: 'No description available.'}"></p>
+            <div class="details-content flex-1 min-w-[300px]">
+                <h1 th:text="${plant?.plantName ?: details?.commonName}">Plant Name</h1>
+                <p class="scientific"
+                   th:text="${details.scientificName != null and !details.scientificName.isEmpty() ? #strings.listJoin(details.scientificName, ', ') : 'N/A'}">
+                </p>
 
-                    <div class="care-grid">
-                        <div class="care-item">
-                            <label>Watering</label>
-                            <span th:if="${plant == null}"
-                                  th:class="'watering-badge ' + ${details?.watering == 'Frequent' ? 'badge-frequent' : (details?.watering == 'Average' ? 'badge-average' : 'badge-minimum')}"
-                                  th:text="${details?.watering ?: 'Unknown'}">
-                            </span>
-                            <span th:if="${plant != null}" th:text="${plant.wateringFrequencyDays + ' days'}"></span>
-                        </div>
+                <p class="text-sm font-bold uppercase tracking-widest text-[#427A43] mt-1"
+                   th:text="${details.family != null ? 'Family: ' + details.family : 'Family: Unknown'}">
+                    Family: Rosaceae
+                </p>
 
-                        <div class="care-item">
-                            <label>Sunlight</label>
-                            <span th:text="${details?.sunlight != null ? #strings.listJoin(details.sunlight, ', ') : 'Unknown'}"></span>                        </div>
+                <hr class="my-4 border-emerald-100">
 
-                        <div class="care-item">
-                            <label>Growth</label>
-                            <span th:text="${details?.cycle ?: 'Perennial'}"></span>
-                        </div>
+                <p class="text-gray-700 leading-relaxed mb-6"
+                   th:text="${details?.description ?: 'No description available.'}"></p>
 
-                        <div class="care-item">
-                            <label>Maintenance</label>
-                            <span th:text="${details?.maintenance ?: 'Medium'}"></span>                        </div>
+                <div class="care-grid">
+                    <div class="care-item">
+                        <label>Watering</label>
+                        <span th:if="${plant == null}"
+                              th:class="'watering-badge ' + ${details?.watering == 'Frequent' ? 'badge-frequent' : (details?.watering == 'Average' ? 'badge-average' : 'badge-minimum')}"
+                              th:text="${details?.watering ?: 'Unknown'}">
+                        </span>
+                        <span th:if="${plant != null}" th:text="${plant.wateringFrequencyDays + ' days'}"></span>
+                    </div>
+
+                    <div class="care-item">
+                        <label>Sunlight</label>
+                        <span th:text="${details?.sunlight != null ? #strings.listJoin(details.sunlight, ', ') : 'Unknown'}"></span>
+                    </div>
+
+                    <div class="care-item">
+                        <label>Growth</label>
+                        <span th:text="${details?.cycle ?: 'Perennial'}"></span>
+                    </div>
+
+                    <div class="care-item">
+                        <label>Maintenance</label>
+                        <span th:text="${details?.maintenance ?: 'Medium'}"></span>
                     </div>
                 </div>
             </div>
-        </article>
-    </div>
+        </div>
+    </article>
+</div>
 </body>
 </html>
