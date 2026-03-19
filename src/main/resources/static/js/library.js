@@ -196,10 +196,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
                     const plantList = document.getElementById('users-plants');
-                    //Move to the end of the list
-                    if (plantList.dataset.currentsort === 'water') {
-                        plantList.appendChild(plantContainer);
-                    }
+                    //Move to the end of the list - this works better than moving to the end, but reload is not as nice looking. a fade looks nice, but previous logic would send it to the wishlist if you are in water in the menu.
+                   document.body.classList.add("fade-out");
+
+                   setTimeout(() => {
+                       window.location.reload();
+                   }, 300);
+
 
                 } else {
                     alert("Failed to water plant.");

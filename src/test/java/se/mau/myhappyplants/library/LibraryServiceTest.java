@@ -498,6 +498,39 @@ class LibraryServiceTest {
 
         assertEquals(3, summary.size(), "Should return one entry per unique date");
     }
+    
+    @Test
+    @DisplayName("LIB.05.1F - setTagOnPlantByLabel")
+    void testSetTagOnPlantByLabel() {
+        String label = "tag1";  
+        int plantId = 1;
+        AccountUserPlant mockPlant = mock(AccountUserPlant.class);
+        mockPlant.setId(plantId);
+        Tag mockTag = mock(Tag.class);
+        
+        
+        when(accountUserPlantRepository.findById(plantId)).thenReturn(Optional.of(mockPlant));
+        when(tagRepository.findByLabel(label)).thenReturn(Optional.of(mockTag));
+        
+        assertTrue(libraryService.setTagOnPlantByLabel(plantId, label));
+        
+        verify(accountUserPlantRepository).findById(plantId);
+        verify(tagRepository).findByLabel(label);
+        verify(accountUserPlantRepository).save(mockPlant);
+        
+        verifyNoMoreInteractions(accountUserPlantRepository, tagRepository);
+    }
+    
+    @Test
+    @DisplayName("LIB.05.1F - setTagOnPlantByLabel - label is null")
+    void testSetTagOnPlantByLabelPlantNotFound() {
+        String label = null;  
+        int plantId = 1;
+        
+        assertFalse(libraryService.setTagOnPlantByLabel(plantId, label));
+        
+        verifyNoMoreInteractions(accountUserPlantRepository, tagRepository);
+    }
 
     @AfterEach
     void tearDown() {

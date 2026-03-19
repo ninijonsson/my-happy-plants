@@ -26,6 +26,21 @@ public class CacheConfig {
         cacheManager.setCaffeine(Caffeine.newBuilder()
                 .expireAfterWrite(24, TimeUnit.HOURS)
                 .maximumSize(100).recordStats());
+
+        cacheManager.registerCustomCache("plantSearch",
+                Caffeine.newBuilder()
+                        .expireAfterWrite(5, TimeUnit.MINUTES)
+                        .maximumSize(100)
+                        .recordStats()
+                        .build());
+
+        cacheManager.registerCustomCache("plantDetails",
+                Caffeine.newBuilder()
+                        .expireAfterWrite(24, TimeUnit.HOURS)
+                        .maximumSize(100)
+                        .recordStats()
+                        .build());
+
         return cacheManager;
     }
 }

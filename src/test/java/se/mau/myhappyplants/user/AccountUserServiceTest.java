@@ -167,6 +167,7 @@ class AccountUserServiceTest {
     }
 
     @Test
+    @DisplayName("ACC.06F - Error Message Incorrect Password - Unknown username throws exception")
     void testLoadUserByUsernameInvalid() {
         when(accountUserRepository.findByUsername("Mock")).thenReturn(Optional.empty());
         UsernameNotFoundException e = assertThrows(UsernameNotFoundException.class, () ->

@@ -5,7 +5,8 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlantDetailsViewTest {
-
+    //Should be empty since it holds no logic
+    //Remove?!
     @BeforeEach
     void setUp() {
     }
