@@ -39,7 +39,7 @@ class AccountUserTest {
 
     @Test
     @DisplayName("LIB.01F - addUserPlant() can add multiple plants")
-    void testAddUserPlant_MultiiplePlants() {
+    void testAddUserPlantMultiiplePlants() {
         AccountUserPlant plant1 = new AccountUserPlant("Monstera", "1");
         AccountUserPlant plant2 = new AccountUserPlant("Cactus", "2");
 
