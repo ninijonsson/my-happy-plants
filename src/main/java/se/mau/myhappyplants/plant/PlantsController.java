@@ -52,6 +52,7 @@ public class PlantsController {
         return "plant-details";
     }
 
+
     /**
      * Handles the request to preview details of a specific plant from search.
      */
