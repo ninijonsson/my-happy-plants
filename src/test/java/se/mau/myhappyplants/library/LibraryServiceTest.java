@@ -292,6 +292,7 @@ class LibraryServiceTest {
         
         verify(accountUserPlantRepository).findByUserIdAndPlantNameContainingIgnoreCase(42, "cactus");      
     }
+
     
     @Test
     @DisplayName("CAR.01F - countPlantsNeedingWater() returns correct count when plants are overdue")
