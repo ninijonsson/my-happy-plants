@@ -322,13 +322,25 @@ class LibraryServiceTest {
     }
 
     @Test
+    @DisplayName("LIB.05F - setTagOnPlant() with tagId -1 removes tag from plant")
+    void testSetTagOnPlantWithMinusOneRemovesTag() {
+        when(accountUserPlantRepository.findById(1)).thenReturn(Optional.of(plant));
+        when(accountUserPlantRepository.save(any(AccountUserPlant.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        libraryService.setTagOnPlant(1, -1);
+
+        assertNull(plant.getTag());
+        verify(accountUserPlantRepository).save(plant);
+    }
+
+    @Test
     @DisplayName("LIB.05.3F - setTagOnPlant() sets tag on plant successfully")
     void testSetTagOnPlantValid() {
         Tag mockTag = mock(Tag.class);
 
         when(accountUserPlantRepository.findById(1)).thenReturn(Optional.of(plant));
         when(tagRepository.findById(1)).thenReturn(Optional.of(mockTag));
-        when(accountUserPlantRepository.existsById(1)).thenReturn(true);
         when(accountUserPlantRepository.save(any(AccountUserPlant.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
