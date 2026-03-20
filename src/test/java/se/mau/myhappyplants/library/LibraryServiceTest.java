@@ -293,6 +293,76 @@ class LibraryServiceTest {
         verify(accountUserPlantRepository).findByUserIdAndPlantNameContainingIgnoreCase(42, "cactus");      
     }
 
+    @Test
+    @DisplayName("LIB.05F - removeTagFromPlant() removes tag from plant successfully")
+    void testRemoveTagFromPlant_Valid() {
+        Tag mockTag = mock(Tag.class);
+        plant.setTag(mockTag);
+
+        when(accountUserPlantRepository.findById(1)).thenReturn(Optional.of(plant));
+        when(accountUserPlantRepository.save(any(AccountUserPlant.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        boolean result = libraryService.removeTagFromPlant(1);
+        assertTrue(result, "Should return true when tag is removed successfully");
+
+        verify(accountUserPlantRepository).save(plant);
+    }
+
+    @Test
+    @DisplayName("LIB.05F - removeTagFromPlant() throws exception if plant not found")
+    void testRemoveTagFromPlant_PlantNotFound() {
+        when(accountUserPlantRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class,
+                () -> libraryService.removeTagFromPlant(99),
+                "Should throw RuntimeException if plant does not exist");
+
+        verify(accountUserPlantRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("LIB.05.3F - setTagOnPlant() sets tag on plant successfully")
+    void testSetTagOnPlantValid() {
+        Tag mockTag = mock(Tag.class);
+
+        when(accountUserPlantRepository.findById(1)).thenReturn(Optional.of(plant));
+        when(tagRepository.findById(1)).thenReturn(Optional.of(mockTag));
+        when(accountUserPlantRepository.existsById(1)).thenReturn(true);
+        when(accountUserPlantRepository.save(any(AccountUserPlant.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        boolean result = libraryService.setTagOnPlant(1, 1);
+
+        assertTrue(result);
+        verify(accountUserPlantRepository).save(plant);
+        assertEquals(mockTag, plant.getTag());
+    }
+
+    @Test
+    @DisplayName("LIB.05.3F - setTagOnPlant() throws exception if plant not found")
+    void testSetTagOnPlantPlantNotFound() {
+        when(accountUserPlantRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class,
+                () -> libraryService.setTagOnPlant(99, 1),
+                "Should throw RuntimeException if plant does not exist");
+
+        verify(accountUserPlantRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("LIB.05.3F - setTagOnPlant() throws exception if tag not found")
+    void testSetTagOnPlantTagNotFound() {
+        when(accountUserPlantRepository.findById(1)).thenReturn(Optional.of(plant));
+        when(tagRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class,
+                () -> libraryService.setTagOnPlant(1, 99),
+                "Should throw RuntimeException if tag does not exist");
+
+        verify(accountUserPlantRepository, never()).save(any());
+    }
     
     @Test
     @DisplayName("CAR.01F - countPlantsNeedingWater() returns correct count when plants are overdue")
