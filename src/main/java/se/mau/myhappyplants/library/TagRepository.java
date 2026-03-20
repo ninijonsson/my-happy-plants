@@ -14,7 +14,8 @@ import java.util.Optional;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Integer> {
     /**
-     * Hitta en tagg baserat på dess label
+     * find tag based on its label.
+     * @param label the label we are looking for.
      */
     Optional<Tag> findByLabel(String label);
 
@@ -22,16 +23,21 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
      * One tag to rule them all, One tag to find them, One tag to bring them all and in the darkness bind them.
      * @return a list of the tags, three tags for the Elven-kings under the sky, Seven for the Dwarf-lords in their halls of stone, Nine for the Mortal Men doomed to die, One for the Dark Lord on his dark throne.
      */
+
     List<Tag> findAll();
 
     /**
-     * Hitta taggar som innehåller en viss text (case-insensitive)
-     * Användbart för sökfunktion
+     * Find tags containing a piece of text (case-insensitive)
+     * Useful for the search functionality.
+     * @param labelPart, the part which we are checking of the label.
      */
+
     List<Tag> findByLabelContainingIgnoreCase(String labelPart);
 
     /**
-     * Kolla om en tagg med detta label redan finns
+     * Checks if a tag by a certain name already exists.
+     * @param label the label we are looking for.
      */
+
     boolean existsByLabel(String label);
 }

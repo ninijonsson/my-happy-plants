@@ -49,6 +49,12 @@ public class Tag {
         return label;
     }
 
+    /**
+     * method for setting lable.
+     * @param label, the new label.
+     * only use for testcases.
+     */
+
     public boolean setLabel(String label) {
         if(label.isBlank()) return false;
         this.label = label;

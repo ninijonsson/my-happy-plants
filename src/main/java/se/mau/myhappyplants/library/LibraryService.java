@@ -42,7 +42,14 @@ public class LibraryService {
      *                - "asc": Alphabetical order (A-Z).
      *                - "desc": Reverse alphabetical order (Z-A).
      *                - "recent": Sort by most recently added.
+     *                - "asctag": Sorted by the Tags alphabetical order (A-Z).
+     *                - "destag": Sorted by the Tags alphabetical order (Z-A).
      *                - "water": Sort by closest to needing water. Default if null or invalid.
+     *                - "Default": I don´t think the "water" is ever used, default however is
+     *                used and has the same intended functinality as water, but it also separates the
+     *                wishlist items from the normal ones with a label in the front end.
+     *                And that is what the unique sorting functionality assists with.
+     *
      * @return A list of {@code AccountUserPlant} objects representing the plants in the user's library
      *         sorted according to the specified criteria.
      */
@@ -100,6 +107,12 @@ public class LibraryService {
         }
     }
 
+    /**
+     * A method saving some lines of code. Sorts plants by tag, (a-z)(z-a) depending on the boolean.
+     * @param userId The ID of the user whose plant library is being retrieved.
+     * @param way The sorting direction or criteria. Possible values: true, false.
+     */
+
     private List<AccountUserPlant> getPlantsSortedByTag(int userId,boolean way) {
         List<AccountUserPlant> TagPlants = accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
 
@@ -122,7 +135,10 @@ public class LibraryService {
 
     /**
      * Add a new plant to the user library
+     * @param plantDetails - plant info
+     * @param userId - the user.
      */
+
     public AccountUserPlant addPlantToLibrary(PlantDetailsView plantDetails, int userId) {
         // Hitta användaren
         AccountUser user = accountUserRepository.findById(userId)
@@ -147,6 +163,10 @@ public class LibraryService {
 
     /**
      * Add or change tag on a plant
+     *
+     * @param plantId - plant which tag is going to be changed or added.
+     * @param tagId - id of the tag.
+     *
      */
     public boolean setTagOnPlant(int plantId, int tagId) {
         
@@ -169,6 +189,8 @@ public class LibraryService {
 
     /**
      * Add or change custom tag on a plant
+     * @param plantId - plant which tag is going to be changed or added.
+     * @param label - the actual string that will become the new tag.
      */
     public boolean setTagOnPlantByLabel(int plantId, String label) {
         if (label == null || label.trim().isEmpty()) {
@@ -192,6 +214,7 @@ public class LibraryService {
 
     /**
      * Remove tag from a plant
+     * @param plantId, the plant
      */
     public boolean removeTagFromPlant(int plantId) {
         AccountUserPlant plant = accountUserPlantRepository.findById(plantId)
@@ -215,32 +238,37 @@ public class LibraryService {
      *                          or does not belong to the specified user.
      */
     public void removePlant(int plantId, int userId) {
-        // Hitta och kolla att den tillhör userId
         AccountUserPlant plant = accountUserPlantRepository.findByIdAndUserId(plantId, userId)
                 .orElseThrow(() -> new RuntimeException("Plant not found with id: " + plantId + " for user id: " + userId));
 
-        // Ta bort växten
         accountUserPlantRepository.delete(plant);
     }
 
     /**
-     * Hämta alla växter för en användare
-     *
+     * Get all plant for a user,
+     * @param userId - the user.
+     * @return all plants the user has in their library.
      */
     public List<AccountUserPlant> getAllPlantsForUser(int userId) {
         return accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
     }
 
     /**
-     * Filtrera växter baserat på tagg
+     * Filter plants by tag.
+     * @param userId - the user.
+     * @param tagId - tag to be checked aginst plants
+     * @return plants with tagid as tag.
      */
     public List<AccountUserPlant> getPlantsByTag(int userId, int tagId) {
         return accountUserPlantRepository.findByUserIdAndTagId(userId, tagId);
     }
 
     /**
-     * Sök växter baserat på namn
+     * Search plants which are added to the personal library.
+     * @param userId - the user.
+     * @param searchTerm - searchterm.
      */
+
     public List<AccountUserPlant> searchPlantsByName(int userId, String searchTerm) {
         return accountUserPlantRepository.findByUserIdAndPlantNameContainingIgnoreCase(userId, searchTerm);
     }
@@ -256,11 +284,17 @@ public class LibraryService {
         return accountUserPlantRepository.findById(plantId).orElse(null);
     }
 
+    /**
+     * Seemingly unused method for retereiveing plants in a reverse alphabetical order.
+     *
+     * @param userId - the user.
+     * @return plants in reverser order.
+     */
+
     public List<AccountUserPlant> getPlantsReverseAlphabetically(int userId) {
         return accountUserPlantRepository.findByUserIdOrderByPlantNameDesc(userId);
     }
 
-    public void waterPlant(int userId, int plantId, LocalDateTime wateringdate) {
     /**
      * Updates the last watered time for a specific plant in the user's library to the current time.
      * Ensures the plant exists and belongs to the specified user before updating.
@@ -269,6 +303,8 @@ public class LibraryService {
      * @param plantId The ID of the plant to be updated.
      * @throws RuntimeException If the plant does not exist or does not belong to the specified user.
      */
+
+    public void waterPlant(int userId, int plantId, LocalDateTime wateringdate) {
         AccountUserPlant plant = accountUserPlantRepository
                 .findByIdAndUserId(plantId, userId)
                 .orElseThrow(() ->
@@ -290,6 +326,7 @@ public class LibraryService {
      * @param userId the unique identifier for the user whose plants are to be checked
      * @return the number of plants that require watering
      */
+
     public long countPlantsNeedingWater(int userId) {
         List<AccountUserPlant> plants = accountUserPlantRepository.findByUserId(userId, Sort.unsorted());
 
@@ -312,6 +349,22 @@ public class LibraryService {
         }
         return count;
     }
+
+    /**
+     * Generates a summary of watering activity for a specific user.
+     *
+     * Retrieves all watering history entries for the given user and groups them by date.
+     * For each day, the total number of watering events is calculated.
+     *
+     * The result is transformed into a list of maps, where each map contains:
+     * - "date": the date of watering (as a String, format: yyyy-MM-dd)
+     * - "count": the number of times plants were watered on that date
+     *
+     * The data is sorted chronologically (oldest to newest) using a TreeMap.
+     *
+     * @param userId the ID of the user whose watering history should be summarized
+     * @return a list of date-count pairs used for rendering charts in the frontend
+     */
 
     public List<Map<String, Object>> getUserWateringSummary(int userId) {
         List<WateringHistory> history = wateringHistoryRepository.findByUserIdOrderByWateredAtDesc(userId);

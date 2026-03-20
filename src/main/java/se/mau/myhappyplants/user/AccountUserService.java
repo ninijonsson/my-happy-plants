@@ -20,6 +20,9 @@ public class AccountUserService implements UserDetailsService {
 
     /**
      * Create a new user (registrering)
+     * @param username new username
+     * @param password new password
+     * @return returns a boolean depending on if the username is taken.
      */
     public boolean createUser(String username, String password) {
         // Kolla om username redan finns
@@ -42,6 +45,9 @@ public class AccountUserService implements UserDetailsService {
 
     /**
      * Find user by ID
+     * @param userId user to be found.
+     * @return user if found.
+     *
      */
     public AccountUser getUserById(int userId) {
         return accountUserRepository.findById(userId)
@@ -50,6 +56,8 @@ public class AccountUserService implements UserDetailsService {
 
     /**
      * Find user by username
+     * @param username user to be found.
+     * @return user if found
      */
     public AccountUser getUserByUsername(String username) {
         return accountUserRepository.findByUsername(username)
@@ -58,6 +66,9 @@ public class AccountUserService implements UserDetailsService {
 
     /**
      * Uppdatera användarnamn
+     * @param userId user to change name
+     * @param newUsername new username
+     * @return accountUser.
      */
     public AccountUser updateUsername(int userId, String newUsername) {
         // Kolla om nya username redan finns
@@ -101,6 +112,11 @@ public class AccountUserService implements UserDetailsService {
         accountUserRepository.deleteById(userId);
     }
 
+    /**
+     * loads userdetails user by username
+     * @param username
+     * @return user details
+     */
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
