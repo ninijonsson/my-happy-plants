@@ -5,6 +5,19 @@ import se.mau.myhappyplants.user.AccountUser;
 
 import java.time.LocalDateTime;
 
+/**
+ * Watering events for a plant.
+ *
+ * This class stores data about when a specific plant was watered
+ * by a user. Each record links a user and one of their plants to a timestamp
+ * indicating when the watering happened.
+ *
+ * Relationships:
+ * - Many-to-one with (a user can have many watering events)
+ * - Many-to-one with (a plant can be watered multiple times)
+ *
+ */
+
 @Entity
 @Table(name = "water_history")
 public class WateringHistory {

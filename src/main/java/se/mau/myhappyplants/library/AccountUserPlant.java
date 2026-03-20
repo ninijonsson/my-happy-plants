@@ -37,7 +37,10 @@ public class AccountUserPlant {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    //automatically set the date when the plant is first saved
+    /**
+     * automatically set the date when the plant is first saved
+     */
+
     @PrePersist
     private void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -218,6 +221,13 @@ public class AccountUserPlant {
             return 0;
         return java.time.Duration.between(lastWatered, java.time.LocalDateTime.now()).toDays();
     }
+
+    /**
+     * Calculates the number of days until optimal watering date.
+     *
+     *
+     * @return the number of days since the plant was last watered, or 0 if no watering date is available
+     */
 
     public double getDaysUntilNextWatering(){
 
