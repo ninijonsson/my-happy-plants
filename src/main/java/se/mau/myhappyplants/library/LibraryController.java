@@ -201,4 +201,17 @@ public class LibraryController {
         model.addAttribute("currentPage", "graph");
         return "/watering-graph";
     }
+
+    @PutMapping("/plants/{plantId}/refresh-image")
+    @ResponseBody
+    public ResponseEntity<?> refreshPlantImage(@PathVariable int plantId) {
+        String imageUrl = libraryService.refreshPlantImage(plantId);
+
+        if (imageUrl != null) {
+            return ResponseEntity.ok(java.util.Map.of("imageUrl", imageUrl));
+        } else {
+            return ResponseEntity.status(404).body("Could not refresh image");
+        }
+    }
+
 }

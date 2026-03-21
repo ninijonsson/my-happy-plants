@@ -370,4 +370,30 @@ function updatePlantBar(plant) {
     daysText.textContent = `Days since last watered: ${daysSinceWatered} days`;
 }
 
+async function handleBrokenImage(img) {
+    if (img.dataset.retrying === "true") return;
+    img.dataset.retrying = "true";
+
+    const plantId = img.dataset.plantid;
+
+    try {
+        const response = await fetch(`/library/plants/${plantId}/refresh-image`, {
+            method: 'PUT'
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+
+            if (data.imageUrl) {
+                img.src = data.imageUrl;
+                return;
+            }
+        }
+    } catch (error) {
+        console.error("Image refresh failed:", error);
+    }
+
+    img.src = "/images/plant.jpg";
+}
+
 

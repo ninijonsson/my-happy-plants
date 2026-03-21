@@ -114,7 +114,11 @@
                      th:data-taglabel="${plant.tag != null ? plant.tag.label : ''}">
 
                     <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link">
-                        <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
+                        <img class="plant-img"
+                             th:src="${plant.imageUrl}"
+                             th:attr="data-plantid=${plant.id}"
+                             alt="Plant image"
+                             onerror="handleBrokenImage(this)">
                     </a>
 
                     <!-- Info -->
@@ -168,7 +172,11 @@
                          th:data-taglabel="${plant.tag != null ? plant.tag.label : ''}">
 
                         <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link">
-                            <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
+                            <img class="plant-img"
+                                 th:src="${plant.imageUrl}"
+                                 th:attr="data-plantid=${plant.id}"
+                                 alt="Plant image"
+                                 onerror="handleBrokenImage(this)">
                         </a>
 
                         <!-- Info -->
@@ -222,7 +230,11 @@
                      th:data-taglabel="${plant.tag != null ? plant.tag.label : ''}">
 
                     <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link">
-                        <img class="plant-img" th:src="${plant.imageUrl}" alt="Plant image">
+                        <img class="plant-img"
+                             th:src="${plant.imageUrl}"
+                             th:attr="data-plantid=${plant.id}"
+                             alt="Plant image"
+                             onerror="handleBrokenImage(this)">
                     </a>
 
                     <!-- Info -->

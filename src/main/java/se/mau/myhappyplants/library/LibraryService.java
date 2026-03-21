@@ -3,6 +3,7 @@ package se.mau.myhappyplants.library;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import se.mau.myhappyplants.perenual.PerenualClient;
 import se.mau.myhappyplants.plant.dto.PlantDetailsView;
 import se.mau.myhappyplants.user.AccountUser;
 import se.mau.myhappyplants.user.AccountUserRepository;
@@ -31,6 +32,9 @@ public class LibraryService {
 
     @Autowired
     private WateringHistoryRepository wateringHistoryRepository;
+
+    @Autowired
+    private PerenualClient perenualClient;
     
     /**
      * Retrieves a list of plants from the user's library based on the specified sorting criteria.
@@ -384,4 +388,26 @@ public class LibraryService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public String refreshPlantImage(int plantId) {
+        AccountUserPlant plant = accountUserPlantRepository.findById(plantId)
+                .orElseThrow(() -> new RuntimeException("Plant not found with id: " + plantId));
+
+        String perenualId = plant.getPerenualId();
+        if (perenualId == null || perenualId.isBlank()) {
+            return null;
+        }
+
+        PlantDetailsView freshPlant = perenualClient.fetchPlantById(perenualId);
+        if (freshPlant == null || freshPlant.imageUrl() == null || freshPlant.imageUrl().isBlank()) {
+            System.out.println("api url image error");
+            return null;
+        }
+
+        plant.setImageUrl(freshPlant.imageUrl());
+        accountUserPlantRepository.save(plant);
+
+        return freshPlant.imageUrl();
+    }
+
 }
