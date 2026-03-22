@@ -102,16 +102,16 @@
         <div id="users-plants" th:attr="data-currentsort=${currentSort}">
             <h2 class="section-title">Your plants</h2>
 
-            <!-- Water sort: regular plants first -->
-            <th:block th:if="${currentSort == 'water'}">
+            <th:block th:with="mainPlants=${currentSort == 'water' ? regularPlants : plants}">
 
                 <div class="plant-container"
-                     th:each="plant : ${regularPlants}"
+                     th:each="plant : ${mainPlants}"
                      th:data-plantid="${plant.id}"
                      th:data-userid="${plant.user.id}"
                      th:data-last-watered="${plant.lastWatered}"
                      th:data-watering-days="${plant.getWateringFrequencyDays()}"
-                     th:data-taglabel="${plant.tag != null ? plant.tag.label : ''}">
+                     th:data-taglabel="${plant.tag != null ? plant.tag.label : ''}"
+                     th:with="isWishlist=${plant.tag != null and plant.tag.label == 'Wishlist'}">
 
                     <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link">
                         <img class="plant-img"
@@ -121,14 +121,12 @@
                              onerror="handleBrokenImage(this)">
                     </a>
 
-                    <!-- Info -->
                     <div class="plant-info">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link" style="text-decoration: none;">
                                 <h3 th:text="${plant.plantName}" class="plant-name" style="margin: 0;"></h3>
                             </a>
 
-                            <!-- Tags -->
                             <div id="tags-container" class="tags-container ml-3 mb-2">
                                 <button class="open-tag-selection tag" th:text="'Add Tag'" th:if="${plant.tag == null}"></button>
                                 <button class="open-tag-selection tag" th:text="'#' + ${plant.tag.label}" th:if="${plant.tag != null}"></button>
@@ -136,98 +134,40 @@
                         </div>
 
                         <p class="latin-name" th:text="${plant.scientificName}"></p>
-                        <p class="days-since-watered" th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}"></p>
+                        <p class="days-since-watered" th:unless="${isWishlist}"></p>
 
-                        <div class="progress-bar" th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}">
+                        <div class="progress-bar" th:unless="${isWishlist}">
                             <div class="progress-fill"></div>
                             <span class="water-status-text"></span>
                         </div>
 
-                        <p th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}">
+                        <p th:unless="${isWishlist}">
                             Next watering date:
                             <span th:text="${#temporals.format(plant.nextWateringDate, 'dd MMM yyyy')}" style="color: #005F02;"></span>
                         </p>
                     </div>
 
-                    <!-- Actions -->
                     <div class="plant-actions">
-                        <button type="button" class="water-btn"
-                                th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}">
+                        <button type="button" class="water-btn" th:unless="${isWishlist}">
                             💧 Water it
                         </button>
                         <button type="button" class="delete-btn">Remove</button>
                     </div>
                 </div>
 
-                <!-- Wishlist section -->
-                <th:block th:if="${!#lists.isEmpty(wishlistPlants)}">
-                    <h2 class="section-title mt-8">Wishlist</h2>
-
-                    <div class="plant-container"
-                         th:each="plant : ${wishlistPlants}"
-                         th:data-plantid="${plant.id}"
-                         th:data-userid="${plant.user.id}"
-                         th:data-last-watered="${plant.lastWatered}"
-                         th:data-watering-days="${plant.getWateringFrequencyDays()}"
-                         th:data-taglabel="${plant.tag != null ? plant.tag.label : ''}">
-
-                        <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link">
-                            <img class="plant-img"
-                                 th:src="${plant.imageUrl}"
-                                 th:attr="data-plantid=${plant.id}"
-                                 alt="Plant image"
-                                 onerror="handleBrokenImage(this)">
-                        </a>
-
-                        <!-- Info -->
-                        <div class="plant-info">
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link" style="text-decoration: none;">
-                                    <h3 th:text="${plant.plantName}" class="plant-name" style="margin: 0;"></h3>
-                                </a>
-
-                                <!-- Tags -->
-                                <div id="tags-container" class="tags-container ml-3 mb-2">
-                                    <button class="open-tag-selection tag" th:text="'Add Tag'" th:if="${plant.tag == null}"></button>
-                                    <button class="open-tag-selection tag" th:text="'#' + ${plant.tag.label}" th:if="${plant.tag != null}"></button>
-                                </div>
-                            </div>
-
-                            <p class="latin-name" th:text="${plant.scientificName}"></p>
-                            <p class="days-since-watered" th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}"></p>
-
-                            <div class="progress-bar" th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}">
-                                <div class="progress-fill"></div>
-                                <span class="water-status-text"></span>
-                            </div>
-
-                            <p th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}">
-                                Next watering date:
-                                <span th:text="${#temporals.format(plant.nextWateringDate, 'dd MMM yyyy')}" style="color: #005F02;"></span>
-                            </p>
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="plant-actions">
-                            <button type="button" class="water-btn"
-                                    th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}">
-                                💧 Water it
-                            </button>
-                            <button type="button" class="delete-btn">Remove</button>
-                        </div>
-                    </div>
-                </th:block>
             </th:block>
 
-            <!-- All other sorts -->
-            <th:block th:unless="${currentSort == 'water'}">
+            <th:block th:if="${currentSort == 'water' and !#lists.isEmpty(wishlistPlants)}">
+                <h2 class="section-title mt-8">Wishlist</h2>
+
                 <div class="plant-container"
-                     th:each="plant : ${plants}"
+                     th:each="plant : ${wishlistPlants}"
                      th:data-plantid="${plant.id}"
                      th:data-userid="${plant.user.id}"
                      th:data-last-watered="${plant.lastWatered}"
                      th:data-watering-days="${plant.getWateringFrequencyDays()}"
-                     th:data-taglabel="${plant.tag != null ? plant.tag.label : ''}">
+                     th:data-taglabel="${plant.tag != null ? plant.tag.label : ''}"
+                     th:with="isWishlist=${plant.tag != null and plant.tag.label == 'Wishlist'}">
 
                     <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link">
                         <img class="plant-img"
@@ -237,14 +177,12 @@
                              onerror="handleBrokenImage(this)">
                     </a>
 
-                    <!-- Info -->
                     <div class="plant-info">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <a th:href="@{/plants/plant-details/{id}(id=${plant.id})}" class="plant-link" style="text-decoration: none;">
                                 <h3 th:text="${plant.plantName}" class="plant-name" style="margin: 0;"></h3>
                             </a>
 
-                            <!-- Tags -->
                             <div id="tags-container" class="tags-container ml-3 mb-2">
                                 <button class="open-tag-selection tag" th:text="'Add Tag'" th:if="${plant.tag == null}"></button>
                                 <button class="open-tag-selection tag" th:text="'#' + ${plant.tag.label}" th:if="${plant.tag != null}"></button>
@@ -252,23 +190,21 @@
                         </div>
 
                         <p class="latin-name" th:text="${plant.scientificName}"></p>
-                        <p class="days-since-watered" th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}"></p>
+                        <p class="days-since-watered" th:unless="${isWishlist}"></p>
 
-                        <div class="progress-bar" th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}">
+                        <div class="progress-bar" th:unless="${isWishlist}">
                             <div class="progress-fill"></div>
                             <span class="water-status-text"></span>
                         </div>
 
-                        <p th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}">
+                        <p th:unless="${isWishlist}">
                             Next watering date:
                             <span th:text="${#temporals.format(plant.nextWateringDate, 'dd MMM yyyy')}" style="color: #005F02;"></span>
                         </p>
                     </div>
 
-                    <!-- Actions -->
                     <div class="plant-actions">
-                        <button type="button" class="water-btn"
-                                th:unless="${plant.tag != null and plant.tag.label == 'Wishlist'}">
+                        <button type="button" class="water-btn" th:unless="${isWishlist}">
                             💧 Water it
                         </button>
                         <button type="button" class="delete-btn">Remove</button>
