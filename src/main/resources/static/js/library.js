@@ -372,7 +372,10 @@ function updatePlantBar(plant) {
 
 async function handleBrokenImage(img) {
     if (img.dataset.retrying === "true") return;
+
     img.dataset.retrying = "true";
+    img.onerror = null;
+    console.log("handle broken image used ");
 
     const plantId = img.dataset.plantid;
 

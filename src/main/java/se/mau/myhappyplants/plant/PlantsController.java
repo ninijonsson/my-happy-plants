@@ -14,6 +14,7 @@ import se.mau.myhappyplants.perenual.PerenualPlantDetailsResponse;
 import se.mau.myhappyplants.plant.dto.PlantDetailsView;
 import se.mau.myhappyplants.user.AccountUser;
 import java.security.Principal;
+import java.util.Map;
 
 /**
  * Controller responsible for handling requests related to plants.
