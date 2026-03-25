@@ -15,6 +15,7 @@ import se.mau.myhappyplants.plant.dto.PlantDetailsView;
 import se.mau.myhappyplants.user.AccountUser;
 import java.security.Principal;
 import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**
@@ -30,6 +31,9 @@ public class PlantsController {
 
     @Autowired
     private LibraryService libraryService;
+
+    @Autowired
+    private HttpServletRequest request;
 
     /**
      * Handles the request to display details of a specific plant from the user's library.
@@ -63,7 +67,12 @@ public class PlantsController {
     public String previewSearchPlant(@PathVariable String perenualId, Model model, HttpSession session) {
         AccountUser user = (AccountUser) session.getAttribute("user");
         if (user == null) return "redirect:/login";
-        
+
+        String lastSearchQuery = (String) session.getAttribute("lastSearchQuery");
+        if (lastSearchQuery != null) {
+            model.addAttribute("lastSearchQuery", lastSearchQuery);
+        }
+
         return prepareDetails(perenualId, null, model, user);
     }
 
@@ -101,12 +110,18 @@ public class PlantsController {
     @GetMapping("/search")
     public String showPlants(@RequestParam(required = false) String q, Model model, HttpSession session) {
         AccountUser user = (AccountUser) session.getAttribute("user");
+
+        if (q != null && !q.isEmpty()) {
+            session.setAttribute("lastSearchQuery", q);
+        }
+
         model.addAttribute("query", q == null ? "" : q);
         model.addAttribute("plants", perenualClient.fetchPlants(q));
         model.addAttribute("user", user);
         model.addAttribute("currentPage", "search");
         return "plant/plant-search";
     }
+
 
     /**
      * Retrieves plant data by its unique identifier and populates the provided model
