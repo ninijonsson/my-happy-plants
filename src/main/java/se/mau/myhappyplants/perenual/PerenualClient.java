@@ -44,7 +44,12 @@ public class PerenualClient {
      */
     @Cacheable(value = "plantSearch", key = "#query == null ? 'default' : #query.toLowerCase().trim()")
     public List<PlantDetailsView> fetchPlants(String query) {
-        int page = (int) (Math.random() * 30) + 1;
+        int pageLambda = 1;
+        if(query == null) {
+            pageLambda = (int) (Math.random() * 30) + 1;
+        }
+        int page = pageLambda;
+        System.out.println("fetch plants körs" + query);
         try {
             PerenualSpeciesListResponse response = webClient.get()
                     .uri(uri -> {

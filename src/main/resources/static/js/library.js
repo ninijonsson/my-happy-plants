@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
     searchLibrary.addEventListener('input', (e) => {
         const term = e.target.value.toLowerCase();
 
-        //Only filter once the user types 3 or more characters
+        // Start filtering only after 3 characters to avoid noisy matches
+        // and to keep the library view stable for short inputs
         if (term.length >= 3) {
             const matches = [];
             const nonMatches = [];
@@ -196,7 +197,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
                     const plantList = document.getElementById('users-plants');
-                    //Move to the end of the list - this works better than moving to the end, but reload is not as nice looking. a fade looks nice, but previous logic would send it to the wishlist if you are in water in the menu.
+                    // Reload the page after watering so the backend can re-apply the correct
+                    // water-based sorting. This is more reliable than manually moving the card
+                    // in the DOM, especially when Wishlist plants are rendered separately.
                    document.body.classList.add("fade-out");
 
                    setTimeout(() => {
@@ -263,7 +266,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     tagCancelBtn.addEventListener('click', closeTagModal);
 
-    // Getting Tags
+    // Load all available tags once on page load so the tag modal
+    // can be populated dynamically when opened
     const loadTags = async () => {
 
         const response = await fetch('/library/tags', {method: 'GET'});
@@ -368,6 +372,36 @@ function updatePlantBar(plant) {
     // Days since last watered
     const daysText = plant.querySelector('.days-since-watered');
     daysText.textContent = `Days since last watered: ${daysSinceWatered} days`;
+}
+
+async function handleBrokenImage(img) {
+    if (img.dataset.retrying === "true") return;
+
+    // Prevent the same image element from triggering repeated refresh attempts, hopefully
+    img.dataset.retrying = "true";
+    img.onerror = null;
+    console.log("handle broken image used (api overload check)");
+
+    const plantId = img.dataset.plantid;
+
+    try {
+        const response = await fetch(`/library/plants/${plantId}/refresh-image`, {
+            method: 'PUT'
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+
+            if (data.imageUrl) {
+                img.src = data.imageUrl;
+                return;
+            }
+        }
+    } catch (error) {
+        console.error("Image refresh failed:", error);
+    }
+
+    img.src = "/images/plant.jpg";
 }
 
 
