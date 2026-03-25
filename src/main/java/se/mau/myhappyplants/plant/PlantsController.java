@@ -16,6 +16,7 @@ import se.mau.myhappyplants.user.AccountUser;
 import java.security.Principal;
 import java.util.Map;
 
+
 /**
  * Controller responsible for handling requests related to plants.
  * It provides endpoints for plant listing, details, search, and adding plants to the library.
@@ -41,9 +42,12 @@ public class PlantsController {
      */
     @GetMapping("/plant-details/{id}")
     public String showLibraryPlantDetails(@PathVariable int id, Model model, HttpSession session) {
+        AccountUser user = (AccountUser) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        
         AccountUserPlant plant = libraryService.getPlantById(id);
 
-        return prepareDetails(plant.getPerenualId(), plant, model, session);
+        return prepareDetails(plant.getPerenualId(), plant, model, user);
     }
 
     /**
@@ -57,7 +61,10 @@ public class PlantsController {
      */
     @GetMapping("/preview/{perenualId}")
     public String previewSearchPlant(@PathVariable String perenualId, Model model, HttpSession session) {
-        return prepareDetails(perenualId, null, model, session);
+        AccountUser user = (AccountUser) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        
+        return prepareDetails(perenualId, null, model, user);
     }
 
     /**
@@ -65,12 +72,15 @@ public class PlantsController {
      * to use it for the library plants and
      * the search plants
      */
-    public String prepareDetails(String apiId, AccountUserPlant plant, Model model, HttpSession session) {
-        AccountUser user = (AccountUser) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
-
+    public String prepareDetails(String apiId, AccountUserPlant plant, Model model, AccountUser user) {
+      
         //TODO: Add error handling if the plant is null by viewing error message and redirect to the library
+
         PerenualPlantDetailsResponse apiDetails = perenualClient.fetchPlantDetails(apiId);
+
+        if (apiDetails == null) {
+            return "redirect:/library";
+        }
 
         model.addAttribute("user", user);
         model.addAttribute("details", apiDetails);

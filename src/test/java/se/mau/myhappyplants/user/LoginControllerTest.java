@@ -14,7 +14,6 @@ import se.mau.myhappyplants.config.PasswordValidatorConfig;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,7 +21,7 @@ public class LoginControllerTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
-
+    
     @Mock
     private PasswordValidatorConfig passwordValidatorConfig;
 
@@ -34,39 +33,38 @@ public class LoginControllerTest {
 
     @Test
     @DisplayName("ACC.01F-Login - User is null -> redirect to /login")
-    void testLogInWhenUserIsNull(){
+    void testLogInWhenUserIsNull() {
         String viewName = loginController.login();
         assertEquals("/auth/login", viewName);
     }
 
     @Test
-    void testCreateUserBadRequest(){
+    void testCreateUserBadRequest() {
         when(passwordValidatorConfig.isValid("123")).thenReturn("Password too short");
 
         ResponseEntity<?> response = loginController.createUser("user", "123");
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Password too short", ((Map<?, ?>)response.getBody()).get("message"));
+        assertEquals("Password too short", ((Map<?, ?>) response.getBody()).get("message"));
     }
 
     @Test
-    void testCreateNewUserSuccess(){
+    void testCreateNewUserSuccess() {
         when(passwordValidatorConfig.isValid("123456789Aa.")).thenReturn("OK");
         when(passwordEncoder.encode("123456789Aa.")).thenReturn("hashedPassword");
         when(accountUserService.createUser("newUser", "hashedPassword")).thenReturn(true);
 
         ResponseEntity<?> response = loginController.createUser("newUser", "123456789Aa.");
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("User created successfully", ((Map<?, ?>)response.getBody()).get("message"));
+        assertEquals("User created successfully", ((Map<?, ?>) response.getBody()).get("message"));
     }
 
     @Test
-    void testCreateExistingUser(){
+    void testCreateExistingUser() {
         when(passwordValidatorConfig.isValid("123456789Aa.")).thenReturn("OK");
         when(passwordEncoder.encode("123456789Aa.")).thenReturn("hashedPassword");
         when(accountUserService.createUser("newUser", "hashedPassword")).thenReturn(false);
-
         ResponseEntity<?> response = loginController.createUser("newUser", "123456789Aa.");
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        assertEquals("Username already exists", ((Map<?, ?>)response.getBody()).get("message"));
+        assertEquals("Username already exists", ((Map<?, ?>) response.getBody()).get("message"));
     }
 }

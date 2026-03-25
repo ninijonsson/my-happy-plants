@@ -55,7 +55,7 @@ public class PlantSearchServiceTest {
 
     @Test
     @DisplayName("SEA.01F - Search should return a valid response object")
-    void searchWithValidQuery() {
+    void testSearchWithValidQuery() {
         List<PlantDetailsView> mockResults = List.of(
                 new PlantDetailsView(1,"Heather", "Calluna vulgaris", "img/heather.jpg", "7", "A purple plant"),
                 new PlantDetailsView(2, "Heather Pink", "Erica carnea", "/img/pink.jpg", "7", null)
@@ -71,7 +71,7 @@ public class PlantSearchServiceTest {
 
     @Test
     @DisplayName("SEA.01F - PerenualClient is called exactly one time per search")
-    void searchCallsApiExactlyOnce(){
+    void testSearchCallsApiExactlyOnce(){
         when(perenualClient.fetchPlants("Monstera")).thenReturn(List.of());
 
         plantsController.showPlants("Monstera", model, session);
@@ -80,11 +80,9 @@ public class PlantSearchServiceTest {
        
     }
 
-    // SEA.01.1F — Inform the user if no valid results exists
-
     @Test
     @DisplayName("SEA.01.1F - Unknown search term returns empty list to the view")
-    void searchWithInvalidQuery(){
+    void testSearchWithInvalidQuery(){
         when(perenualClient.fetchPlants("uvwxyzåäö999")).thenReturn(List.of());
 
         String view = plantsController.showPlants("uvwxyzåäö999", model, session);
@@ -95,7 +93,7 @@ public class PlantSearchServiceTest {
 
     @Test
     @DisplayName("SEA.01.1F - Null-query puts an empty String as query-attribute ")
-    void SearchWithNullQuery(){
+    void testSearchWithNullQuery(){
         when(perenualClient.fetchPlants(null)).thenReturn(List.of());
 
         assertDoesNotThrow(() -> plantsController.showPlants(null, model, session));
@@ -105,45 +103,39 @@ public class PlantSearchServiceTest {
 
     @Test
     @DisplayName("SEA.01.1F - Empty String as query wihtout a crash")
-    void SearchWithBlankQuery(){
+    void testSearchWithBlankQuery(){
         when(perenualClient.fetchPlants("")).thenReturn(List.of());
 
         assertDoesNotThrow(() -> plantsController.showPlants("", model, session));
     }
 
-    // SEA.01.2F — Filter indoor plants
-
     @Disabled("SEA.01.2F - Waiting for 'indoor'-field to be added in PlantDetailsView")
     @Test
     @DisplayName("SEA.01.2F - Returns all indoor plants")
-    void searchFilterIndoor() {
+    void testSearchFilterIndoor() {
         // TODO: Implement when outdoor-field exists in PlantDetailsView
 
     }
-
-
-    // SEA.01.3F — Filter outdoor plants
 
     @Disabled("SEA.01.3F - Waiting for 'outdoor'-field to be added in PlantDetailsView")
     @Test
     @DisplayName("SEA.01.3F -Returns all outdoor plants")
-    void searchFilterOutdoor() {
+    void testSearchFilterOutdoor() {
         // TODO: Implement when outdoor-field exists in PlantDetailsView
     }
 
-    // SEA.01.4F — Filter non-poisonous plants
 
     @Disabled("SEA.01.4F - Waiting for 'non-poisonous'-field to be added in PlantDetailsView")
     @Test
     @DisplayName("SEA.01.4F - Returns all non-poisonous plants")
-    void searchFilterNonPoisonous() {
+    void testSearchFilterNonPoisonous() {
         // TODO: Implement when non-poisonous-field exists in PlantDetailsView
     }
 
     @Disabled("SEA.01.4F -  Waiting for 'non-poisonous'-field to be added in PlantDetailsView")
     @Test
     @DisplayName("SEA.01.4F - Empty list if all the results are poisonous")
-    void search_FilterNonPoisonous_WhenAllPoisonous_ReturnsEmptyList() {
+    void testSearchFilterNonPoisonousWhenAllPoisonous() {
         // TODO: Implement when non-poisonous-field exists in PlantDetailsView
     }
 }
