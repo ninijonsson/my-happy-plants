@@ -57,10 +57,7 @@
 
                 <div class="scientific-name" th:text="${plant.scientificName}">Scientific namn</div>
 
-                <form th:action="@{/plants/add}" method="post" target="hidden-frame">
-                    <input type="hidden" name="perenualPlantId" th:value="${plant.id}"/>
-                    <button type="submit" class="add-btn">+ Add to your library</button>
-                </form>
+                <button class="add-btn" th:data-id="${plant.id}">+ Add to your library</button>
             </div>
         </article>
     </main>
