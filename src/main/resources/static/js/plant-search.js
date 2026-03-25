@@ -6,6 +6,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     const plantGrid = document.getElementById('plantGrid');
+    // Restore the original default result set when the search input is cleared
     const initialPlantsHTML = plantGrid.innerHTML;
     const searchInput = document.getElementById('plantSearch');
     
@@ -122,6 +123,7 @@ function createPlantCard(plant) {
     return article;
 }
 
+// Auto-hide temporary toast messages after 3 seconds
 setTimeout(()=>{
     const toast = document.querySelector(".toast");
     if(toast) toast.style.display = "none";

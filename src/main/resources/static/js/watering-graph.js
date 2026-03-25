@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         x: new Date(d.date + "T00:00:00"),
         y: Number(d.count)
     }));
-
+    // minumum 2 points for a line
     const showLine = chartData.length >= 2;
     const minDate = new Date(chartData[0].x);
     minDate.setHours(0, 0, 0, 0);

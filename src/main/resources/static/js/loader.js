@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const loader = document.getElementById("loading");
     if (!loader) return;
 
+    // Ensure loader is hidden on initial page load
     loader.classList.add("hidden");
 
 
